@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" class="no-js" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <link rel="canonical" href="https://quadraaudio.com/login.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  
+  <title>Quadra ID — Sign In &amp; Activate Hydra</title>
+  <meta name="description" content="Sign in with your Quadra ID to verify your license entitlement and activate Hydra Pro on macOS." />
+  
+  <link rel="stylesheet" type="text/css" href="/api-www/global-elements/global-header/v1/assets/globalheader.css" />
+  <link rel="stylesheet" type="text/css" href="/ac/globalfooter/8/en_US/styles/ac-globalfooter.built.css" />
+  <link rel="stylesheet" type="text/css" href="/styles.css" />
+  
+  <!-- Google Identity SDK -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="/script.js" defer></script>
+</head>
+<body class="ac-nav-overlap globalnav-scrim globalheader-dark theme-dark">
+
+  <!-- Header -->
+  <div id="globalheader">
+    <nav id="globalnav" class="globalnav no-js">
+      <div class="globalnav-content">
+        <ul id="globalnav-list" class="globalnav-list">
+          <li class="globalnav-item globalnav-item-apple">
+            <a href="/" class="globalnav-link globalnav-link-quadra">
+              <span class="quadra-brand-logo">QUADRA <span class="quadra-brand-badge">ID</span></span>
+            </a>
+          </li>
+          <li class="globalnav-item"><a href="/" class="globalnav-link">Home</a></li>
+          <li class="globalnav-item"><a href="/hydra.html" class="globalnav-link">Hydra</a></li>
+          <li class="globalnav-item"><a href="/shop/" class="globalnav-link">Store</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Sign In Card -->
+  <section style="min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px;">
+    <div class="quadra-store-card" style="width: 100%; max-width: 440px;">
+      
+      <div style="font-size: 32px; font-weight: 700; color: #fff; margin-bottom: 8px;">Quadra ID</div>
+      <p style="font-size: 15px; color: #86868b; margin-bottom: 28px;">Sign in to activate Hydra Pro or manage your license.</p>
+
+      <!-- Google OAuth Sign In Button -->
+      <div id="g_id_onload"
+           data-client_id="120489321679-udegv4a0kl5o193bqnji07351kseca47.apps.googleusercontent.com"
+           data-callback="handleGoogleCredentialResponse"
+           data-auto_prompt="false">
+      </div>
+      
+      <div class="g_id_signin"
+           data-type="standard"
+           data-size="large"
+           data-theme="dark"
+           data-text="sign_in_with"
+           data-shape="pill"
+           data-logo_alignment="left"
+           style="display: flex; justify-content: center; margin-bottom: 24px;">
+      </div>
+
+      <div style="display: flex; align-items: center; margin: 20px 0; color: #86868b; font-size: 13px;">
+        <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.15);"></div>
+        <span style="padding: 0 12px;">OR EMAIL VERIFICATION</span>
+        <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.15);"></div>
+      </div>
+
+      <!-- Email Login Form -->
+      <form id="emailLoginForm" style="display: flex; flex-direction: column; gap: 16px;">
+        <input type="email" id="userEmailInput" placeholder="name@example.com" required
+               style="background: #09090b; border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 14px 16px; color: #fff; font-size: 15px; outline: none;" />
+        
+        <button type="submit" class="quadra-btn-primary" style="padding: 14px; font-size: 16px;">
+          Verify &amp; Activate Hydra
+        </button>
+      </form>
+
+      <div id="authStatusMessage" style="margin-top: 20px; font-size: 14px; min-height: 24px;"></div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="ac-globalfooter" class="ac-globalfooter" style="background: #000; border-top: 1px solid rgba(255, 255, 255, 0.1); padding: 40px 0; color: #86868b; font-size: 12px;">
+    <div class="ac-gf-content" style="max-width: 1024px; margin: 0 auto; padding: 0 20px;">
+      <div class="ac-gf-footer-legal">
+        <div class="ac-gf-footer-legal-copyright">&copy; 2026 Quadra. All rights reserved.</div>
+        <div class="ac-gf-footer-legal-links" style="margin-top: 8px;">
+          <a href="/privacy.html" style="color: #a1a1a6; text-decoration: none; margin-right: 16px;">Privacy Policy</a>
+          <a href="/terms.html" style="color: #a1a1a6; text-decoration: none;">EULA</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

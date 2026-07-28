@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" class="no-js" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <link rel="canonical" href="https://quadraaudio.com/shop/" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  
+  <title>Store — Quadra Audio Technologies</title>
+  <meta name="description" content="Official Quadra Store. Purchase Hydra Pro Virtual Soundcard perpetual license or download Evaluation Edition." />
+  
+  <link rel="stylesheet" type="text/css" href="/api-www/global-elements/global-header/v1/assets/globalheader.css" />
+  <link rel="stylesheet" type="text/css" href="/ac/globalfooter/8/en_US/styles/ac-globalfooter.built.css" />
+  <link rel="stylesheet" type="text/css" href="/styles.css" />
+  
+  <!-- PayPal SDK Integration -->
+  <script src="https://www.paypal.com/sdk/js?client-id=AbhXZI5d82CYX2gs9-iCyIWTcTNcH0j9mhoZoge7gR-5_B7eZY4I6MlV3zwqB7M-1lLyZhac_n1-4asN&currency=USD"></script>
+  <script src="/script.js" defer></script>
+</head>
+<body class="ac-nav-overlap globalnav-scrim globalheader-dark theme-dark">
+
+  <!-- Header -->
+  <div id="globalheader">
+    <nav id="globalnav" class="globalnav no-js">
+      <div class="globalnav-content">
+        <ul id="globalnav-list" class="globalnav-list">
+          <li class="globalnav-item globalnav-item-apple">
+            <a href="/" class="globalnav-link globalnav-link-quadra">
+              <span class="quadra-brand-logo">QUADRA <span class="quadra-brand-badge">STORE</span></span>
+            </a>
+          </li>
+          <li class="globalnav-item"><a href="/" class="globalnav-link">Home</a></li>
+          <li class="globalnav-item"><a href="/hydra.html" class="globalnav-link">Hydra</a></li>
+          <li class="globalnav-item"><a href="/login.html" class="globalnav-link">Quadra ID</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Store Header -->
+  <section style="padding: 120px 20px 40px 20px; text-align: center;">
+    <h1 style="font-size: 48px; font-weight: 600; color: #fff; margin-bottom: 8px;">Quadra Store</h1>
+    <p style="font-size: 20px; color: #86868b;">Select your software tier for macOS.</p>
+  </section>
+
+  <!-- Store Cards -->
+  <section style="max-width: 960px; margin: 0 auto 80px auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 32px;">
+    
+    <!-- Perpetual Commercial Card -->
+    <div class="quadra-store-card" style="margin: 0;">
+      <div class="quadra-bento-tag">Commercial Perpetual</div>
+      <h2 style="font-size: 28px; font-weight: 600; color: #fff; margin: 12px 0 4px 0;">Hydra Pro</h2>
+      <p style="font-size: 14px; color: #86868b; margin: 0 0 16px 0;">Full Commercial Rights &bull; Lifetime License</p>
+      
+      <div class="quadra-price-badge">$99</div>
+      <div class="quadra-price-sub">One-time payment. Free lifetime v2 updates.</div>
+
+      <ul style="text-align: left; color: #a1a1a6; font-size: 14px; line-height: 1.8; margin-bottom: 24px; padding-left: 20px;">
+        <li>64x64 High-Density Audio Routing Matrix</li>
+        <li>Flux Process Tap Engine (Sub-millisecond)</li>
+        <li>AES67 AoIP Broadcast Network Output</li>
+        <li>Native Apple Silicon M1/M2/M3/M4 &amp; macOS Sequoia</li>
+        <li>Cryptographic Quadra ID License Activation</li>
+      </ul>
+
+      <!-- PayPal Button Container -->
+      <div id="paypal-button-container" style="margin-top: 20px;"></div>
+    </div>
+
+    <!-- Free Evaluation Card -->
+    <div class="quadra-store-card" style="margin: 0; background: rgba(22, 22, 24, 0.5);">
+      <div class="quadra-bento-tag" style="color: #a1a1a6;">Trial Edition</div>
+      <h2 style="font-size: 28px; font-weight: 600; color: #fff; margin: 12px 0 4px 0;">Hydra Evaluation</h2>
+      <p style="font-size: 14px; color: #86868b; margin: 0 0 16px 0;">Testing &amp; Non-Commercial Use</p>
+      
+      <div class="quadra-price-badge">$0</div>
+      <div class="quadra-price-sub">Free Evaluation Edition</div>
+
+      <ul style="text-align: left; color: #a1a1a6; font-size: 14px; line-height: 1.8; margin-bottom: 32px; padding-left: 20px;">
+        <li>16x16 Channel Audio Matrix</li>
+        <li>Standard System Routing</li>
+        <li>macOS Compatibility Testing</li>
+        <li>Quadra Guard Evaluation License</li>
+      </ul>
+
+      <a href="/login.html" class="quadra-btn-secondary" style="display: block; width: 100%; box-sizing: border-box; text-align: center;">Get Free Evaluation</a>
+    </div>
+
+  </section>
+
+  <!-- PayPal SDK Render Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (window.paypal) {
+        paypal.Buttons({
+          style: {
+            layout: 'vertical',
+            color:  'blue',
+            shape:  'pill',
+            label:  'pay'
+          },
+          createOrder: function(data, actions) {
+            return actions.order.create({
+              purchase_units: [{
+                description: 'Hydra Pro Commercial License ($99 Perpetual)',
+                amount: {
+                  value: '99.00'
+                }
+              }]
+            });
+          },
+          onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+              const payerEmail = details.payer?.email_address || "customer@quadraaudio.com";
+              sessionStorage.setItem("quadra_user_email", payerEmail);
+              
+              // Notify Cloudflare Worker Backend Webhook
+              fetch("https://api.quadraaudio.com/v1/webhook", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  id: details.id,
+                  email: payerEmail,
+                  status: "COMPLETED"
+                })
+              }).finally(() => {
+                window.location.href = "/login.html?purchased=true";
+              });
+            });
+          }
+        }).render('#paypal-button-container');
+      }
+    });
+  </script>
+
+  <!-- Footer -->
+  <footer id="ac-globalfooter" class="ac-globalfooter" style="background: #000; border-top: 1px solid rgba(255, 255, 255, 0.1); padding: 40px 0; color: #86868b; font-size: 12px;">
+    <div class="ac-gf-content" style="max-width: 1024px; margin: 0 auto; padding: 0 20px;">
+      <div class="ac-gf-footer-legal">
+        <div class="ac-gf-footer-legal-copyright">&copy; 2026 Quadra. All rights reserved.</div>
+        <div class="ac-gf-footer-legal-links" style="margin-top: 8px;">
+          <a href="/privacy.html" style="color: #a1a1a6; text-decoration: none; margin-right: 16px;">Privacy Policy</a>
+          <a href="/terms.html" style="color: #a1a1a6; text-decoration: none;">EULA</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,228 @@
+/* Quadra Audio Platform — Design System & Custom Overrides */
+:root {
+  --quadra-bg: #000000;
+  --quadra-card-bg: rgba(22, 22, 24, 0.8);
+  --quadra-accent: #0071e3;
+  --quadra-accent-hover: #0077ed;
+  --quadra-gradient-1: linear-gradient(135deg, #2997ff 0%, #9e00ff 100%);
+  --quadra-gradient-2: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+  --quadra-text-primary: #f5f5f7;
+  --quadra-text-secondary: #86868b;
+  --quadra-border: rgba(255, 255, 255, 0.15);
+  --quadra-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+body {
+  font-family: var(--quadra-font);
+  background-color: var(--quadra-bg);
+  color: var(--quadra-text-primary);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Quadra Header Navigation Adjustments */
+.globalnav-link-apple, .globalnav-link-quadra {
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--quadra-text-primary) !important;
+  text-decoration: none;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.quadra-brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: #ffffff;
+}
+
+.quadra-brand-badge {
+  background: var(--quadra-gradient-1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+/* Hero Section Custom Styles */
+.quadra-hero {
+  padding: 140px 20px 80px 20px;
+  text-align: center;
+  background: radial-gradient(circle at 50% 20%, rgba(41, 151, 255, 0.15) 0%, transparent 60%);
+}
+
+.quadra-hero-title {
+  font-size: 56px;
+  line-height: 1.07143;
+  font-weight: 600;
+  letter-spacing: -.005em;
+  margin-bottom: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #a1a1a6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.quadra-hero-sub {
+  font-size: 24px;
+  line-height: 1.16667;
+  font-weight: 400;
+  letter-spacing: .009em;
+  color: var(--quadra-text-secondary);
+  max-width: 720px;
+  margin: 0 auto 32px auto;
+}
+
+.quadra-cta-group {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+}
+
+.quadra-btn-primary {
+  background-color: var(--quadra-accent);
+  color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 980px;
+  font-size: 17px;
+  font-weight: 400;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.quadra-btn-primary:hover {
+  background-color: var(--quadra-accent-hover);
+  transform: scale(1.02);
+}
+
+.quadra-btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #2997ff;
+  padding: 12px 24px;
+  border-radius: 980px;
+  font-size: 17px;
+  font-weight: 400;
+  text-decoration: none;
+  backdrop-filter: blur(20px);
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.quadra-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+/* Audio Matrix Canvas Container */
+.quadra-matrix-container {
+  max-width: 1080px;
+  margin: 40px auto;
+  padding: 24px;
+  background: rgba(18, 18, 20, 0.85);
+  border: 1px solid var(--quadra-border);
+  border-radius: 24px;
+  backdrop-filter: blur(30px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.quadra-matrix-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.quadra-matrix-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+canvas#audioMatrixCanvas {
+  width: 100%;
+  height: 420px;
+  background: #09090b;
+  border-radius: 16px;
+  display: block;
+}
+
+/* Quadra Bento Grid */
+.quadra-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+.quadra-bento-card {
+  background: var(--quadra-card-bg);
+  border: 1px solid var(--quadra-border);
+  border-radius: 20px;
+  padding: 32px;
+  backdrop-filter: blur(20px);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.quadra-bento-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(41, 151, 255, 0.5);
+}
+
+.quadra-bento-tag {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #2997ff;
+  margin-bottom: 12px;
+}
+
+.quadra-bento-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 12px;
+}
+
+.quadra-bento-desc {
+  font-size: 16px;
+  color: var(--quadra-text-secondary);
+  line-height: 1.5;
+}
+
+/* Store & Checkout Modal */
+.quadra-store-card {
+  max-width: 540px;
+  margin: 60px auto;
+  background: #161618;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+}
+
+.quadra-price-badge {
+  font-size: 48px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 20px 0 8px 0;
+}
+
+.quadra-price-sub {
+  font-size: 14px;
+  color: var(--quadra-text-secondary);
+  margin-bottom: 24px;
+}
