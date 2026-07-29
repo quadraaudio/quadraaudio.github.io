@@ -18,6 +18,23 @@ export default defineConfig({
         name: "page",
         title: "Site Pages",
         type: "document",
+        initialValue: {
+          title: "Home Page",
+          heroHeadline: "Quadra",
+          heroSubheadline: "The new standard in virtual audio routing.",
+          carouselItems: [
+            {
+              title: "Hydra Pro",
+              subtitle: "128-channel spatial matrix routing for macOS.",
+              category: "Software",
+            },
+            {
+              title: "Quadra Core I/O",
+              subtitle: "Hardware rack with 32-bit float AD/DA converters.",
+              category: "Hardware",
+            },
+          ],
+        },
         fields: [
           { name: "title", title: "Page Title", type: "string" },
           {
