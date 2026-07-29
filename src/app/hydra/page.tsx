@@ -1,6 +1,8 @@
 "use client";
 
 import ThemeSetter from "@/components/ThemeSetter";
+import LocalNav from "@/components/LocalNav";
+import ProductRibbon from "@/components/ProductRibbon";
 import TextIntroBlock from "@/components/blocks/TextIntroBlock";
 import GridBlock from "@/components/blocks/GridBlock";
 import CarouselBlock from "@/components/blocks/CarouselBlock";
@@ -14,30 +16,23 @@ export default function Hydra() {
 
   return (
     <div className={styles.hydraPage} data-theme="dark">
-      {/* Force global theme state to DARK MODE for Hydra page */}
+      {/* Force global theme state to DARK MODE for Hydra Pro page */}
       <ThemeSetter theme="dark" />
 
-      {/* Hydra Sub-Header / Local Nav */}
-      <div className={styles.subHeader}>
-        <div className={styles.subHeaderContent}>
-          <span className={styles.productTitle}>Hydra</span>
-          <div className={styles.subHeaderRight}>
-            <span className={styles.priceTag}>$199.99</span>
-            <a href="/store/hydra-pro" className={styles.buyPillBtn}>
-              Buy
-            </a>
-          </div>
-        </div>
-      </div>
+      {/* Apple Sticky LocalNav */}
+      <LocalNav title="Hydra Pro" price="$199.99" buyUrl="/store" />
+
+      {/* Model Selector Ribbon */}
+      <ProductRibbon />
 
       <div className={styles.hydraContent}>
-        {/* Template Block: Dynamic Text Intro */}
+        {/* Apple Dynamic Text Intro */}
         <TextIntroBlock
-          primaryText={content.hydraIntroTitle}
-          secondaryText={content.hydraIntroSub}
+          primaryText={content.hydraIntroTitle || "Engenharia de áudio sem concessões."}
+          secondaryText={content.hydraIntroSub || "Desenvolvido para extrair o máximo do Quadra Silicon com latência imperceptível e fidelidade de 32-bit Float."}
         />
 
-        {/* Hero Video/Visual Section */}
+        {/* Hero Video Section */}
         <section className={styles.heroSection}>
           <div className={styles.videoPlaceholder}>
             <div className={styles.playButton}>
@@ -45,88 +40,91 @@ export default function Hydra() {
                 <path d="M8 5v14l11-7z" />
               </svg>
             </div>
-            <span>Watch the film</span>
+            <span>Assista ao filme de lançamento</span>
           </div>
         </section>
 
-        {/* Grid 2x2 Feature Highlights */}
+        {/* Apple 2x2 Tech Highlights Grid */}
         <GridBlock
           items={[
             {
               id: "1",
-              title: "32-bit Float Engine",
+              title: "Engine de 32-bit Float",
               description:
-                "Custom-engineered AD/DA converters offering unprecedented clarity and depth for demanding ears.",
+                "Conversores AD/DA de alta fidelidade que garantem alcance dinâmico sem clipping ou perda de amplitude.",
             },
             {
               id: "2",
-              title: "Zero Latency Routing",
+              title: "Roteamento com Latência Zero",
               description:
-                "Direct hardware monitoring ensures you hear your performance in real time, every time.",
+                "Monitoramento direto via hardware para você ouvir cada nuances em tempo real durante a gravação.",
             },
             {
               id: "3",
-              title: "Ultra-low Jitter",
+              title: "Clocking Ultra-low Jitter",
               description:
-                "Precision clocking algorithms sync all digital audio streams seamlessly across your setup.",
+                "Algoritmos de sincronização de precisão cirúrgica para múltiplos canais digitais simultâneos.",
             },
             {
               id: "4",
-              title: "Dynamic Headroom",
+              title: "Headroom Dinâmico Inteligente",
               description:
-                "Intelligent gain staging prevents clipping even under extreme signal spikes.",
+                "Ajuste automático de ganho para proteger o sinal mesmo em picos de volume extremos.",
             },
           ]}
         />
 
         {/* Dynamic Carousel Section */}
         <CarouselBlock
-          headline={content.hydraCarouselTitle}
-          intro={content.hydraCarouselSub}
+          headline={content.hydraCarouselTitle || "Projetado para estúdios modernos."}
+          intro={content.hydraCarouselSub || "Construído em alumínio usinado monobloco com conectores de precisão."}
           items={content.hydraCarouselItems}
         />
 
-        {/* Promo Hero: Software Integration */}
+        {/* Software Integration Hero */}
         <PromoHeroBlock
-          headline="Designed for Quadra Silicon."
-          subheadline="Engineered to harness full multi-core performance for sub-millisecond roundtrip buffer speeds."
+          headline="Projetado para Quadra Silicon."
+          subheadline="Aproveite o poder multi-core nativo para rodar centenas de plugins com buffers mínimos."
+          mediaClass={styles.softwareModule}
           links={[
-            { label: "Explore Architecture", href: "#", primary: true },
-            { label: "Buy Hydra", href: "/store/hydra-pro" }
+            { label: "Explorar Arquitetura", href: "#specs", primary: true },
+            { label: "Comprar Hydra Pro", href: "/store" },
           ]}
         />
 
-        {/* Promo Grid: Ecosystem & Hardware */}
+        {/* Ecosystem & Hardware Grid */}
         <PromoGridBlock
           items={[
             {
               id: "1",
-              headline: "Core I/O Interface",
-              subheadline: "The companion hardware rack built exclusively for Hydra Pro.",
+              headline: "Interface Core I/O",
+              subheadline: "O rack de expansão de hardware exclusivo para o Hydra Pro.",
+              mediaClass: styles.hardwareModule,
               lightText: true,
               links: [
-                { label: "Learn more", href: "#", primary: true },
-                { label: "Notify me", href: "#" },
+                { label: "Saiba mais", href: "#", primary: true },
               ],
             },
             {
               id: "2",
-              headline: "Studio Support",
-              subheadline: "Get 24/7 dedicated support from audio engineers.",
+              headline: "Suporte Studio Pro",
+              subheadline: "Atendimento dedicado 24/7 diretamente com engenheiros de som.",
+              mediaClass: styles.studioSupportModule,
               lightText: true,
               links: [
-                { label: "Get help", href: "/support", primary: true },
+                { label: "Obter Suporte", href: "/support", primary: true },
               ],
             },
           ]}
         />
 
-        {/* Final Performance Intro */}
+        {/* Performance Footer Intro */}
         <TextIntroBlock
-          primaryText={content.hydraPerfTitle}
-          secondaryText={content.hydraPerfSub}
+          primaryText={content.hydraPerfTitle || "O novo padrão em interfaces de áudio."}
+          secondaryText={content.hydraPerfSub || "Experimente o Hydra Pro na sua cadeia de produção hoje mesmo."}
         />
       </div>
     </div>
   );
 }
+

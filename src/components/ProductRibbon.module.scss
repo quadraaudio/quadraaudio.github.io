@@ -1,0 +1,70 @@
+.ribbonContainer {
+  width: 100%;
+  padding: 24px 0 20px;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--card-border);
+  display: flex;
+  justify-content: center;
+}
+
+.ribbonContent {
+  width: 100%;
+  max-width: 980px;
+  padding: 0 22px;
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.ribbonCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none !important;
+  color: var(--text-primary);
+  min-width: 80px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+
+    .modelName {
+      color: var(--link-color);
+    }
+  }
+}
+
+.iconWrapper {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.svgIcon {
+  width: 44px;
+  height: 44px;
+  color: var(--text-primary);
+}
+
+.modelName {
+  font-size: 12px;
+  font-weight: 400;
+  text-align: center;
+  transition: color 0.15s ease;
+}
+
+.badge {
+  font-size: 10px;
+  font-weight: 500;
+  color: #bf4800; /* Apple Orange/Red badge color */
+  margin-top: 2px;
+}
