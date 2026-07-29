@@ -75,7 +75,7 @@ export default function Hydra() {
           <h2 className={styles.welcomeHeadline}>Sound thinking.</h2>
           <p className={styles.welcomeBody}>
             Hydra is the ultimate virtual soundcard, AoIP network matrix, and spatial audio monitor controller for macOS.
-            Featuring 4 configurable virtual audio devices with up to 256 I/O channels per driver, GroundControl interface fusion, zero-latency system application capture, and high-density NDI® / AVB network streaming — giving audio engineers and creators <strong>unrestricted freedom to route, process, and monitor sound without limits.</strong>
+            Engineered directly around native Core Audio driver extensions, Hydra features 4 configurable virtual audio soundcards with up to 256 I/O channels per driver, GroundControl hardware interface fusion, zero-latency application process capture, and high-density NDI® and AVB network streaming — giving producers, mix engineers, and broadcasters <strong>unrestricted freedom to route, process, and monitor sound without physical patchbays or limits.</strong>
           </p>
 
           <div className={styles.welcomeHeroMediaContainer}>
@@ -106,7 +106,7 @@ export default function Hydra() {
               </span>
               <h2 className={styles.bannerHeadline}>A suite deal for any creator.</h2>
               <p className={styles.bannerDescription}>
-                Hydra unifies physical hardware interfaces, virtual drivers, and local networks into one cohesive 32-bit float matrix — eliminating routing bottlenecks and physical patchbays.
+                Hydra unifies physical hardware interfaces, virtual drivers, DAWs, and local networks into one cohesive 32-bit float matrix — eliminating routing bottlenecks and hardware cabling.
               </p>
               <div className={styles.bannerCtas}>
                 <Link href="/store" className="apple-button-primary">
@@ -154,7 +154,7 @@ export default function Hydra() {
               <div className={styles.highlightMediaCard}>
                 <img src={APPLE_ASSETS.highlights.playground} alt="Producer operating Hydra audio routing matrix" />
                 <div className={styles.highlightCaptionOverlay}>
-                  <h3>256-Channel Configurable Virtual Patchbay for DAWs and apps.</h3>
+                  <h3>256-Channel Configurable Virtual Patchbay for DAWs and system apps.</h3>
                 </div>
               </div>
 
@@ -263,6 +263,36 @@ export default function Hydra() {
                 </div>
               </div>
 
+              <div className={styles.captionTileItem}>
+                <div className={styles.tileCopy}>
+                  <h3>GroundControl Interface Fusion.</h3>
+                  <p>Combine up to 8 physical hardware audio interfaces into a single unified driver with automatic sample rate conversion (ASRC) and zero clock drift.</p>
+                </div>
+                <div className={styles.tileMediaFrame}>
+                  <img src={APPLE_ASSETS.highlights.partner} alt="Interface Fusion Engine" />
+                </div>
+              </div>
+
+              <div className={styles.captionTileItem}>
+                <div className={styles.tileCopy}>
+                  <h3>AoIP Network Audio (NDI® & AVB).</h3>
+                  <p>Transmit and receive up to 128 NDI® channels and 256 AVB uncompressed Ethernet audio channels across local studio machines with zero packet loss.</p>
+                </div>
+                <div className={styles.tileMediaFrame}>
+                  <img src={APPLE_ASSETS.highlights.sounds} alt="AoIP Network Streaming" />
+                </div>
+              </div>
+
+              <div className={styles.captionTileItem}>
+                <div className={styles.tileCopy}>
+                  <h3>9.4.6 Spatial Audio Monitoring.</h3>
+                  <p>Comprehensive monitor controller supporting 9.4.6 Dolby Atmos layouts, binaural renderers, Apple Spatial Audio HRTF, quad-subwoofer bass crossovers, and AU plugin slots.</p>
+                </div>
+                <div className={styles.tileMediaFrame}>
+                  <img src={APPLE_ASSETS.highlights.mixed} alt="Spatial Audio Monitoring" />
+                </div>
+              </div>
+
             </div>
           </div>
         </section>
@@ -312,12 +342,12 @@ export default function Hydra() {
           <div className={styles.techSpecsGrid}>
             <div className={styles.specCard}>
               <h3>Mac Compatibility</h3>
-              <p>macOS Sonoma 14.0 or later. Universal Binary natively optimized for Apple Silicon (M1/M2/M3/M4) and Intel Macs.</p>
+              <p>macOS Sonoma 14.0 or later. Universal Binary natively optimized for Apple Silicon (M1/M2/M3/M4) and Intel Core processors.</p>
             </div>
 
             <div className={styles.specCard}>
               <h3>Driver & DSP Architecture</h3>
-              <p>32-bit Float real-time C++ engine with 0ms added driver latency and sample rates from 44.1 kHz to 384 kHz.</p>
+              <p>32-bit Float real-time C++ engine with 0ms added driver latency and sample rates from 44.1 kHz up to 384 kHz.</p>
             </div>
 
             <div className={styles.specCard}>
