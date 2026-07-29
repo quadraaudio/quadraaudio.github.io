@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { syncLicenseToSupabase } from "@/lib/supabase";
 
 export interface User {
   id: string;
@@ -34,7 +35,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
-        setUser(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        setUser(parsed);
+        // Sync license to Supabase on restore
+        syncLicenseToSupabase(parsed.email, parsed.name);
       } catch (e) {
         console.error("Failed to parse auth session:", e);
       }
@@ -44,10 +48,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = (email: string, details?: Partial<User>) => {
     const isAdmin = email.toLowerCase().includes("admin") || email.toLowerCase() === "samuel@quadraaudio.com";
+    const userName = details?.name || email.split("@")[0] || "User";
 
     const sessionUser: User = {
       id: details?.id || "usr_" + Math.random().toString(36).substring(2, 9),
-      name: details?.name || email.split("@")[0] || "User",
+      name: userName,
       email: email,
       role: isAdmin ? "admin" : "user",
       organization: details?.organization || "",
@@ -58,6 +63,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     setUser(sessionUser);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(sessionUser));
+
+    // Sync license directly into Supabase public.licenses table
+    syncLicenseToSupabase(email, userName);
   };
 
   const logout = () => {
