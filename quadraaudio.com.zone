@@ -1,0 +1,3 @@
+;; Minimal Vercel DNS Records Import for Cloudflare
+quadraaudio.com.	1	IN	A	76.76.21.21 ; cf_tags=cf-proxied:false
+www.quadraaudio.com.	1	IN	CNAME	cname.vercel-dns.com. ; cf_tags=cf-proxied:false
