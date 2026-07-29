@@ -9,8 +9,30 @@ import { SiteContentProvider } from "@/contexts/SiteContentContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 
 export const metadata: Metadata = {
-  title: "Quadra — Advanced Audio Routing",
+  title: {
+    default: "Quadra",
+    template: "%s — Quadra",
+  },
   description: "Official website of Quadra Audio (quadraaudio.com)",
+  applicationName: "Quadra",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  appleWebApp: {
+    title: "Quadra",
+    capable: true,
+    statusBarStyle: "black-translucent",
+  },
+  openGraph: {
+    title: "Quadra — Advanced Audio Routing",
+    description: "Official website of Quadra Audio (quadraaudio.com)",
+    siteName: "Quadra",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
