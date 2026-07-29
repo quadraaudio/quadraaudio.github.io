@@ -84,7 +84,67 @@ button {
   background: none;
 }
 
-/* Apple Typography Scale */
+/* Apple HIG Official Typography Scale */
+.typography-eyebrow {
+  font-size: 14px;
+  line-height: 1.28571;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--link-color);
+}
+
+.typography-welcome-headline {
+  font-size: 64px;
+  line-height: 1.0625;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+}
+
+.typography-welcome-body {
+  font-size: 21px;
+  line-height: 1.38095;
+  font-weight: 400;
+  color: var(--text-secondary);
+  
+  strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+}
+
+.typography-section-headline {
+  font-size: 48px;
+  line-height: 1.08333;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.typography-card-headline {
+  font-size: 22px;
+  line-height: 1.18182;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.typography-card-body {
+  font-size: 15px;
+  line-height: 1.46667;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.apple-container {
+  width: 100%;
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 22px;
+  padding-right: 22px;
+}
+
 .typography-hero-title {
   font-size: 56px;
   line-height: 1.07143;
@@ -185,6 +245,15 @@ button {
 
 /* Responsive Scaling */
 @media (max-width: 734px) {
+  .typography-welcome-headline {
+    font-size: 40px;
+  }
+  .typography-welcome-body {
+    font-size: 17px;
+  }
+  .typography-section-headline {
+    font-size: 32px;
+  }
   .typography-hero-title {
     font-size: 40px;
   }
@@ -198,4 +267,5 @@ button {
     font-size: 24px;
   }
 }
+
 

@@ -16,7 +16,7 @@
 }
 
 /* =========================================
-   Apple Logic Pro: Section Welcome (Hero)
+   1. SECTION WELCOME (Apple Logic Pro Hero Flow)
    ========================================= */
 .sectionWelcome {
   width: 100%;
@@ -48,10 +48,11 @@
 }
 
 .welcomeEyebrow {
-  font-size: 21px;
+  font-size: 14px;
   font-weight: 600;
   color: #86868b;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   margin-bottom: 8px;
 }
 
@@ -75,6 +76,11 @@
   color: #86868b;
   max-width: 780px;
   margin: 0 auto 48px;
+
+  strong {
+    color: #f5f5f7;
+    font-weight: 600;
+  }
 
   @media (max-width: 734px) {
     font-size: 17px;
@@ -150,12 +156,12 @@
 }
 
 /* =========================================
-   Apple Creator Studio / Ecosystem Banner Card
+   2. SECTION BANNER (Apple Creator Studio Banner)
    ========================================= */
 .sectionBanner {
   width: 100%;
   max-width: 980px;
-  margin: 0 auto 80px;
+  margin: 40px auto 100px;
   padding: 0 22px;
 }
 
@@ -238,12 +244,12 @@
 }
 
 /* =========================================
-   Apple Highlights Section ("Get to know Hydra")
+   3. SECTION HIGHLIGHTS ("Get to know Hydra")
    ========================================= */
 .sectionHighlights {
   width: 100%;
   max-width: 980px;
-  margin: 0 auto 100px;
+  margin: 0 auto 120px;
   padding: 0 22px;
 }
 
@@ -317,7 +323,7 @@
 }
 
 /* =========================================
-   Apple Logic Pro Feature Section (App Features)
+   4. CONTINUOUS STORY SECTIONS (Apple Logic Pro App Canvas)
    ========================================= */
 .sectionApp {
   width: 100%;
@@ -332,6 +338,7 @@
 
 .appEyebrow {
   font-size: 14px;
+  line-height: 1.28571;
   font-weight: 600;
   color: #2997ff;
   text-transform: uppercase;
@@ -369,7 +376,7 @@
 
 .appBannerMedia {
   width: 100%;
-  border-radius: 20px;
+  border-radius: 24px;
   overflow: hidden;
   margin-bottom: 40px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -432,11 +439,11 @@
 }
 
 /* =========================================
-   Apple Trial Footer CTA
+   5. APPLE TRIAL FOOTER CTA
    ========================================= */
 .trialSection {
   width: 100%;
-  background: linear-gradient(180deg, #0d0d0e 0%, #000000 100%);
+  background: linear-gradient(180deg, #0a0a0c 0%, #000000 100%);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding: 100px 22px;
   text-align: center;
@@ -448,6 +455,7 @@
 
 .trialTitle {
   font-size: 48px;
+  line-height: 1.08333;
   font-weight: 600;
   color: #f5f5f7;
 
@@ -458,6 +466,7 @@
 
 .trialSub {
   font-size: 21px;
+  line-height: 1.38095;
   color: #86868b;
   max-width: 600px;
 }
