@@ -1,0 +1,238 @@
+.storePage {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-top: 44px; /* GlobalNav height */
+  background-color: #fff;
+  color: #1d1d1f;
+}
+
+.storeContent {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 22px 120px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.storeHeader {
+  padding: 60px 0 32px;
+}
+
+.headerText {
+  h1 {
+    font-size: 48px;
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+
+    @media (max-width: 734px) {
+      font-size: 32px;
+    }
+  }
+}
+
+.blackText { color: #1d1d1f; }
+.grayText { color: #86868b; }
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: #d2d2d7;
+  margin: 0;
+}
+
+/* Shelf */
+.storeShelf {
+  padding: 40px 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.shelfHeader {
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Product Grid — 2-column */
+.productGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+
+  @media (max-width: 734px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Product Card */
+.productCard {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+  padding: 28px;
+  text-decoration: none;
+  color: #1d1d1f;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  &:hover {
+    transform: scale(1.01);
+  }
+}
+
+.comingSoon {
+  cursor: default;
+  &:hover { transform: none; }
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.cardKicker {
+  font-size: 12px;
+  font-weight: 600;
+  color: #bf4800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cardKickerGray {
+  font-size: 12px;
+  font-weight: 600;
+  color: #86868b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cardTitle {
+  font-size: 28px;
+  font-weight: 600;
+  color: #f5f5f7;
+  letter-spacing: -0.01em;
+}
+
+.cardPrice {
+  font-size: 15px;
+  color: rgba(245, 245, 247, 0.7);
+}
+
+.cardMediaCenter {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.appIcon {
+  border-radius: 22.5%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.hardwareImage {
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.learnMore {
+  font-size: 15px;
+  color: #2997ff;
+  font-weight: 400;
+}
+
+.buyNow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2997ff;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 400;
+  padding: 7px 18px;
+  border-radius: 980px;
+  transition: opacity 0.2s ease;
+
+  &:hover { opacity: 0.8; }
+}
+
+.notifyLink {
+  font-size: 15px;
+  color: #0071e3;
+  font-weight: 400;
+}
+
+/* Help Grid — 3-column */
+.helpGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+
+  @media (max-width: 734px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.helpCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  background-color: #f5f5f7;
+  border-radius: 18px;
+  text-decoration: none;
+  color: #1d1d1f;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #e8e8ed;
+  }
+}
+
+.helpIcon {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.helpTitle {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.helpDescription {
+  font-size: 14px;
+  color: #86868b;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.helpLink {
+  font-size: 14px;
+  color: #0071e3;
+  font-weight: 400;
+}

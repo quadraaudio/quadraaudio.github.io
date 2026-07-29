@@ -1,0 +1,66 @@
+.gridSection {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto 120px;
+  padding: 0 22px;
+}
+
+.gridHeader {
+  margin-bottom: 40px;
+  text-align: center;
+  
+  h2 {
+    font-size: 40px;
+    letter-spacing: -0.015em;
+  }
+}
+
+.gridContainer {
+  display: grid;
+  gap: 24px;
+  
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.gridBox {
+  background-color: var(--card-bg);
+  border-radius: 24px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  aspect-ratio: 1 / 1;
+}
+
+.gridBoxText {
+  padding: 40px 40px 0;
+  z-index: 2;
+  position: relative;
+  
+  h3 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  
+  p {
+    font-size: 17px;
+    line-height: 1.47;
+    color: var(--text-secondary);
+  }
+}
+
+.gridBoxMedia {
+  flex-grow: 1;
+  position: relative;
+  z-index: 1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-top: -60px; /* Pull background up under text */
+  mask-image: linear-gradient(to bottom, transparent 0%, black 30%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 30%);
+}
