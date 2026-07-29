@@ -6,14 +6,62 @@ import Image from "next/image";
 import ThemeSwitcher from "@/app/hydra/ThemeSwitcher";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { products } from "@/data/products";
 import { syncLicenseToSupabase } from "@/lib/supabase";
 import styles from "./page.module.scss";
 
 export default function PaymentPage() {
-  const { items, totalPrice, appliedCoupon, discountTotal, finalPrice, clearCart } = useCart();
+  const {
+    items,
+    totalPrice,
+    appliedCoupon,
+    discountTotal,
+    finalPrice,
+    applyCoupon,
+    removeCoupon,
+    clearCart,
+  } = useCart();
+
   const { user } = useAuth();
   const [paymentMethod, setPaymentMethod] = useState<"paypal" | "card">("paypal");
   const [isCompleted, setIsCompleted] = useState(false);
+
+  const [couponCode, setCouponCode] = useState("");
+  const [couponError, setCouponError] = useState("");
+  const [couponLoading, setCouponLoading] = useState(false);
+
+  // Default item fallback if cart was empty
+  const defaultHydra = products[0];
+  const displayItems = items.length > 0 ? items : [{ product: defaultHydra, quantity: 1 }];
+  const displayTotalPrice = items.length > 0 ? totalPrice : defaultHydra.price;
+
+  let displayDiscount = discountTotal;
+  if (items.length === 0 && appliedCoupon) {
+    if (appliedCoupon.discountPercent > 0) {
+      displayDiscount = (defaultHydra.price * appliedCoupon.discountPercent) / 100;
+    } else if (appliedCoupon.discountAmount > 0) {
+      displayDiscount = Math.min(defaultHydra.price, appliedCoupon.discountAmount);
+    }
+  }
+
+  const displayFinalPrice = Math.max(0, displayTotalPrice - displayDiscount);
+
+  const handleApplyCoupon = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!couponCode.trim()) return;
+
+    setCouponError("");
+    setCouponLoading(true);
+
+    const res = await applyCoupon(couponCode.trim());
+    setCouponLoading(false);
+
+    if (!res.success) {
+      setCouponError(res.error || "Invalid promo code");
+    } else {
+      setCouponCode("");
+    }
+  };
 
   const handleCompleteOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,7 +179,7 @@ export default function PaymentPage() {
                     </div>
                   </div>
                   <button type="submit" className={styles.payBtn}>
-                    Pay ${finalPrice.toFixed(2)}
+                    Pay ${displayFinalPrice.toFixed(2)}
                   </button>
                 </form>
               </section>
@@ -143,7 +191,7 @@ export default function PaymentPage() {
                 </p>
                 <form onSubmit={handleCompleteOrder}>
                   <button type="submit" className={styles.paypalBtn}>
-                    Complete Order with PayPal (${finalPrice.toFixed(2)})
+                    Complete Order with PayPal (${displayFinalPrice.toFixed(2)})
                   </button>
                 </form>
               </section>
@@ -153,35 +201,57 @@ export default function PaymentPage() {
 
           {/* Sidebar Summary Column */}
           <div className={styles.sidebarColumn}>
+
+            {/* Promo Code Box */}
+            <div className={styles.promoCard}>
+              <h4>Promo Code / Coupon</h4>
+              {appliedCoupon ? (
+                <div className={styles.appliedBadge}>
+                  <span>✓ Code <strong>{appliedCoupon.code}</strong> Applied ({appliedCoupon.discountPercent > 0 ? `${appliedCoupon.discountPercent}% OFF` : `-$${appliedCoupon.discountAmount}`})</span>
+                  <button type="button" onClick={removeCoupon} className={styles.removeCouponBtn}>Remove</button>
+                </div>
+              ) : (
+                <form onSubmit={handleApplyCoupon} className={styles.couponForm}>
+                  <input
+                    type="text"
+                    placeholder="e.g. QUADRA10"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                    className={styles.couponInput}
+                  />
+                  <button type="submit" className={styles.couponBtn} disabled={couponLoading}>
+                    {couponLoading ? "..." : "Apply"}
+                  </button>
+                </form>
+              )}
+              {couponError && <p className={styles.couponError}>{couponError}</p>}
+            </div>
+
             <div className={styles.summaryCard}>
               <h3>Order Summary</h3>
               
               <div className={styles.itemsList}>
-                {items.length === 0 ? (
-                  <p className={styles.emptyText}>No items in bag</p>
-                ) : (
-                  items.map((item) => (
-                    <div key={item.product.slug} className={styles.summaryItem}>
-                      <div>
-                        <strong>{item.product.name}</strong>
-                        <p>Qty: {item.quantity}</p>
-                      </div>
-                      <span>${(item.product.price * item.quantity).toFixed(2)}</span>
+                {displayItems.map((item) => (
+                  <div key={item.product.slug} className={styles.summaryItem}>
+                    <div>
+                      <strong>{item.product.name}</strong>
+                      <p>Perpetual License (macOS)</p>
                     </div>
-                  ))
-                )}
+                    <span>${(item.product.price * item.quantity).toFixed(2)}</span>
+                  </div>
+                ))}
               </div>
 
               <div className={styles.summaryTotals}>
                 <div className={styles.row}>
                   <span>Subtotal</span>
-                  <span>${totalPrice.toFixed(2)}</span>
+                  <span>${displayTotalPrice.toFixed(2)}</span>
                 </div>
 
                 {appliedCoupon && (
                   <div className={styles.row} style={{ color: "#1b5e20", fontWeight: 500 }}>
                     <span>Discount ({appliedCoupon.code})</span>
-                    <span>-${discountTotal.toFixed(2)}</span>
+                    <span>-${displayDiscount.toFixed(2)}</span>
                   </div>
                 )}
 
@@ -191,7 +261,7 @@ export default function PaymentPage() {
                 </div>
                 <div className={`${styles.row} ${styles.totalRow}`}>
                   <span>Total</span>
-                  <span>${finalPrice.toFixed(2)}</span>
+                  <span>${displayFinalPrice.toFixed(2)}</span>
                 </div>
               </div>
             </div>

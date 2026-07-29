@@ -1,6 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCart } from "@/contexts/CartContext";
+import { products } from "@/data/products";
 import styles from "./LocalNav.module.scss";
 
 interface LocalNavProps {
@@ -13,7 +16,7 @@ interface LocalNavProps {
 export default function LocalNav({
   title = "Hydra",
   price = "$199.99",
-  buyUrl = "/store",
+  buyUrl,
   links = [
     { label: "Overview", href: "#overview", active: true },
     { label: "Features", href: "#tools" },
@@ -22,6 +25,18 @@ export default function LocalNav({
     { label: "Specs", href: "#specs" },
   ],
 }: LocalNavProps) {
+  const { addItem } = useCart();
+  const router = useRouter();
+
+  const handleBuyClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const hydra = products[0];
+    if (hydra) {
+      addItem(hydra);
+    }
+    router.push("/store/bag");
+  };
+
   return (
     <div className={styles.localNavContainer}>
       <div className={styles.localNavContent}>
@@ -41,11 +56,9 @@ export default function LocalNav({
             ))}
           </nav>
           {price && <span className={styles.priceTag}>{price}</span>}
-          {buyUrl && (
-            <Link href={buyUrl} className="apple-button-primary">
-              Buy
-            </Link>
-          )}
+          <button onClick={handleBuyClick} className="apple-button-primary">
+            Buy
+          </button>
         </div>
       </div>
     </div>

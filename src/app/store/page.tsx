@@ -2,12 +2,22 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import ThemeSwitcher from "../hydra/ThemeSwitcher";
 import { products } from "@/data/products";
+import { useCart } from "@/contexts/CartContext";
 import styles from "./page.module.scss";
 
 export default function StorePage() {
   const hydraProduct = products.find((p) => p.slug === "hydra") || products[0];
+  const { addItem } = useCart();
+  const router = useRouter();
+
+  const handleBuyClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    addItem(hydraProduct);
+    router.push("/store/bag");
+  };
 
   return (
     <div className={styles.storePage}>
@@ -59,9 +69,9 @@ export default function StorePage() {
                 <Link href="/hydra" className="apple-button-secondary">
                   Explore Hydra
                 </Link>
-                <Link href="/store/checkout/gate" className="apple-button-primary">
+                <button onClick={handleBuyClick} className="apple-button-primary">
                   Buy ($199.99)
-                </Link>
+                </button>
               </div>
             </div>
           </div>
@@ -101,21 +111,20 @@ export default function StorePage() {
                 </svg>
               </div>
               <div>
-                <h3 className={styles.helpTitle}>Instant Digital Activation</h3>
-                <p className={styles.helpDescription}>Receive your digital license key instantly via email and Quadra ID.</p>
+                <h3 className={styles.helpTitle}>Instant Activation</h3>
+                <p className={styles.helpDescription}>Receive your license key immediately upon checkout with 2 Mac activations.</p>
               </div>
             </div>
 
             <div className={styles.helpCard}>
               <div className={styles.helpIcon}>
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                  <circle cx="12" cy="7" r="4"/>
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                 </svg>
               </div>
               <div>
-                <h3 className={styles.helpTitle}>2 Machine Activations</h3>
-                <p className={styles.helpDescription}>Use your license simultaneously on your main studio Mac and laptop.</p>
+                <h3 className={styles.helpTitle}>Expert Audio Specialist Support</h3>
+                <p className={styles.helpDescription}>Get dedicated setup support for Core Audio, NDI®, and Dolby Atmos workflows.</p>
               </div>
             </div>
           </div>
