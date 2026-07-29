@@ -108,33 +108,31 @@ export async function syncLicenseToSupabase(
     console.error("Failed to save local license fallback:", e);
   }
 
-  // 2. Sync Order to Supabase `public.orders`
+  // 2. ALWAYS insert new order into Supabase `public.orders`
   try {
-    const { error: orderErr } = await supabase.from("orders").insert([
-      {
-        order_number: orderNum,
-        user_email: cleanEmail,
-        total_amount: totalAmount,
-        status: "completed",
-      },
-    ]);
-    if (orderErr) console.warn("Supabase order insert warning:", orderErr.message);
+    const { data: ordData, error: orderErr } = await supabase
+      .from("orders")
+      .insert([
+        {
+          order_number: orderNum,
+          user_email: cleanEmail,
+          total_amount: totalAmount,
+          status: "completed",
+        },
+      ])
+      .select();
+
+    if (orderErr) {
+      console.warn("Supabase order insert warning:", orderErr.message);
+    } else {
+      console.log("Order registered in Supabase:", ordData);
+    }
   } catch (e) {
     console.warn("Supabase order sync failed:", e);
   }
 
-  // 3. Sync License to Supabase `public.licenses`
+  // 3. ALWAYS insert new license into Supabase `public.licenses`
   try {
-    const { data: existing } = await supabase
-      .from("licenses")
-      .select("*")
-      .ilike("user_email", cleanEmail)
-      .eq("product_slug", productSlug);
-
-    if (existing && existing.length > 0) {
-      return existing[0];
-    }
-
     const { data, error } = await supabase
       .from("licenses")
       .insert([
@@ -188,7 +186,7 @@ export async function getSupabaseUserLicenses(userEmail: string) {
       return ilikeData;
     }
 
-    // Stage 3: Full table fetch & client-side filter (guarantees match if row exists in DB)
+    // Stage 3: Full table fetch & client-side filter
     const { data: allData, error: allErr } = await supabase
       .from("licenses")
       .select("*");
