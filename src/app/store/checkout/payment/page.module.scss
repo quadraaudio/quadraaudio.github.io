@@ -56,6 +56,45 @@
   }
 }
 
+/* Zero-Payment Mode ($0.00 Order) */
+.freeOrderNoticeCard {
+  background-color: #f2f9f4;
+  border: 1px solid #c8e6c9;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.freeOrderIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #e8f5e9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.freeOrderTitle {
+  font-size: 19px;
+  font-weight: 600;
+  color: #1b5e20;
+  margin-bottom: 6px;
+}
+
+.freeOrderDesc {
+  font-size: 15px;
+  color: #2e7d32;
+  line-height: 1.4;
+
+  strong {
+    font-weight: 600;
+  }
+}
+
 .paymentMethods {
   display: flex;
   flex-direction: column;
