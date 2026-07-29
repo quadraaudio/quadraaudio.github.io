@@ -6,14 +6,8 @@ import ThemeSwitcher from "../hydra/ThemeSwitcher";
 import { products } from "@/data/products";
 import styles from "./page.module.scss";
 
-const BADGE_COLORS: Record<string, string> = {
-  orange: "#bf4800",
-  gray: "#86868b",
-  blue: "#0071e3",
-};
-
 export default function StorePage() {
-  const available = products.filter((p) => p.available);
+  const hydraProduct = products.find((p) => p.slug === "hydra") || products[0];
 
   return (
     <div className={styles.storePage}>
@@ -21,124 +15,107 @@ export default function StorePage() {
 
       <div className={styles.storeContent}>
 
-        {/* Apple Store Header */}
+        {/* =========================================
+           Apple Store Header Ribbon
+           ========================================= */}
         <header className={styles.storeHeader}>
           <h1>
             <span className={styles.blackText}>Store.</span>{" "}
-            <span className={styles.grayText}>Equip your studio with Hydra software.</span>
+            <span className={styles.grayText}>The best way to buy Hydra software.</span>
           </h1>
         </header>
 
         <div className={styles.divider} />
 
-        {/* Shelf: Available Products */}
+        {/* =========================================
+           Product Shelf: Featured Hydra Software
+           ========================================= */}
         <section className={styles.storeShelf}>
           <div className={styles.shelfHeader}>
             <h2>
               <span className={styles.blackText}>Software.</span>{" "}
-              <span className={styles.grayText}>Experience professional virtual audio routing.</span>
+              <span className={styles.grayText}>Professional virtual audio routing for Mac.</span>
             </h2>
           </div>
 
           <div className={styles.productGrid}>
-            {available.map((product) => (
-              <Link
-                key={product.slug}
-                href={`/hydra`}
-                className={styles.productCard}
-                style={{ background: "linear-gradient(160deg, #fff 40%, #1a1a2e 100%)" }}
-              >
-                <div className={styles.cardHeader}>
-                  {product.badge && (
-                    <span
-                      className={styles.cardKicker}
-                      style={{ color: BADGE_COLORS[product.badgeColor ?? "orange"] }}
-                    >
-                      {product.badge}
-                    </span>
-                  )}
-                  <h3 className={styles.cardTitle} style={{ color: "#f5f5f7" }}>
-                    {product.name}
-                  </h3>
-                  <p className={styles.cardPrice} style={{ color: "rgba(245,245,247,0.7)" }}>
-                    {product.priceLabel}
-                  </p>
-                </div>
+            <div className={styles.productCard}>
+              <div className={styles.cardHeader}>
+                <span className={styles.cardKicker}>Virtual Audio Matrix</span>
+                <h3 className={styles.cardTitle}>{hydraProduct.name}</h3>
+                <p className={styles.cardTagline}>{hydraProduct.tagline}</p>
+                <p className={styles.cardPrice}>{hydraProduct.priceLabel}</p>
+              </div>
 
-                {product.cardImage && (
-                  <div className={styles.cardMediaCenter}>
-                    <Image
-                      src={product.cardImage}
-                      alt={product.name}
-                      width={160}
-                      height={160}
-                      className={styles.appIcon}
-                    />
-                  </div>
-                )}
-
-                <div className={styles.cardFooter}>
-                  <span className={styles.learnMore}>Learn more</span>
-                  <span className={styles.buyNow}>Try Free for 90 Days</span>
+              <div className={styles.cardMediaCenter}>
+                <div className={styles.appIconWrapper}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                 </div>
-              </Link>
-            ))}
+              </div>
+
+              <div className={styles.cardFooter}>
+                <Link href="/hydra" className="apple-button-secondary">
+                  Explore Hydra
+                </Link>
+                <Link href="/store/checkout/gate" className="apple-button-primary">
+                  Buy ($199.99)
+                </Link>
+              </div>
+            </div>
           </div>
         </section>
 
         <div className={styles.divider} />
 
-        {/* Shelf: Help */}
+        {/* =========================================
+           Store Help & Quadra Advantages Grid
+           ========================================= */}
         <section className={styles.storeShelf}>
           <div className={styles.shelfHeader}>
             <h2>
-              <span className={styles.blackText}>Need help?</span>{" "}
-              <span className={styles.grayText}>Our audio engineering team is here for you.</span>
+              <span className={styles.blackText}>Why buy from Quadra?</span>{" "}
+              <span className={styles.grayText}>Direct licensing and expert audio support.</span>
             </h2>
           </div>
 
           <div className={styles.helpGrid}>
-            <Link href="/account" className={styles.helpCard}>
+            <div className={styles.helpCard}>
               <div className={styles.helpIcon}>
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                  <circle cx="16" cy="11" r="5" stroke="#1d1d1f" strokeWidth="1.5"/>
-                  <path d="M4 27c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="#1d1d1f" strokeWidth="1.5" strokeLinecap="round"/>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                 </svg>
               </div>
               <div>
-                <h3 className={styles.helpTitle}>Your Account</h3>
-                <p className={styles.helpDescription}>Access licenses, active machine activations, and Quadra ID settings.</p>
-                <span className={styles.helpLink}>Go to account</span>
+                <h3 className={styles.helpTitle}>90-Day Risk Free Trial</h3>
+                <p className={styles.helpDescription}>Download and test all 256 virtual channels and AoIP features free for 90 days.</p>
               </div>
-            </Link>
-
-            <Link href="/support" className={styles.helpCard}>
-              <div className={styles.helpIcon}>
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                  <circle cx="16" cy="16" r="12" stroke="#1d1d1f" strokeWidth="1.5"/>
-                  <path d="M13 13a3 3 0 1 1 3 3v2" stroke="#1d1d1f" strokeWidth="1.5" strokeLinecap="round"/>
-                  <circle cx="16" cy="21.5" r="1" fill="#1d1d1f"/>
-                </svg>
-              </div>
-              <div>
-                <h3 className={styles.helpTitle}>Support & Documentation</h3>
-                <p className={styles.helpDescription}>Speak with a Quadra virtual soundcard specialist.</p>
-                <span className={styles.helpLink}>Contact support</span>
-              </div>
-            </Link>
+            </div>
 
             <div className={styles.helpCard}>
               <div className={styles.helpIcon}>
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                  <rect x="4" y="7" width="24" height="18" rx="3" stroke="#1d1d1f" strokeWidth="1.5"/>
-                  <path d="M4 12h24" stroke="#1d1d1f" strokeWidth="1.5"/>
-                  <path d="M10 17h4M10 21h8" stroke="#1d1d1f" strokeWidth="1.5" strokeLinecap="round"/>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <rect x="2" y="4" width="20" height="16" rx="2"/>
+                  <path d="M10 9l5 3-5 3V9z"/>
                 </svg>
               </div>
               <div>
-                <h3 className={styles.helpTitle}>Order & License Status</h3>
-                <p className={styles.helpDescription}>Download Hydra installer or manage commercial licenses.</p>
-                <span className={styles.helpLink}>Check license</span>
+                <h3 className={styles.helpTitle}>Instant Digital Activation</h3>
+                <p className={styles.helpDescription}>Receive your digital license key instantly via email and Quadra ID.</p>
+              </div>
+            </div>
+
+            <div className={styles.helpCard}>
+              <div className={styles.helpIcon}>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </div>
+              <div>
+                <h3 className={styles.helpTitle}>2 Machine Activations</h3>
+                <p className={styles.helpDescription}>Use your license simultaneously on your main studio Mac and laptop.</p>
               </div>
             </div>
           </div>

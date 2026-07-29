@@ -33,8 +33,8 @@ export default function AccountDashboard() {
     const lic = generateOfflineLicenseKey(
       user?.email || "samuel@quadraaudio.com",
       user?.name || "Samuel",
-      "hydra-pro",
-      "Hydra Pro",
+      "hydra",
+      "Hydra",
       hardwareId.trim()
     );
 
@@ -45,7 +45,7 @@ export default function AccountDashboard() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `hydra_pro_${hardwareId.trim()}.qkey`;
+    a.download = `hydra_${hardwareId.trim()}.qkey`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -77,14 +77,14 @@ export default function AccountDashboard() {
             <div className={styles.cardHeaderRow}>
               <Image
                 src="/images/hydra_app_icon.jpg"
-                alt="Hydra Pro"
+                alt="Hydra"
                 width={80}
                 height={80}
                 className={styles.softwareIcon}
               />
               <div className={styles.headerMeta}>
-                <h3 className={styles.productName}>Hydra Pro</h3>
-                <p className={styles.productType}>Perpetual License · macOS 13+</p>
+                <h3 className={styles.productName}>Hydra</h3>
+                <p className={styles.productType}>Perpetual License · macOS Sonoma 14.0+</p>
               </div>
             </div>
 
@@ -112,7 +112,7 @@ export default function AccountDashboard() {
                   <polyline points="7 10 12 15 17 10"/>
                   <line x1="12" y1="15" x2="12" y2="3"/>
                 </svg>
-                Download Hydra Pro
+                Download Hydra Software
               </a>
 
               <button
@@ -147,7 +147,7 @@ export default function AccountDashboard() {
 
                 {downloadedQKey && (
                   <div className={styles.qkeySuccess}>
-                    ✓ File <strong>hydra_pro_{downloadedQKey.hardwareId}.qkey</strong> downloaded! Import this file into Hydra software on your offline studio Mac.
+                    ✓ File <strong>hydra_{downloadedQKey.hardwareId}.qkey</strong> downloaded! Import this file into Hydra software on your offline studio Mac.
                   </div>
                 )}
               </div>
