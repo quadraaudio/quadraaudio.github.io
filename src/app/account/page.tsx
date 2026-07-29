@@ -26,12 +26,16 @@ export default function AccountDashboard() {
 
   if (!isLoggedIn) return null;
 
+  const userEmail = user?.email || "user@quadraaudio.com";
+  const userOrderRef = "Q-ORD-" + Math.abs(userEmail.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) * 89731).toString(16).toUpperCase();
+  const userLicenseId = "LIC-" + Math.abs(userEmail.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) * 48271).toString(16).toUpperCase();
+
   const handleGenerateOfflineKey = (e: React.FormEvent) => {
     e.preventDefault();
     if (!hardwareId.trim()) return;
 
     const lic = generateOfflineLicenseKey(
-      user?.email || "samuel@quadraaudio.com",
+      userEmail,
       user?.name || "Samuel",
       "hydra",
       "Hydra",
@@ -40,7 +44,7 @@ export default function AccountDashboard() {
 
     setDownloadedQKey(lic);
 
-    // Auto-download .qkey file
+    // Auto-download real encrypted Base64 .qkey file for Hydra native Mac app
     const blob = new Blob([lic.signature], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -59,7 +63,7 @@ export default function AccountDashboard() {
         {/* Greeting Header */}
         <header className={styles.accountHeader}>
           <div>
-            <p className={styles.accountLabel}>Quadra ID Account ({user?.email})</p>
+            <p className={styles.accountLabel}>Quadra ID Account ({userEmail})</p>
             <h1>Hi, {user?.name || "Samuel"}.</h1>
           </div>
           <button onClick={logout} className={styles.signOutBtn}>
@@ -93,13 +97,19 @@ export default function AccountDashboard() {
                 <span className={styles.infoLabel}>Activation Status</span>
                 <span className={styles.infoValue}>
                   <span className={styles.statusDot} />
-                  Active — Signed in via Quadra ID (quadraaudio.com)
+                  Active — Assigned to {userEmail} via Quadra ID
+                </span>
+              </div>
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>License Key ID</span>
+                <span className={styles.infoValue}>
+                  <strong>{userLicenseId}</strong>
                 </span>
               </div>
               <div className={styles.infoRow}>
                 <span className={styles.infoLabel}>Order Reference</span>
                 <span className={styles.infoValue}>
-                  <Link href="#" className={styles.inlineLink}>W100582914</Link>
+                  <Link href="#" className={styles.inlineLink}>{userOrderRef}</Link>
                 </span>
               </div>
             </div>
@@ -147,7 +157,7 @@ export default function AccountDashboard() {
 
                 {downloadedQKey && (
                   <div className={styles.qkeySuccess}>
-                    ✓ File <strong>hydra_{downloadedQKey.hardwareId}.qkey</strong> downloaded! Import this file into Hydra software on your offline studio Mac.
+                    ✓ File <strong>hydra_{downloadedQKey.hardwareId}.qkey</strong> downloaded for {userEmail}! Import this file into Hydra software on your offline studio Mac.
                   </div>
                 )}
               </div>
