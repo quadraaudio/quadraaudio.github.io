@@ -15,21 +15,79 @@
   background-color: #000000;
 }
 
-/* Hero Visual Banner */
-.heroSection {
+/* =========================================
+   Apple Logic Pro: Section Welcome (Hero)
+   ========================================= */
+.sectionWelcome {
   width: 100%;
   max-width: 980px;
-  margin: 40px auto 80px;
+  margin: 60px auto 40px;
   padding: 0 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
-.videoPlaceholder {
+.appIconBadge {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 24px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #1e1b4b 100%);
+  box-shadow: 0 12px 36px rgba(59, 130, 246, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+
+  svg {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+.welcomeEyebrow {
+  font-size: 21px;
+  font-weight: 600;
+  color: #86868b;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+
+.welcomeHeadline {
+  font-size: 64px;
+  line-height: 1.0625;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: #f5f5f7;
+  margin-bottom: 20px;
+
+  @media (max-width: 734px) {
+    font-size: 40px;
+  }
+}
+
+.welcomeBody {
+  font-size: 21px;
+  line-height: 1.38095;
+  font-weight: 400;
+  color: #86868b;
+  max-width: 780px;
+  margin: 0 auto 48px;
+
+  @media (max-width: 734px) {
+    font-size: 17px;
+  }
+}
+
+.welcomeHeroMedia {
   width: 100%;
   aspect-ratio: 16 / 9;
-  border-radius: 28px;
-  background: radial-gradient(circle at 50% 50%, #1e1035 0%, #0c0618 60%, #000000 100%);
+  border-radius: 24px;
+  background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #0f0c29 60%, #000000 100%);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.9), inset 0 0 80px rgba(168, 85, 247, 0.15);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.9), inset 0 0 100px rgba(59, 130, 246, 0.15);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -39,15 +97,14 @@
   transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
 
   &:hover {
-    transform: scale(1.01);
-    box-shadow: 0 50px 120px rgba(168, 85, 247, 0.25);
+    transform: scale(1.008);
+    box-shadow: 0 50px 120px rgba(59, 130, 246, 0.25);
   }
 
   span {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 500;
     color: #2997ff;
-    letter-spacing: -0.01em;
   }
 }
 
@@ -71,16 +128,293 @@
   }
 }
 
-/* Background Overrides for Hydra Page Blocks */
-.softwareModule {
-  background: radial-gradient(circle at 50% 0%, #0f172a 0%, #020617 100%);
+/* =========================================
+   Apple Creator Studio / Ecosystem Banner Card
+   ========================================= */
+.sectionBanner {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto 80px;
+  padding: 0 22px;
 }
 
-.hardwareModule {
-  background: linear-gradient(135deg, #111827 0%, #000000 100%);
+.bannerCard {
+  background: linear-gradient(135deg, #161617 0%, #0d0d0e 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+
+  @media (max-width: 734px) {
+    flex-direction: column;
+    padding: 32px 24px;
+    text-align: center;
+  }
 }
 
-.studioSupportModule {
-  background: linear-gradient(180deg, #18181b 0%, #09090b 100%);
+.bannerCopy {
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
+.bannerBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #86868b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bannerHeadline {
+  font-size: 32px;
+  line-height: 1.125;
+  font-weight: 600;
+  color: #f5f5f7;
+
+  @media (max-width: 734px) {
+    font-size: 24px;
+  }
+}
+
+.bannerDescription {
+  font-size: 17px;
+  line-height: 1.47059;
+  color: #86868b;
+}
+
+.bannerCtas {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+
+  @media (max-width: 734px) {
+    justify-content: center;
+  }
+}
+
+/* =========================================
+   Apple Highlights Section ("Get to know Logic Pro")
+   ========================================= */
+.sectionHighlights {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto 100px;
+  padding: 0 22px;
+}
+
+.sectionHeaderHeadline {
+  font-size: 48px;
+  line-height: 1.08333;
+  font-weight: 600;
+  color: #f5f5f7;
+  margin-bottom: 32px;
+
+  @media (max-width: 734px) {
+    font-size: 32px;
+  }
+}
+
+.highlightsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+
+  @media (max-width: 734px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.highlightCard {
+  background: #161617;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 32px;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.highlightHeadline {
+  font-size: 24px;
+  line-height: 1.16667;
+  font-weight: 600;
+  color: #f5f5f7;
+  margin-bottom: 12px;
+}
+
+.highlightBody {
+  font-size: 15px;
+  line-height: 1.46667;
+  color: #86868b;
+}
+
+.highlightVisual {
+  margin-top: 24px;
+  width: 100%;
+  height: 160px;
+  border-radius: 12px;
+  background: radial-gradient(circle at 50% 50%, #2e1065 0%, #090514 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a855f7;
+
+  svg {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+/* =========================================
+   Apple Logic Pro Feature Section (App Features)
+   ========================================= */
+.sectionApp {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto 120px;
+  padding: 0 22px;
+}
+
+.appHeaderCopy {
+  margin-bottom: 40px;
+}
+
+.appEyebrow {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2997ff;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.appHeadline {
+  font-size: 44px;
+  line-height: 1.09091;
+  font-weight: 600;
+  color: #f5f5f7;
+  margin-bottom: 16px;
+
+  @media (max-width: 734px) {
+    font-size: 32px;
+  }
+}
+
+.appCopy {
+  font-size: 21px;
+  line-height: 1.38095;
+  color: #86868b;
+  max-width: 820px;
+
+  strong {
+    color: #f5f5f7;
+    font-weight: 600;
+  }
+
+  @media (max-width: 734px) {
+    font-size: 17px;
+  }
+}
+
+/* Feature Cards Row */
+.captionTileRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+
+  @media (max-width: 734px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.captionTileCard {
+  background: #161617;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #f5f5f7;
+  }
+
+  p {
+    font-size: 14px;
+    line-height: 1.42857;
+    color: #86868b;
+  }
+}
+
+.tileMedia {
+  width: 100%;
+  height: 140px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1e1b4b 0%, #060417 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3b82f6;
+
+  svg {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* =========================================
+   Apple Trial Footer CTA
+   ========================================= */
+.trialSection {
+  width: 100%;
+  background: linear-gradient(180deg, #0d0d0e 0%, #000000 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 100px 22px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.trialTitle {
+  font-size: 48px;
+  font-weight: 600;
+  color: #f5f5f7;
+
+  @media (max-width: 734px) {
+    font-size: 32px;
+  }
+}
+
+.trialSub {
+  font-size: 21px;
+  color: #86868b;
+  max-width: 600px;
+}
+
+.trialCtas {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 12px;
+}
