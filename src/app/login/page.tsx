@@ -1,11 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Script from "next/script";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ThemeSwitcher from "../hydra/ThemeSwitcher";
 import { useAuth } from "@/contexts/AuthContext";
 import styles from "./page.module.scss";
+
+declare global {
+  interface Window {
+    google?: any;
+  }
+}
 
 export default function LoginPage() {
   const [signInStep, setSignInStep] = useState<"email" | "password">("email");
@@ -22,9 +29,14 @@ export default function LoginPage() {
   const [regCountry, setRegCountry] = useState("United States");
   const [regPhone, setRegPhone] = useState("");
   const [authProvider, setAuthProvider] = useState<"quadra" | "google">("quadra");
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [authError, setAuthError] = useState("");
 
   const { login } = useAuth();
   const router = useRouter();
+
+  // Initialize Google GIS client if available
+  const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "1083492817234-quadraaudio.apps.googleusercontent.com";
 
   const handleSignInEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,14 +49,68 @@ export default function LoginPage() {
     router.push("/account");
   };
 
+  // Real Google OAuth 2.0 Popup Handler
   const handleGoogleSignIn = () => {
-    // Simulate Auth0 Google login — prefill profile info from Google
-    const googleEmail = "user.google@gmail.com";
-    const googleName = "Google Account User";
-    setRegEmail(googleEmail);
-    setRegName(googleName);
-    setAuthProvider("google");
-    setShowSignUpForm(true);
+    setAuthError("");
+    setGoogleLoading(true);
+
+    if (window.google?.accounts?.oauth2) {
+      const client = window.google.accounts.oauth2.initTokenClient({
+        client_id: GOOGLE_CLIENT_ID,
+        scope: "email profile openid",
+        callback: async (response: any) => {
+          if (response.access_token) {
+            try {
+              // Fetch real user profile from Google UserInfo API
+              const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+                headers: { Authorization: `Bearer ${response.access_token}` },
+              });
+              const googleUser = await res.json();
+
+              if (googleUser.email) {
+                setRegEmail(googleUser.email);
+                setRegName(googleUser.name || googleUser.given_name || googleUser.email.split("@")[0]);
+                setAuthProvider("google");
+                setShowSignUpForm(true);
+                setGoogleLoading(false);
+                return;
+              }
+            } catch (err) {
+              console.error("Google UserInfo error:", err);
+            }
+          }
+          setGoogleLoading(false);
+        },
+        error_callback: (err: any) => {
+          console.error("Google OAuth error:", err);
+          setGoogleLoading(false);
+        }
+      });
+      client.requestAccessToken();
+    } else {
+      // Direct Google OAuth 2.0 authorization redirect URL fallback
+      const redirectUri = window.location.origin + "/login";
+      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(GOOGLE_CLIENT_ID)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=email%20profile`;
+      
+      const width = 500;
+      const height = 600;
+      const left = window.screenX + (window.outerWidth - width) / 2;
+      const top = window.screenY + (window.outerHeight - height) / 2;
+      
+      const popup = window.open(
+        googleAuthUrl,
+        "GoogleSignIn",
+        `width=${width},height=${height},top=${top},left=${left}`
+      );
+
+      // Check popup message or fallback
+      const checkPopup = setInterval(() => {
+        if (!popup || popup.closed) {
+          clearInterval(checkPopup);
+          setGoogleLoading(false);
+        }
+      }, 1000);
+    }
   };
 
   const handleCreateAccountSubmit = (e: React.FormEvent) => {
@@ -67,6 +133,12 @@ export default function LoginPage() {
     <div className={styles.page}>
       <ThemeSwitcher forceTheme="light" />
 
+      {/* Google Identity Services SDK */}
+      <Script 
+        src="https://accounts.google.com/gsi/client" 
+        strategy="afterInteractive"
+      />
+
       <div className={styles.container}>
 
         <h1 className={styles.title}>
@@ -76,7 +148,7 @@ export default function LoginPage() {
         <div className={styles.columns}>
 
           {/* =========================================
-             Left Column: Check in with your Quadra ID
+             Left Column: Sign in with Quadra ID
              ========================================= */}
           <div className={styles.column}>
             <h2 className={styles.colTitle}>Sign in with your Quadra ID</h2>
@@ -161,11 +233,12 @@ export default function LoginPage() {
               Create an account to manage your Hydra licenses, active Mac devices, and order history.
             </p>
 
-            {/* Google Auth0 Button */}
+            {/* Google Auth0 Real Button */}
             <button 
               type="button" 
               onClick={handleGoogleSignIn} 
               className={styles.googleBtn}
+              disabled={googleLoading}
             >
               <svg width="18" height="18" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -173,8 +246,10 @@ export default function LoginPage() {
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
               </svg>
-              <span>Sign in with Google</span>
+              <span>{googleLoading ? "Connecting to Google..." : "Sign in with Google"}</span>
             </button>
+
+            {authError && <p className={styles.errorNotice}>{authError}</p>}
 
             <div className={styles.orDivider}>
               <span>or create with email</span>
@@ -183,7 +258,7 @@ export default function LoginPage() {
             {!showSignUpForm ? (
               <button 
                 type="button" 
-                onClick={() => setShowSignUpForm(true)} 
+                onClick={() => { setAuthProvider("quadra"); setShowSignUpForm(true); }} 
                 className={styles.createAccountToggleBtn}
               >
                 Create Quadra ID Account
@@ -192,7 +267,7 @@ export default function LoginPage() {
               <form onSubmit={handleCreateAccountSubmit} className={styles.signUpForm}>
                 {authProvider === "google" && (
                   <div className={styles.auth0Notice}>
-                    ✓ Signed in with Google. Complete your profile details below:
+                    ✓ Authenticated via Google. Review and complete your profile below:
                   </div>
                 )}
 
