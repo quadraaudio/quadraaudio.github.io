@@ -62,10 +62,10 @@ export default function Hydra() {
           </div>
           
           <h1 className={styles.welcomeEyebrow}>Hydra</h1>
-          <h2 className={styles.welcomeHeadline}>Sound thinking. Endless routing.</h2>
+          <h2 className={styles.welcomeHeadline}>Sound thinking. Boundless freedom.</h2>
           <p className={styles.welcomeBody}>
             Hydra is the ultimate virtual soundcard and multichannel audio routing software for Mac.
-            Combine physical audio interfaces into a single unified driver, patch uncompressed audio between DAWs like Logic Pro and Pro Tools, and stream multichannel audio over NDI® and AVB networks with zero latency.
+            It removes every routing boundary — allowing you to combine physical soundcards, patch uncompressed audio between DAWs like Logic Pro and Pro Tools, and stream multichannel audio over NDI® networks with <strong>zero latency and infinite digital headroom.</strong>
           </p>
 
           <div className={styles.welcomeHeroMediaContainer}>
@@ -94,9 +94,9 @@ export default function Hydra() {
                 </svg>
                 Quadra Creator Studio
               </span>
-              <h2 className={styles.bannerHeadline}>The essential audio matrix for modern studios.</h2>
+              <h2 className={styles.bannerHeadline}>Complete creative freedom for modern producers.</h2>
               <p className={styles.bannerDescription}>
-                Hydra acts as your central virtual patchbay, monitor controller, and spatial audio renderer in a single unified Mac application.
+                Hydra acts as your central virtual patchbay, monitor controller, and spatial audio renderer — connecting every app, interface, and hardware device without physical limitations.
               </p>
               <div className={styles.bannerCtas}>
                 <Link href="/store" className="apple-button-primary">
@@ -125,11 +125,11 @@ export default function Hydra() {
               <div className={styles.highlightCardHeader}>
                 <h3 className={styles.highlightHeadline}>256-Channel Virtual Patchbay</h3>
                 <p className={styles.highlightBody}>
-                  Route audio freely between any application, hardware input, or virtual Core Audio driver with zero latency.
+                  Route audio freely between any application, hardware input, or virtual Core Audio driver with zero latency and zero signal loss.
                 </p>
               </div>
               <div className={styles.highlightVisual}>
-                <img src={APPLE_ASSETS.highlights.playground} alt="Producer using Hydra on MacBook Pro" />
+                <img src={APPLE_ASSETS.highlights.playground} alt="Producer creating without boundaries on MacBook Pro" />
               </div>
             </div>
 
@@ -137,19 +137,19 @@ export default function Hydra() {
               <div className={styles.highlightCardHeader}>
                 <h3 className={styles.highlightHeadline}>GroundControl Driver Fusion</h3>
                 <p className={styles.highlightBody}>
-                  Combine multiple physical audio interfaces into a single, unified high-channel-count driver without clock drift.
+                  Combine multiple physical audio interfaces into a single unified driver without aggregate clock drift or hardware constraints.
                 </p>
               </div>
               <div className={styles.highlightVisual}>
-                <img src={APPLE_ASSETS.highlights.partner} alt="Hydra DSP channel strip and routing controls" />
+                <img src={APPLE_ASSETS.highlights.partner} alt="Hydra channel strip and DSP routing controls" />
               </div>
             </div>
 
             <div className={styles.highlightCard}>
               <div className={styles.highlightCardHeader}>
-                <h3 className={styles.highlightHeadline}>32-Bit Float Audio Engine</h3>
+                <h3 className={styles.highlightHeadline}>32-Bit Float Dynamic Engine</h3>
                 <p className={styles.highlightBody}>
-                  Ultra-pristine signal quality offering infinite dynamic headroom, zero digital clipping, and sample rates up to 384 kHz.
+                  Pristine signal quality offering infinite dynamic headroom, zero digital clipping, and sample rates up to 384 kHz.
                 </p>
               </div>
               <div className={styles.highlightVisual}>
@@ -159,7 +159,7 @@ export default function Hydra() {
 
             <div className={styles.highlightCard}>
               <div className={styles.highlightCardHeader}>
-                <h3 className={styles.highlightHeadline}>NDI® & AVB Network Audio</h3>
+                <h3 className={styles.highlightHeadline}>NDI® & AVB Network Streaming</h3>
                 <p className={styles.highlightBody}>
                   Stream up to 128 NDI channels and 256 AVB channels uncompressed over local Ethernet to any Mac or broadcast receiver.
                 </p>
