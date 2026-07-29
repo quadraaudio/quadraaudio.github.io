@@ -16,7 +16,7 @@
 }
 
 /* =========================================
-   1. SECTION WELCOME (Apple Logic Pro Expressive Hero)
+   1. SECTION WELCOME (Apple Hero)
    ========================================= */
 .sectionWelcome {
   width: 100%;
@@ -93,8 +93,6 @@
   width: 100%;
   border-radius: 28px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.95);
 }
 
 .heroImage {
@@ -102,6 +100,7 @@
   height: auto;
   display: block;
   object-fit: cover;
+  border-radius: 24px;
 }
 
 .heroPlayOverlay {
@@ -110,7 +109,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -120,7 +119,7 @@
   transition: background 0.3s ease;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.35);
 
     .playButton {
       transform: scale(1.08);
@@ -157,7 +156,7 @@
 }
 
 /* =========================================
-   2. SECTION BANNER (Apple Creator Studio Suite)
+   2. SECTION BANNER (Apple Creator Studio Banner)
    ========================================= */
 .sectionBanner {
   width: 100%;
@@ -167,15 +166,13 @@
 }
 
 .bannerCard {
-  background: linear-gradient(135deg, #161617 0%, #0d0d0e 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #111112;
   border-radius: 28px;
   padding: 56px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 48px;
-  overflow: hidden;
 
   @media (max-width: 734px) {
     flex-direction: column;
@@ -266,10 +263,11 @@
   }
 }
 
+/* Apple Highlights Cards: OPEN canvas layout, zero background box around text */
 .highlightsGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  gap: 32px;
 
   @media (max-width: 734px) {
     grid-template-columns: 1fr;
@@ -277,23 +275,15 @@
 }
 
 .highlightCard {
-  background: #161617;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease;
-
-  &:hover {
-    transform: translateY(-6px);
-    border-color: rgba(255, 255, 255, 0.22);
-  }
+  gap: 16px;
 }
 
 .highlightCardHeader {
-  padding: 32px 32px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .highlightHeadline {
@@ -301,7 +291,6 @@
   line-height: 1.16667;
   font-weight: 600;
   color: #f5f5f7;
-  margin-bottom: 10px;
 }
 
 .highlightBody {
@@ -312,7 +301,8 @@
 
 .highlightVisual {
   width: 100%;
-  height: 240px;
+  height: 260px;
+  border-radius: 20px;
   overflow: hidden;
 
   img {
@@ -320,21 +310,22 @@
     height: 100%;
     object-fit: cover;
     display: block;
+    border-radius: 20px;
   }
 }
 
 /* =========================================
-   4. APPLE INTERACTIVE TABBED FEATURE CANVASES
+   4. APPLE FLUID APP SECTIONS (Open Typography Canvas + Scroll Gallery)
    ========================================= */
 .sectionApp {
   width: 100%;
-  max-width: 980px;
   margin: 0 auto 140px;
-  padding: 0 22px;
 }
 
 .appHeaderCopy {
-  margin-bottom: 36px;
+  max-width: 980px;
+  margin: 0 auto 40px;
+  padding: 0 22px;
 }
 
 .appEyebrow {
@@ -375,94 +366,83 @@
   }
 }
 
-/* Interactive Tabs Bar */
-.tabNavRow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 28px;
+/* Apple Horizontal Scroll Gallery */
+.scrollGalleryContainer {
+  width: 100%;
   overflow-x: auto;
-  padding-bottom: 8px;
-  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  padding-left: max(22px, calc((100vw - 980px) / 2 + 22px));
+  padding-right: max(22px, calc((100vw - 980px) / 2 + 22px));
+  scroll-padding-left: max(22px, calc((100vw - 980px) / 2 + 22px));
 
   &::-webkit-scrollbar {
     display: none;
   }
 }
 
-.tabPill {
-  padding: 10px 20px;
-  border-radius: 980px;
-  font-size: 15px;
-  font-weight: 500;
-  color: #86868b;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  white-space: nowrap;
-  transition: all 0.2s ease;
-  cursor: pointer;
-
-  &:hover {
-    color: #f5f5f7;
-    background: rgba(255, 255, 255, 0.1);
-  }
+.galleryRow {
+  display: flex;
+  gap: 28px;
+  width: max-content;
+  padding-bottom: 16px;
 }
 
-.activeTabPill {
-  color: #ffffff !important;
-  background: #0071e3 !important;
-  border-color: #0071e3 !important;
-  box-shadow: 0 4px 16px rgba(0, 113, 227, 0.4);
-}
-
-/* Interactive Display Screen Showcase */
-.interactiveCanvasFrame {
-  position: relative;
-  width: 100%;
-  background: #161617;
-  border-radius: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  overflow: hidden;
-  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.8);
-}
-
-.canvasMediaWrapper {
-  width: 100%;
-  height: 460px;
-  position: relative;
-  overflow: hidden;
+.galleryCard {
+  width: 440px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 
   @media (max-width: 734px) {
-    height: 280px;
-  }
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: opacity 0.4s ease;
+    width: 300px;
   }
 }
 
-.canvasTextOverlay {
-  padding: 32px 36px;
-  background: linear-gradient(180deg, rgba(22, 22, 23, 0.95) 0%, #161617 100%);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+.galleryCardCopy {
   display: flex;
   flex-direction: column;
   gap: 8px;
 
   h3 {
     font-size: 24px;
+    line-height: 1.16667;
     font-weight: 600;
     color: #f5f5f7;
   }
 
   p {
-    font-size: 16px;
-    line-height: 1.4375;
+    font-size: 15px;
+    line-height: 1.46667;
     color: #86868b;
+  }
+}
+
+.galleryCardMedia {
+  width: 100%;
+  height: 280px;
+  border-radius: 20px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 20px;
+  }
+}
+
+.fullBleedMediaFrame {
+  max-width: 980px;
+  margin: 0 auto 40px;
+  padding: 0 22px;
+
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: 24px;
+    display: block;
   }
 }
 
@@ -471,8 +451,7 @@
    ========================================= */
 .trialSection {
   width: 100%;
-  background: linear-gradient(180deg, #0d0d0e 0%, #000000 100%);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0a0a0c;
   padding: 120px 22px;
   text-align: center;
   display: flex;
