@@ -87,13 +87,13 @@ export default function GlobalNav() {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
-      if (currentScrollY <= 0) {
-        setIsHidden(false);
-        document.body.classList.remove("global-nav-hidden");
-      } else if (currentScrollY > lastScrollY && currentScrollY > 44) {
+      // If we scroll down past the nav height (44px), hide it
+      if (currentScrollY > lastScrollY && currentScrollY > 44) {
         setIsHidden(true);
         document.body.classList.add("global-nav-hidden");
-      } else if (currentScrollY < lastScrollY) {
+      } 
+      // If we scroll up, show it again
+      else if (currentScrollY < lastScrollY) {
         setIsHidden(false);
         document.body.classList.remove("global-nav-hidden");
       }
