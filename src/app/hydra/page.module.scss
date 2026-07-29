@@ -87,64 +87,12 @@
   overflow: hidden;
 }
 
-.heroImage {
+.heroVideo {
   width: 100%;
   height: auto;
   display: block;
   object-fit: cover;
   border-radius: 24px;
-}
-
-.heroPlayOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.35);
-
-    .playButton {
-      transform: scale(1.08);
-    }
-  }
-
-  span {
-    font-size: 15px;
-    font-weight: 500;
-    color: #ffffff;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-  }
-}
-
-.playButton {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
-
-  svg {
-    width: 32px;
-    height: 32px;
-    margin-left: 4px;
-  }
 }
 
 /* =========================================
@@ -287,15 +235,18 @@
   }
 }
 
-/* Apple Media Card Gallery Carousel */
+/* Apple Media Card Gallery Carousel with Drag Support */
 .highlightsGalleryContainer {
   width: 100%;
   overflow-x: auto;
   scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
+  cursor: grab;
   padding-left: max(22px, calc((100vw - 980px) / 2 + 22px));
   padding-right: max(22px, calc((100vw - 980px) / 2 + 22px));
-  scroll-padding-left: max(22px, calc((100vw - 980px) / 2 + 22px));
+
+  &:active {
+    cursor: grabbing;
+  }
 
   &::-webkit-scrollbar {
     display: none;
@@ -315,7 +266,6 @@
   height: 560px;
   border-radius: 28px;
   overflow: hidden;
-  scroll-snap-align: start;
   flex-shrink: 0;
 
   @media (max-width: 1068px) {
@@ -333,6 +283,8 @@
     height: 100%;
     object-fit: cover;
     display: block;
+    user-select: none;
+    -webkit-user-drag: none;
   }
 }
 
@@ -359,7 +311,7 @@
 }
 
 /* =========================================
-   4. APPLE APP SECTIONS (Open Typography Canvas + Caption Tile Gallery)
+   4. APPLE APP SECTIONS
    ========================================= */
 .sectionApp {
   width: 100%;
@@ -414,10 +366,13 @@
   width: 100%;
   overflow-x: auto;
   scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
+  cursor: grab;
   padding-left: max(22px, calc((100vw - 980px) / 2 + 22px));
   padding-right: max(22px, calc((100vw - 980px) / 2 + 22px));
-  scroll-padding-left: max(22px, calc((100vw - 980px) / 2 + 22px));
+
+  &:active {
+    cursor: grabbing;
+  }
 
   &::-webkit-scrollbar {
     display: none;
@@ -433,7 +388,6 @@
 
 .captionTileItem {
   width: 440px;
-  scroll-snap-align: start;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -474,6 +428,8 @@
     object-fit: cover;
     display: block;
     border-radius: 20px;
+    user-select: none;
+    -webkit-user-drag: none;
   }
 }
 
@@ -482,7 +438,7 @@
   margin: 0 auto 40px;
   padding: 0 22px;
 
-  img {
+  img, video {
     width: 100%;
     height: auto;
     border-radius: 24px;
@@ -527,7 +483,83 @@
 }
 
 /* =========================================
-   5. TRIAL FOOTER CTA
+   5. APPLE FAQ ACCORDION
+   ========================================= */
+.sectionFaq {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto 140px;
+  padding: 0 22px;
+}
+
+.faqHeaderCopy {
+  margin-bottom: 32px;
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.faqItem {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 24px 0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.faqQuestionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #f5f5f7;
+
+    @media (max-width: 734px) {
+      font-size: 17px;
+    }
+  }
+}
+
+.faqChevron {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #86868b;
+  transition: transform 0.3s ease;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.faqOpen {
+  .faqChevron {
+    transform: rotate(180deg);
+    color: #2997ff;
+  }
+}
+
+.faqAnswer {
+  margin-top: 16px;
+
+  p {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #86868b;
+  }
+}
+
+/* =========================================
+   6. TRIAL FOOTER CTA
    ========================================= */
 .trialSection {
   width: 100%;
