@@ -88,12 +88,12 @@ export default function Hydra() {
 
         {/* Promo Hero: Software Integration */}
         <PromoHeroBlock
-          title="Designed for Quadra Silicon."
-          subtitle="Engineered to harness full multi-core performance for sub-millisecond roundtrip buffer speeds."
-          primaryCtaText="Explore Architecture"
-          primaryCtaLink="#"
-          secondaryCtaText="Buy Hydra"
-          secondaryCtaLink="/store/hydra-pro"
+          headline="Designed for Quadra Silicon."
+          subheadline="Engineered to harness full multi-core performance for sub-millisecond roundtrip buffer speeds."
+          links={[
+            { label: "Explore Architecture", href: "#", primary: true },
+            { label: "Buy Hydra", href: "/store/hydra-pro" }
+          ]}
         />
 
         {/* Promo Grid: Ecosystem & Hardware */}
@@ -101,23 +101,22 @@ export default function Hydra() {
           items={[
             {
               id: "1",
-              kicker: "QUADRA HARDWARE",
-              title: "Core I/O Interface",
-              description: "The companion hardware rack built exclusively for Hydra Pro.",
-              primaryCtaText: "Learn more",
-              primaryCtaLink: "#",
-              secondaryCtaText: "Notify me",
-              secondaryCtaLink: "#",
-              theme: "light",
+              headline: "Core I/O Interface",
+              subheadline: "The companion hardware rack built exclusively for Hydra Pro.",
+              lightText: true,
+              links: [
+                { label: "Learn more", href: "#", primary: true },
+                { label: "Notify me", href: "#" },
+              ],
             },
             {
               id: "2",
-              kicker: "QUADRA CARE",
-              title: "Studio Support",
-              description: "Get 24/7 dedicated support from audio engineers.",
-              primaryCtaText: "Get help",
-              primaryCtaLink: "/support",
-              theme: "dark",
+              headline: "Studio Support",
+              subheadline: "Get 24/7 dedicated support from audio engineers.",
+              lightText: true,
+              links: [
+                { label: "Get help", href: "/support", primary: true },
+              ],
             },
           ]}
         />
