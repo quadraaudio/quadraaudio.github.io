@@ -5,56 +5,55 @@ import Link from "next/link";
 import ThemeSwitcher from "../hydra/ThemeSwitcher";
 import styles from "./page.module.scss";
 
-// Mock Database of Support Articles
+// Database of Support Articles for Hydra Software
 const supportArticles = [
   {
     id: 1,
     category: "Setup",
-    title: "Configuring NDI® in Hydra Pro",
-    desc: "Learn how to route audio streams across your local network with zero latency using NDI technology.",
-    link: "/support/article/configuring-ndi"
+    title: "Configuring NDI® Audio Streaming in Hydra",
+    desc: "Learn how to route uncompressed multichannel audio across your local Ethernet network using NDI technology.",
+    link: "#"
   },
   {
     id: 2,
     category: "Activation",
-    title: "Managing your Serial Keys",
-    desc: "Find out where to locate your perpetual license and how to activate it on your Mac or Quadra ID.",
-    link: "/support/article/managing-serial-keys"
+    title: "Managing Quadra ID License Activations",
+    desc: "Find out how to activate your Hydra license across 2 machines simultaneously or transfer activations.",
+    link: "#"
   },
   {
     id: 3,
     category: "Troubleshooting",
-    title: "Resolving Audio Dropouts",
-    desc: "Optimize your buffer sizes and network switches to prevent audio clipping on heavy multichannel loads.",
-    link: "/support/article/resolving-audio-dropouts"
+    title: "Optimizing Buffer Size & Preventing Audio Dropouts",
+    desc: "Configure Core Audio buffer sizes and network switch QoS settings for heavy multichannel workloads.",
+    link: "#"
   },
   {
     id: 4,
-    category: "Hardware",
-    title: "Connecting Quadra Core I/O",
-    desc: "A step-by-step guide to installing ASIO drivers and connecting your new Quadra audio interface.",
-    link: "/support/article/connecting-quadra-core-io"
+    category: "Virtual Soundcard",
+    title: "Setting Up GroundControl Fusion Audio Drivers",
+    desc: "Combine multiple physical audio interfaces into a single unified driver without clock drift.",
+    link: "#"
   },
   {
     id: 5,
-    category: "Format",
-    title: "Dolby Atmos 9.1.6 Routing",
-    desc: "How to configure Hydra's 128-channel matrix for immersive audio rendering and monitoring.",
-    link: "/support/article/dolby-atmos-routing"
+    category: "Spatial Audio",
+    title: "Dolby Atmos 9.1.6 Matrix & HRTF Binaural Monitoring",
+    desc: "How to configure Hydra's 256-channel matrix for spatial audio rendering and headphone head tracking.",
+    link: "#"
   },
   {
     id: 6,
     category: "Account",
-    title: "How to change your Quadra ID email",
-    desc: "Update your personal information, billing details, and communication preferences securely.",
-    link: "/support/article/change-quadra-id-email"
+    title: "Updating Quadra ID Profile & Commercial Subscriptions",
+    desc: "Manage your personal details, invoice history, and organization volume licenses.",
+    link: "#"
   }
 ];
 
 export default function SupportPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Search Engine Logic
   const filteredArticles = supportArticles.filter((article) => {
     if (searchQuery.trim() === "") return true;
     
@@ -68,7 +67,6 @@ export default function SupportPage() {
 
   return (
     <div className={styles.supportPage}>
-      {/* Force pure white background for the Support institutional page */}
       <ThemeSwitcher forceTheme="light" />
       
       {/* Hero Search Section */}
@@ -83,13 +81,13 @@ export default function SupportPage() {
           <input 
             type="text" 
             className={styles.searchInput} 
-            placeholder="Search for topics, products, or solutions..."
+            placeholder="Search for topics, virtual drivers, or NDI routing solutions..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
 
-        {/* Quick Product Filters */}
+        {/* Quick Topic Filters */}
         <div className={styles.productGrid}>
           <button 
             className={styles.productItem}
@@ -102,12 +100,12 @@ export default function SupportPage() {
                 <line x1="12" y1="17" x2="12" y2="21"></line>
               </svg>
             </div>
-            <span>Hydra Pro</span>
+            <span>Hydra Software</span>
           </button>
           
           <button 
             className={styles.productItem}
-            onClick={() => setSearchQuery("Hardware")}
+            onClick={() => setSearchQuery("Virtual Soundcard")}
           >
             <div className={styles.iconWrapper}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -123,7 +121,7 @@ export default function SupportPage() {
                 <line x1="1" y1="14" x2="4" y2="14"></line>
               </svg>
             </div>
-            <span>Hardware</span>
+            <span>Virtual Drivers</span>
           </button>
 
           <button 
@@ -171,9 +169,9 @@ export default function SupportPage() {
 
         {/* Human Support Escalation */}
         <div className={styles.supportBanner}>
-          <h2>Need more help?</h2>
-          <p>If you couldn't find the solution in our knowledge base, our audio engineers are ready to assist you.</p>
-          <Link href="#">Speak with an Expert</Link>
+          <h2>Need specialized technical support?</h2>
+          <p>If you need assistance configuring complex multichannel NDI audio networks or DAW matrices, our audio engineers are ready to help.</p>
+          <Link href="#">Speak with an Audio Specialist</Link>
         </div>
       </div>
     </div>

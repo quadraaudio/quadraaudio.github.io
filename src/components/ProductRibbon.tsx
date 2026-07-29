@@ -7,15 +7,15 @@ interface RibbonItem {
   id: string;
   name: string;
   badge?: string;
-  icon: "pro" | "duo" | "core" | "io";
+  icon: "soundcard" | "patchbay" | "network" | "spatial";
   href: string;
 }
 
 const defaultItems: RibbonItem[] = [
-  { id: "pro", name: "Hydra Pro", badge: "Novo", icon: "pro", href: "/hydra" },
-  { id: "duo", name: "Hydra Duo", badge: "Novo", icon: "duo", href: "/hydra" },
-  { id: "core", name: "Hydra Core", icon: "core", href: "/hydra" },
-  { id: "io", name: "Core I/O Interface", icon: "io", href: "/store" },
+  { id: "soundcard", name: "Virtual Soundcard", badge: "256 Ch", icon: "soundcard", href: "#overview" },
+  { id: "patchbay", name: "Virtual Patchbay", badge: "Multi-App", icon: "patchbay", href: "#tools" },
+  { id: "network", name: "NDI® & AVB Network", badge: "Low Latency", icon: "network", href: "#network" },
+  { id: "spatial", name: "Spatial Audio 9.1.6", badge: "Atmos", icon: "spatial", href: "#spatial" },
 ];
 
 export default function ProductRibbon({ items = defaultItems }: { items?: RibbonItem[] }) {
@@ -25,7 +25,7 @@ export default function ProductRibbon({ items = defaultItems }: { items?: Ribbon
         {items.map((item) => (
           <Link key={item.id} href={item.href} className={styles.ribbonCard}>
             <div className={styles.iconWrapper}>
-              {item.icon === "pro" && (
+              {item.icon === "soundcard" && (
                 <svg viewBox="0 0 48 48" fill="none" className={styles.svgIcon}>
                   <rect x="6" y="10" width="36" height="28" rx="6" stroke="currentColor" strokeWidth="2.5" />
                   <circle cx="16" cy="24" r="4" fill="currentColor" />
@@ -33,23 +33,23 @@ export default function ProductRibbon({ items = defaultItems }: { items?: Ribbon
                   <circle cx="32" cy="24" r="4" fill="currentColor" />
                 </svg>
               )}
-              {item.icon === "duo" && (
+              {item.icon === "patchbay" && (
                 <svg viewBox="0 0 48 48" fill="none" className={styles.svgIcon}>
                   <rect x="10" y="12" width="28" height="24" rx="5" stroke="currentColor" strokeWidth="2.5" />
-                  <circle cx="18" cy="24" r="3.5" fill="currentColor" />
-                  <circle cx="30" cy="24" r="3.5" fill="currentColor" />
+                  <line x1="16" y1="20" x2="32" y2="20" stroke="currentColor" strokeWidth="2.5" />
+                  <line x1="16" y1="28" x2="32" y2="28" stroke="currentColor" strokeWidth="2.5" />
                 </svg>
               )}
-              {item.icon === "core" && (
+              {item.icon === "network" && (
                 <svg viewBox="0 0 48 48" fill="none" className={styles.svgIcon}>
-                  <rect x="14" y="14" width="20" height="20" rx="4" stroke="currentColor" strokeWidth="2.5" />
-                  <circle cx="24" cy="24" r="3" fill="currentColor" />
+                  <circle cx="24" cy="24" r="14" stroke="currentColor" strokeWidth="2.5" />
+                  <path d="M10 24h28M24 10a20 20 0 010 28" stroke="currentColor" strokeWidth="2" />
                 </svg>
               )}
-              {item.icon === "io" && (
+              {item.icon === "spatial" && (
                 <svg viewBox="0 0 48 48" fill="none" className={styles.svgIcon}>
-                  <rect x="4" y="16" width="40" height="16" rx="4" stroke="currentColor" strokeWidth="2.5" />
-                  <line x1="12" y1="24" x2="36" y2="24" stroke="currentColor" strokeWidth="2" strokeDasharray="3 3" />
+                  <circle cx="24" cy="24" r="16" stroke="currentColor" strokeWidth="2.5" strokeDasharray="4 4" />
+                  <circle cx="24" cy="24" r="6" fill="currentColor" />
                 </svg>
               )}
             </div>

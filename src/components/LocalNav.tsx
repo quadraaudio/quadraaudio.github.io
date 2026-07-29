@@ -4,20 +4,22 @@ import Link from "next/link";
 import styles from "./LocalNav.module.scss";
 
 interface LocalNavProps {
-  title: string;
+  title?: string;
   price?: string;
   buyUrl?: string;
   links?: { label: string; href: string; active?: boolean }[];
 }
 
 export default function LocalNav({
-  title,
-  price,
+  title = "Hydra",
+  price = "$199.99",
   buyUrl = "/store",
   links = [
-    { label: "Visão Geral", href: "#overview", active: true },
-    { label: "Especificações", href: "#specs" },
-    { label: "Comparar", href: "#compare" },
+    { label: "Overview", href: "#overview", active: true },
+    { label: "Features", href: "#tools" },
+    { label: "Plugins & FX", href: "#sounds" },
+    { label: "Spatial Audio", href: "#spatial" },
+    { label: "Specs", href: "#specs" },
   ],
 }: LocalNavProps) {
   return (
@@ -41,7 +43,7 @@ export default function LocalNav({
           {price && <span className={styles.priceTag}>{price}</span>}
           {buyUrl && (
             <Link href={buyUrl} className="apple-button-primary">
-              Comprar
+              Buy
             </Link>
           )}
         </div>

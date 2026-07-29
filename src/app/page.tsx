@@ -4,79 +4,75 @@ import ThemeSetter from "@/components/ThemeSetter";
 import PromoHeroBlock from "@/components/blocks/PromoHeroBlock";
 import PromoGridBlock from "@/components/blocks/PromoGridBlock";
 import ProductRibbon from "@/components/ProductRibbon";
-import { useSiteContent } from "@/contexts/SiteContentContext";
 import styles from "./page.module.scss";
 
 export default function Home() {
-  const { content } = useSiteContent();
-
   return (
     <div className={styles.page}>
       <ThemeSetter theme="light" />
 
-      {/* Apple Model Family Ribbon Header */}
+      {/* Feature Capabilities Ribbon */}
       <ProductRibbon />
 
-      {/* Main Flagship Hero: Hydra Pro */}
+      {/* Flagship Hero: Hydra Virtual Soundcard & Audio Matrix */}
       <PromoHeroBlock
-        headline={content.homeHeroTitle || "Hydra Pro"}
-        subheadline={content.homeHeroSub || "Áudio de altíssima precisão. Potencializado pelo Quadra Silicon."}
+        headline="Hydra"
+        subheadline="Virtual soundcard and audio matrix software for Mac."
         mediaClass={styles.heroModule}
         links={[
-          { label: "Saiba mais", href: "/hydra", primary: true },
-          { label: "Comprar", href: "/store" },
+          { label: "Learn more", href: "/hydra", primary: true },
+          { label: "Try Free", href: "/store" },
         ]}
       />
 
-      {/* Secondary Hero: Quadra Silicon */}
+      {/* Secondary Hero: Quadra Silicon Audio Engine */}
       <PromoHeroBlock
-        headline="Quadra Silicon."
-        subheadline="O motor DSP de 32-bit Float projetado para estúdios exigentes."
+        headline="Quadra Core Audio Engine."
+        subheadline="32-bit Float processing for sub-millisecond multi-app patching."
         mediaClass={styles.heroSecondary}
         links={[
-          { label: "Conheça a Arquitetura", href: "/hydra#specs", primary: true },
-          { label: "Ver Modelos", href: "/hydra" },
+          { label: "Explore Architecture", href: "/hydra#specs", primary: true },
+          { label: "View System Specs", href: "/hydra#specs" },
         ]}
       />
 
-      {/* Bento Grid 2x2 (Apple Grid) */}
+      {/* Apple Bento Grid 2x2 */}
       <PromoGridBlock
         items={[
           {
-            id: "quadra-os",
-            headline: "Quadra OS 3.0",
-            subheadline: "Controle e roteamento em tempo real sem latência.",
+            id: "patchbay",
+            headline: "Virtual Patchbay",
+            subheadline: "Route audio seamlessly between Logic Pro, Pro Tools, OBS, Zoom, and system audio.",
             mediaClass: styles.quadraOsModule,
             lightText: true,
-            links: [{ label: "Saiba mais", href: "/hydra", primary: true }],
+            links: [{ label: "Learn more", href: "/hydra#tools", primary: true }],
           },
           {
-            id: "hydra-duo",
-            headline: "Hydra Duo",
-            subheadline: "Qualidade Pro de gravação em formato ultra-portátil.",
+            id: "network-audio",
+            headline: "NDI® & AVB Streaming",
+            subheadline: "Stream up to 256 multichannel audio streams over local Ethernet with zero loss.",
             mediaClass: styles.hydraDuoModule,
             lightText: true,
-            links: [{ label: "Comprar", href: "/store", primary: true }],
+            links: [{ label: "Explore NDI Features", href: "/hydra#network", primary: true }],
           },
           {
-            id: "store",
-            headline: "Loja Quadra",
-            subheadline: "Garanta seu Hydra com frete grátis e suporte direto.",
+            id: "spatial-monitoring",
+            headline: "Spatial Audio 9.1.6",
+            subheadline: "Monitor Dolby Atmos renders directly with head-tracked binaural headphone output.",
             mediaClass: styles.storeModule,
             lightText: false,
-            links: [{ label: "Explorar Loja", href: "/store", primary: true }],
+            links: [{ label: "Learn Spatial Routing", href: "/hydra#spatial", primary: true }],
           },
           {
             id: "support",
-            headline: "Quadra Care",
-            subheadline: "Suporte técnico 24/7 especializado para engenheiros de áudio.",
+            headline: "Quadra Care Support",
+            subheadline: "24/7 technical support from professional audio and broadcast engineers.",
             mediaClass: styles.supportModule,
             lightText: false,
-            links: [{ label: "Obter Ajuda", href: "/support", primary: true }],
+            links: [{ label: "Get Support", href: "/support", primary: true }],
           },
         ]}
       />
     </div>
   );
 }
-

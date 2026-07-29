@@ -14,17 +14,17 @@ const menuData = {
       {
         title: "Shop",
         links: [
-          { label: "Shop the Latest", href: "/store", large: true },
-          { label: "Hydra Pro", href: "/hydra", large: true },
-          { label: "Hardware", href: "#", large: true },
-          { label: "Accessories", href: "#", large: true },
+          { label: "Shop Store", href: "/store", large: true },
+          { label: "Hydra Software", href: "/hydra", large: true },
+          { label: "Virtual Patchbay", href: "/hydra#tools", large: true },
+          { label: "Commercial Licenses", href: "/store", large: true },
         ]
       },
       {
         title: "Quick Links",
         links: [
-          { label: "Find a Store", href: "#", large: false },
-          { label: "Order Status", href: "#", large: false },
+          { label: "Try Free for 90 Days", href: "/store", large: false },
+          { label: "Order Status", href: "/account", large: false },
         ]
       }
     ]
@@ -34,16 +34,18 @@ const menuData = {
       {
         title: "Explore Hydra",
         links: [
-          { label: "Explore All Hydra", href: "/hydra", large: true },
-          { label: "Hydra Pro", href: "/hydra", large: true },
-          { label: "Hydra Core", href: "#", large: true },
+          { label: "Overview", href: "/hydra#overview", large: true },
+          { label: "Audio Patchbay", href: "/hydra#tools", large: true },
+          { label: "NDI & Network Audio", href: "/hydra#network", large: true },
+          { label: "Spatial Audio 9.1.6", href: "/hydra#spatial", large: true },
         ]
       },
       {
-        title: "More from Hydra",
+        title: "Resources",
         links: [
           { label: "Hydra Support", href: "/support", large: false },
-          { label: "System Requirements", href: "#", large: false },
+          { label: "System Requirements", href: "/hydra#specs", large: false },
+          { label: "Documentation & Driver Guide", href: "/support", large: false },
         ]
       }
     ]
@@ -53,21 +55,22 @@ const menuData = {
       {
         title: "Explore Support",
         links: [
-          { label: "Hydra", href: "/support", large: true },
-          { label: "Hardware", href: "/support", large: true },
-          { label: "Quadra ID", href: "/support", large: true },
+          { label: "Hydra Setup Guide", href: "/support", large: true },
+          { label: "Virtual Drivers", href: "/support", large: true },
+          { label: "Quadra ID & Licenses", href: "/support", large: true },
         ]
       },
       {
         title: "Get Help",
         links: [
-          { label: "Community", href: "#", large: false },
-          { label: "Contact Us", href: "#", large: false },
+          { label: "Community Forum", href: "/support", large: false },
+          { label: "Contact Engineering Support", href: "/support", large: false },
         ]
       }
     ]
   }
 };
+
 
 export default function GlobalNav() {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);

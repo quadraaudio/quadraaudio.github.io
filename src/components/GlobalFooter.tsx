@@ -9,33 +9,35 @@ import styles from './GlobalFooter.module.scss';
 // Dynamic Directory Configuration
 const footerDirectory = [
   {
-    title: 'Shop and Learn',
+    title: 'Explore Software',
     links: [
-      { label: 'Store', url: '/store' },
-      { label: 'Hydra Pro', url: '/hydra' },
-      { label: 'Accessories', url: '#' },
+      { label: 'Hydra Software', url: '/hydra' },
+      { label: 'Virtual Patchbay', url: '/hydra#tools' },
+      { label: 'NDI Network Audio', url: '/hydra#network' },
+      { label: 'Spatial Audio 9.1.6', url: '/hydra#spatial' },
     ]
   },
   {
-    title: 'Account',
+    title: 'Account & License',
     links: [
-      { label: 'Manage Your Quadra ID', url: '/account' },
-      { label: 'Quadra Store Account', url: '/account' },
+      { label: 'Manage Quadra ID', url: '/account' },
+      { label: 'License Portal', url: '/account' },
+      { label: 'Commercial Subscriptions', url: '/store' },
     ]
   },
   {
     title: 'Quadra Store',
     links: [
-      { label: 'Find a Store', url: '#' },
-      { label: 'Order Status', url: '#' },
-      { label: 'Shopping Help', url: '#' },
+      { label: 'Shop Licenses', url: '/store' },
+      { label: 'Order Status', url: '/account' },
+      { label: 'Software Help', url: '/support' },
     ]
   },
   {
-    title: 'For Business',
+    title: 'For Enterprise & Studios',
     links: [
-      { label: 'Quadra and Business', url: '#' },
-      { label: 'Shop for Your Business', url: '#' },
+      { label: 'Quadra for Broadcast', url: '/support' },
+      { label: 'Volume Licensing', url: '/store' },
     ]
   },
   {
@@ -51,24 +53,24 @@ const footerDirectory = [
 // Dynamic Footnotes based on route
 const footnotesByPath: Record<string, string[]> = {
   '/': [
-    '1. Quadra Audio reserves the right to change specifications without notice.',
+    '1. Quadra Audio reserves the right to change software specifications without notice.',
     '2. Quadra, Hydra, and the Quadra logo are registered trademarks of Quadra Audio Inc.',
   ],
   '/hydra': [
-    '1. Testing conducted by Quadra in July 2026 using Mac Studio (M2 Ultra) systems in isolated gigabit network environments.',
-    '2. Network latency and processing capacity (128 simultaneous channels) are dependent on local network infrastructure.',
-    '3. An active Hydra Pro license is required for NDI® routing features and 9.1.6 Dolby Atmos support.',
-    'Some features, third-party plugins, and protocols (like Dante) are subject to additional terms and hardware licenses.',
+    '1. Performance testing conducted by Quadra Audio in 2026 using Mac Studio (M2 Ultra) systems in isolated 10GbE network environments.',
+    '2. Network channel density (up to 256 AVB and 128 NDI® channels) depends on local network bandwidth and switch topology.',
+    '3. An active Hydra license is required for multichannel virtual patchbay routing and 9.1.6 Dolby Atmos monitoring.',
+    'NDI® is a registered trademark of Vizrt NDI AB. Dolby, Dolby Atmos, and the double-D symbol are registered trademarks of Dolby Laboratories.',
   ],
   '/store': [
-    '1. Financing options are subject to credit approval and local credit card fees.',
-    '2. Technical support included with purchase lasts 90 days from license activation.',
+    '1. Free 90-day trial activates instantly with a Quadra ID. No credit card required.',
+    '2. Lifetime software updates included with single-purchase licenses.',
   ],
   '/account': [
-    '1. Manage your active subscriptions and payment history directly in your Quadra Account portal.',
-    'The resale of academic licenses is strictly prohibited.',
+    '1. Manage active machine activations and license transfers directly in your Quadra ID portal.',
   ]
 };
+
 
 export default function GlobalFooter() {
   const pathname = usePathname();

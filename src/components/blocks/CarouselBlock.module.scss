@@ -1,27 +1,27 @@
 .carouselSection {
   width: 100%;
-  padding: 120px 0;
+  padding: 100px 0;
   position: relative;
 }
 
 .sectionHeader {
   max-width: 980px;
-  margin: 0 auto 50px;
+  margin: 0 auto 40px;
   padding: 0 22px;
 
   h2 {
-    font-size: 56px;
-    margin-bottom: 24px;
+    font-size: 48px;
+    margin-bottom: 16px;
     letter-spacing: -0.015em;
-    font-weight: 700;
+    font-weight: 600;
   }
 
   p {
-    font-size: 24px;
-    line-height: 1.33337;
-    font-weight: 600;
+    font-size: 21px;
+    line-height: 1.38095;
+    font-weight: 400;
     color: var(--text-secondary);
-    max-width: 85%;
+    max-width: 800px;
   }
 }
 
@@ -32,14 +32,17 @@
 
 .carouselTrack {
   display: flex;
-  gap: 20px;
+  gap: 24px;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
-  padding-bottom: 20px;
-  width: 100%;
+  scroll-snap-type: x mandatory;
+  padding-top: 10px;
+  padding-bottom: 30px;
+  padding-left: max(22px, calc((100vw - 980px) / 2 + 22px));
+  padding-right: max(22px, calc((100vw - 980px) / 2 + 22px));
+  scroll-padding-left: max(22px, calc((100vw - 980px) / 2 + 22px));
+  scroll-padding-right: max(22px, calc((100vw - 980px) / 2 + 22px));
   
-  /* Hide scrollbar for a cleaner Apple look */
   -ms-overflow-style: none;
   scrollbar-width: none;
   &::-webkit-scrollbar {
@@ -48,38 +51,42 @@
 }
 
 .carouselCard {
-  flex: 0 0 440px;
+  flex: 0 0 420px;
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 24px;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+
+  &:hover {
+    transform: translateY(-4px);
+  }
 
   @media (max-width: 768px) {
     flex: 0 0 300px;
   }
 }
 
-/* Invisible spacers — aligns first/last cards with the 980px text column.
-   Using explicit spacer elements is more reliable than first/last-child margins
-   because it works regardless of overflow settings on parent elements. */
 .carouselSpacer {
-  flex: 0 0 max(22px, calc((100vw - 980px) / 2 + 22px));
-  pointer-events: none;
-  user-select: none;
+  display: none; /* Replaced by padding-left on container for reliable alignment */
 }
 
 .cardMedia {
   width: 100%;
-  aspect-ratio: 4 / 3; /* Landscape aspect ratio */
-  border-radius: 18px;
-  background-color: var(--card-bg); /* Use theme card bg */
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  background-color: var(--card-bg);
   overflow: hidden;
 }
 
 .cardText {
-  font-size: 17px;
-  line-height: 1.47059;
-  letter-spacing: -0.022em;
+  font-size: 15px;
+  line-height: 1.46667;
+  letter-spacing: -0.01em;
   color: var(--text-secondary);
   
   strong {
@@ -90,7 +97,7 @@
 
 .carouselControls {
   max-width: 980px;
-  margin: 20px auto 0;
+  margin: 16px auto 0;
   padding: 0 22px;
   display: flex;
   justify-content: flex-end;
@@ -98,8 +105,8 @@
 }
 
 .controlBtn {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: rgba(134, 134, 139, 0.2);
   color: var(--text-primary);

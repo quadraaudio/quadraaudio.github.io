@@ -28,41 +28,42 @@ export interface PageContent {
 }
 
 const defaultContent: PageContent = {
-  homeHeroTitle: "Quadra",
-  homeHeroSub: "The new standard in virtual audio routing.",
+  homeHeroTitle: "Hydra",
+  homeHeroSub: "Virtual soundcard and audio matrix software for Mac.",
   
-  hydraIntroTitle: "No limits.",
-  hydraIntroSub: "The first ever 32-bit float audio interface with infinite digital headroom.",
-  hydraCarouselTitle: "The power is in the details.",
-  hydraCarouselSub: "Hydra stimulates your creativity with an enormous variety of capabilities.",
+  hydraIntroTitle: "Sound thinking. Endless routing.",
+  hydraIntroSub: "The premier virtual soundcard and multichannel audio routing software for macOS.",
+  hydraCarouselTitle: "Professional routing features built into every channel.",
+  hydraCarouselSub: "Hydra empowers your studio with uncompressed audio patching, driver fusion, and network streaming.",
   hydraCarouselItems: [
     {
       id: "1",
-      title: "192kHz / 32-bit Float",
-      description: "Pristine audio engine preserving full dynamic range without clipping.",
+      title: "256-Channel Matrix",
+      description: "Route audio uncompressed between DAWs, virtual devices, and system apps with sub-millisecond buffer speeds.",
     },
     {
       id: "2",
-      title: "System-wide Capture",
-      description: "Isolate and capture audio from any specific app on your machine.",
+      title: "GroundControl Driver Fusion",
+      description: "Combine multiple physical audio interfaces into a single unified driver without aggregate clock drift.",
     },
     {
       id: "3",
-      title: "Hardware Inserts",
-      description: "Route outboard gear into your DAW like virtual plugins instantly.",
+      title: "NDI® & AVB Network Audio",
+      description: "Stream up to 128 NDI channels and 256 AVB channels over local Ethernet to any Mac or broadcast receiver.",
     },
     {
       id: "4",
-      title: "MIDI Translation",
-      description: "Map and route complex MIDI CC messages alongside audio streams.",
+      title: "Spatial Audio 9.1.6",
+      description: "Monitor Dolby Atmos mixes with integrated HRTF head-tracking binaural renderers and sub-bass management.",
     },
   ],
-  hydraPerfTitle: "A new level of performance.",
-  hydraPerfSub: "Hydra on Quadra silicon effortlessly handles massive multichannel setups with sub-millisecond latency. No dropped frames. No artifacts.",
+  hydraPerfTitle: "Unprecedented performance for demanding studios.",
+  hydraPerfSub: "Hydra on Quadra silicon effortlessly handles massive multichannel setups with 0ms added driver latency. No dropped frames. No artifacts.",
 
   storeTitle: "Store.",
-  storeSub: "The best way to equip your studio.",
+  storeSub: "Equip your studio with Hydra software.",
 };
+
 
 interface SiteContentContextValue {
   content: PageContent;

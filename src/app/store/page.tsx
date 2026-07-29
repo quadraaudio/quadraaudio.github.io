@@ -14,7 +14,6 @@ const BADGE_COLORS: Record<string, string> = {
 
 export default function StorePage() {
   const available = products.filter((p) => p.available);
-  const comingSoon = products.filter((p) => !p.available);
 
   return (
     <div className={styles.storePage}>
@@ -26,7 +25,7 @@ export default function StorePage() {
         <header className={styles.storeHeader}>
           <h1>
             <span className={styles.blackText}>Store.</span>{" "}
-            <span className={styles.grayText}>The best way to equip your studio.</span>
+            <span className={styles.grayText}>Equip your studio with Hydra software.</span>
           </h1>
         </header>
 
@@ -36,101 +35,53 @@ export default function StorePage() {
         <section className={styles.storeShelf}>
           <div className={styles.shelfHeader}>
             <h2>
-              <span className={styles.blackText}>The latest.</span>{" "}
-              <span className={styles.grayText}>Take a look at what's new.</span>
+              <span className={styles.blackText}>Software.</span>{" "}
+              <span className={styles.grayText}>Experience professional virtual audio routing.</span>
             </h2>
           </div>
 
           <div className={styles.productGrid}>
-            {available.map((product) => {
-              const gradient =
-                product.category === "software"
-                  ? "linear-gradient(160deg, #fff 40%, #1a1a2e 100%)"
-                  : "linear-gradient(160deg, #f5f5f7 40%, #c1c1c6 100%)";
-
-              return (
-                <Link
-                  key={product.slug}
-                  href={`/store/${product.slug}`}
-                  className={styles.productCard}
-                  style={{ background: gradient }}
-                >
-                  <div className={styles.cardHeader}>
-                    {product.badge && (
-                      <span
-                        className={styles.cardKicker}
-                        style={{ color: BADGE_COLORS[product.badgeColor ?? "orange"] }}
-                      >
-                        {product.badge}
-                      </span>
-                    )}
-                    <h3
-                      className={styles.cardTitle}
-                      style={{ color: product.category === "software" ? "#f5f5f7" : "#1d1d1f" }}
-                    >
-                      {product.name}
-                    </h3>
-                    <p
-                      className={styles.cardPrice}
-                      style={{ color: product.category === "software" ? "rgba(245,245,247,0.7)" : "#86868b" }}
-                    >
-                      {product.priceLabel}
-                    </p>
-                  </div>
-
-                  {product.cardImage && (
-                    <div className={styles.cardMediaCenter}>
-                      <Image
-                        src={product.cardImage}
-                        alt={product.name}
-                        width={160}
-                        height={160}
-                        className={styles.appIcon}
-                      />
-                    </div>
-                  )}
-
-                  <div className={styles.cardFooter}>
-                    <span className={styles.learnMore}>Learn more</span>
-                    <span className={styles.buyNow}>Buy</span>
-                  </div>
-                </Link>
-              );
-            })}
-
-            {/* Coming Soon cards */}
-            {comingSoon.map((product) => (
-              <div
+            {available.map((product) => (
+              <Link
                 key={product.slug}
-                className={`${styles.productCard} ${styles.comingSoon}`}
-                style={{ background: "linear-gradient(160deg, #f5f5f7 40%, #d1d1d6 100%)" }}
+                href={`/hydra`}
+                className={styles.productCard}
+                style={{ background: "linear-gradient(160deg, #fff 40%, #1a1a2e 100%)" }}
               >
                 <div className={styles.cardHeader}>
-                  <span className={styles.cardKicker} style={{ color: "#86868b" }}>
-                    {product.badge}
-                  </span>
-                  <h3 className={styles.cardTitle} style={{ color: "#1d1d1f" }}>
+                  {product.badge && (
+                    <span
+                      className={styles.cardKicker}
+                      style={{ color: BADGE_COLORS[product.badgeColor ?? "orange"] }}
+                    >
+                      {product.badge}
+                    </span>
+                  )}
+                  <h3 className={styles.cardTitle} style={{ color: "#f5f5f7" }}>
                     {product.name}
                   </h3>
-                  <p className={styles.cardPrice} style={{ color: "#86868b" }}>
+                  <p className={styles.cardPrice} style={{ color: "rgba(245,245,247,0.7)" }}>
                     {product.priceLabel}
                   </p>
                 </div>
+
                 {product.cardImage && (
                   <div className={styles.cardMediaCenter}>
                     <Image
                       src={product.cardImage}
                       alt={product.name}
-                      width={200}
+                      width={160}
                       height={160}
-                      className={styles.hardwareImage}
+                      className={styles.appIcon}
                     />
                   </div>
                 )}
+
                 <div className={styles.cardFooter}>
-                  <span className={styles.notifyLink}>Notify me</span>
+                  <span className={styles.learnMore}>Learn more</span>
+                  <span className={styles.buyNow}>Try Free for 90 Days</span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </section>
@@ -142,7 +93,7 @@ export default function StorePage() {
           <div className={styles.shelfHeader}>
             <h2>
               <span className={styles.blackText}>Need help?</span>{" "}
-              <span className={styles.grayText}>We're here for you.</span>
+              <span className={styles.grayText}>Our audio engineering team is here for you.</span>
             </h2>
           </div>
 
@@ -156,7 +107,7 @@ export default function StorePage() {
               </div>
               <div>
                 <h3 className={styles.helpTitle}>Your Account</h3>
-                <p className={styles.helpDescription}>Access licenses, order history, and Quadra ID settings.</p>
+                <p className={styles.helpDescription}>Access licenses, active machine activations, and Quadra ID settings.</p>
                 <span className={styles.helpLink}>Go to account</span>
               </div>
             </Link>
@@ -170,9 +121,9 @@ export default function StorePage() {
                 </svg>
               </div>
               <div>
-                <h3 className={styles.helpTitle}>Support</h3>
-                <p className={styles.helpDescription}>Speak with a Quadra audio specialist.</p>
-                <span className={styles.helpLink}>Contact us</span>
+                <h3 className={styles.helpTitle}>Support & Documentation</h3>
+                <p className={styles.helpDescription}>Speak with a Quadra virtual soundcard specialist.</p>
+                <span className={styles.helpLink}>Contact support</span>
               </div>
             </Link>
 
@@ -185,9 +136,9 @@ export default function StorePage() {
                 </svg>
               </div>
               <div>
-                <h3 className={styles.helpTitle}>Order Status</h3>
-                <p className={styles.helpDescription}>Track your purchase or download your software.</p>
-                <span className={styles.helpLink}>Check order</span>
+                <h3 className={styles.helpTitle}>Order & License Status</h3>
+                <p className={styles.helpDescription}>Download Hydra installer or manage commercial licenses.</p>
+                <span className={styles.helpLink}>Check license</span>
               </div>
             </div>
           </div>
