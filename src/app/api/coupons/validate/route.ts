@@ -16,18 +16,19 @@ const DEFAULT_COUPONS: Record<string, { percent: number; amount: number }> = {
 export async function POST(request: Request) {
   try {
     const { code } = await request.json();
-    if (!code) {
+    if (!code || typeof code !== "string") {
       return NextResponse.json({ valid: false, error: "Coupon code is required" }, { status: 400 });
     }
 
-    const cleanCode = code.trim().toUpperCase();
+    const rawCode = code.trim();
+    const upperCode = rawCode.toUpperCase();
 
-    // 1. Try Supabase coupons table
+    // 1. Try Supabase coupons table (case-insensitive search via ilike)
     try {
       const { data, error } = await supabase
         .from("coupons")
         .select("*")
-        .eq("code", cleanCode)
+        .ilike("code", rawCode)
         .eq("active", true);
 
       if (!error && data && data.length > 0) {
@@ -43,12 +44,12 @@ export async function POST(request: Request) {
       console.warn("Supabase coupon lookup fallback:", err);
     }
 
-    // 2. Check preset fallback coupons
-    if (DEFAULT_COUPONS[cleanCode]) {
-      const preset = DEFAULT_COUPONS[cleanCode];
+    // 2. Check preset fallback coupons (case-insensitive)
+    if (DEFAULT_COUPONS[upperCode]) {
+      const preset = DEFAULT_COUPONS[upperCode];
       return NextResponse.json({
         valid: true,
-        code: cleanCode,
+        code: upperCode,
         discountPercent: preset.percent,
         discountAmount: preset.amount,
       });
