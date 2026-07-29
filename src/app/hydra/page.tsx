@@ -123,22 +123,11 @@ export default function Hydra() {
       <div className={styles.hydraContent}>
         
         {/* =========================================
-           1. SECTION WELCOME (Apple Hero + Autoplay Video)
+           1. SECTION WELCOME (Full Viewport Video + Text Overlay & Shadow Fade)
            ========================================= */}
         <section className={styles.sectionWelcome} id="overview">
-          <div className={styles.appIconBadge}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
           
-          <h1 className={styles.welcomeEyebrow}>Hydra</h1>
-          <h2 className={styles.welcomeHeadline}>Sound thinking.</h2>
-          <p className={styles.welcomeBody}>
-            Hydra is the ultimate virtual soundcard, AoIP network matrix, and spatial audio monitor controller for macOS.
-            Engineered directly around native Core Audio driver extensions, Hydra features 4 configurable virtual audio soundcards with up to 256 I/O channels per driver, GroundControl hardware interface fusion, zero-latency application process capture, and high-density NDI® and AVB network streaming — giving producers, mix engineers, and broadcasters <strong>unrestricted freedom to route, process, and monitor sound without physical patchbays or limits.</strong>
-          </p>
-
+          {/* Full Viewport Background Video Canvas */}
           <div className={styles.welcomeHeroMediaContainer}>
             <video 
               autoPlay 
@@ -150,7 +139,25 @@ export default function Hydra() {
             >
               <source src={APPLE_ASSETS.videos.hero} type="video/mp4" />
             </video>
+            <div className={styles.shadowOverlay} />
           </div>
+
+          {/* Overlaid Content with Shadow Fade Animation */}
+          <div className={styles.welcomeHeroOverlayContent}>
+            <div className={styles.appIconBadge}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            
+            <h1 className={styles.welcomeEyebrow}>Hydra</h1>
+            <h2 className={styles.welcomeHeadline}>Sound thinking.</h2>
+            <p className={styles.welcomeBody}>
+              Hydra is the ultimate virtual soundcard, AoIP network matrix, and spatial audio monitor controller for macOS.
+              Engineered directly around native Core Audio driver extensions, Hydra features 4 configurable virtual audio soundcards with up to 256 I/O channels per driver, GroundControl hardware interface fusion, zero-latency application process capture, and high-density NDI® and AVB network streaming — giving producers, mix engineers, and broadcasters <strong>unrestricted freedom to route, process, and monitor sound without physical patchbays or limits.</strong>
+            </p>
+          </div>
+
         </section>
 
 
