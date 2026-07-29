@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback } from "react";
 import type { Product } from "@/data/products";
+import { validateCouponWithSupabase } from "@/lib/supabase";
 
 export interface CartItem {
   product: Product;
@@ -72,22 +73,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const applyCoupon = useCallback(async (code: string) => {
     try {
-      const res = await fetch("/api/coupons/validate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code }),
-      });
-      const data = await res.json();
+      // Direct browser validation with Supabase (GitHub Pages compatible)
+      const data = await validateCouponWithSupabase(code);
 
-      if (data.valid) {
+      if (data.valid && data.code) {
         setAppliedCoupon({
           code: data.code,
-          discountPercent: data.discountPercent,
-          discountAmount: data.discountAmount,
+          discountPercent: data.discountPercent || 0,
+          discountAmount: data.discountAmount || 0,
         });
         return { success: true };
       } else {
-        return { success: false, error: data.error || "Invalid promo code" };
+        return { success: false, error: data.error || "Invalid or expired promo code" };
       }
     } catch (err: any) {
       return { success: false, error: "Network error validating promo code" };
