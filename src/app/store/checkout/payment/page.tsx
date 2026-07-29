@@ -67,10 +67,10 @@ export default function PaymentPage() {
   const handleCompleteOrder = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Sync license directly to Supabase & Local session
+    // Sync license & order directly to Supabase & Local session
     const email = user?.email || "customer@quadraaudio.com";
     const name = user?.name || "Customer";
-    await syncLicenseToSupabase(email, name, "hydra");
+    await syncLicenseToSupabase(email, name, "hydra", displayFinalPrice);
 
     setIsCompleted(true);
     clearCart();

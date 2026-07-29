@@ -74,13 +74,19 @@ export async function validateCouponWithSupabase(code: string): Promise<{
 }
 
 /**
- * Sync / Create license in Supabase database `public.licenses` table & LocalStorage
+ * Sync / Create order and license in Supabase database `public.licenses` & `public.orders` tables
  */
-export async function syncLicenseToSupabase(userEmail: string, userName: string, productSlug: string = "hydra") {
+export async function syncLicenseToSupabase(
+  userEmail: string,
+  userName: string,
+  productSlug: string = "hydra",
+  totalAmount: number = 0
+) {
   if (!userEmail) return null;
 
   const cleanEmail = userEmail.trim().toLowerCase();
   const cleanName = userName ? userName.trim() : cleanEmail.split("@")[0];
+  const orderNum = "QDR-" + Math.random().toString(36).substring(2, 8).toUpperCase();
 
   const newLicObj = {
     id: "LIC-" + Math.random().toString(36).substring(2, 10).toUpperCase(),
@@ -102,7 +108,22 @@ export async function syncLicenseToSupabase(userEmail: string, userName: string,
     console.error("Failed to save local license fallback:", e);
   }
 
-  // 2. Sync to Supabase PostgreSQL database
+  // 2. Sync Order to Supabase `public.orders`
+  try {
+    const { error: orderErr } = await supabase.from("orders").insert([
+      {
+        order_number: orderNum,
+        user_email: cleanEmail,
+        total_amount: totalAmount,
+        status: "completed",
+      },
+    ]);
+    if (orderErr) console.warn("Supabase order insert warning:", orderErr.message);
+  } catch (e) {
+    console.warn("Supabase order sync failed:", e);
+  }
+
+  // 3. Sync License to Supabase `public.licenses`
   try {
     const { data: existing } = await supabase
       .from("licenses")
@@ -128,6 +149,8 @@ export async function syncLicenseToSupabase(userEmail: string, userName: string,
 
     if (!error && data && data.length > 0) {
       return data[0];
+    } else if (error) {
+      console.warn("Supabase license insert error:", error.message);
     }
   } catch (err) {
     console.error("Supabase direct sync failed:", err);
