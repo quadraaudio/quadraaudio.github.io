@@ -20,15 +20,13 @@ export default function CheckoutGatePage() {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
-  // Registration state for Create Quadra ID / Google Auth0 completion
-  const [showSignUpForm, setShowSignUpForm] = useState(false);
+  // Registration state: Clean 2-step Apple ID creation
+  const [isCreatingAccount, setIsCreatingAccount] = useState(false);
+  const [signUpStep, setSignUpStep] = useState<"details" | "password">("details");
   const [regName, setRegName] = useState("");
   const [regEmail, setRegEmail] = useState("");
   const [regPassword, setRegPassword] = useState("");
-  const [regStudio, setRegStudio] = useState("");
-  const [regCountry, setRegCountry] = useState("United States");
-  const [regPhone, setRegPhone] = useState("");
-  const [authProvider, setAuthProvider] = useState<"quadra" | "google">("quadra");
+
   const [googleLoading, setGoogleLoading] = useState(false);
   const [authError, setAuthError] = useState("");
 
@@ -38,6 +36,7 @@ export default function CheckoutGatePage() {
   // Real Google Client ID from user's Google Cloud Console
   const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "120489321679-udegv4a0kl5o193bqnji07351kseca47.apps.googleusercontent.com";
 
+  // Sign in existing Quadra ID
   const handleSignInEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim()) setSignInStep("password");
@@ -49,7 +48,7 @@ export default function CheckoutGatePage() {
     router.push("/store/checkout/payment");
   };
 
-  // Real Google OAuth 2.0 Popup Handler
+  // 1-Click Frictionless Google OAuth Sign-In (Apple UX)
   const handleGoogleSignIn = () => {
     setAuthError("");
     setGoogleLoading(true);
@@ -67,11 +66,13 @@ export default function CheckoutGatePage() {
               const googleUser = await res.json();
 
               if (googleUser.email) {
-                setRegEmail(googleUser.email);
-                setRegName(googleUser.name || googleUser.given_name || googleUser.email.split("@")[0]);
-                setAuthProvider("google");
-                setShowSignUpForm(true);
+                // Instant 1-click login & checkout redirect (Pure Apple UX)
+                login(googleUser.email, {
+                  name: googleUser.name || googleUser.given_name || googleUser.email.split("@")[0],
+                  authProvider: "google",
+                });
                 setGoogleLoading(false);
+                router.push("/store/checkout/payment");
                 return;
               }
             } catch (err) {
@@ -87,6 +88,7 @@ export default function CheckoutGatePage() {
       });
       client.requestAccessToken();
     } else {
+      // Direct Google OAuth 2.0 Popup
       const redirectUri = window.location.origin + "/store/checkout/gate";
       const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(GOOGLE_CLIENT_ID)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=email%20profile`;
       
@@ -110,17 +112,21 @@ export default function CheckoutGatePage() {
     }
   };
 
-  const handleCreateAccountSubmit = (e: React.FormEvent) => {
+  // Clean 2-Step Email Account Creation
+  const handleSignUpStep1 = (e: React.FormEvent) => {
     e.preventDefault();
-    const finalEmail = regEmail.trim() || email.trim();
-    if (!finalEmail) return;
+    if (regName.trim() && regEmail.trim()) {
+      setSignUpStep("password");
+    }
+  };
 
-    login(finalEmail, {
-      name: regName.trim() || finalEmail.split("@")[0],
-      organization: regStudio.trim(),
-      country: regCountry,
-      phone: regPhone.trim(),
-      authProvider: authProvider,
+  const handleSignUpFinish = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!regEmail.trim()) return;
+
+    login(regEmail.trim(), {
+      name: regName.trim() || regEmail.split("@")[0],
+      authProvider: "quadra",
     });
 
     router.push("/store/checkout/payment");
@@ -222,7 +228,7 @@ export default function CheckoutGatePage() {
           <div className={styles.columnDivider} />
 
           {/* =========================================
-             Right Column: Create a Quadra ID / Google Auth0
+             Right Column: Create a Quadra ID / 1-Click Google OAuth (Apple HIG UX)
              ========================================= */}
           <div className={styles.column}>
             <h2 className={styles.colTitle}>Create a Quadra ID</h2>
@@ -230,7 +236,7 @@ export default function CheckoutGatePage() {
               Create an account to save your order, download licenses, and manage active Mac devices.
             </p>
 
-            {/* Google Auth0 Button */}
+            {/* 1-Click Google OAuth Button (Apple HIG UX) */}
             <button 
               type="button" 
               onClick={handleGoogleSignIn} 
@@ -246,110 +252,77 @@ export default function CheckoutGatePage() {
               <span>{googleLoading ? "Connecting to Google..." : "Sign in with Google"}</span>
             </button>
 
-            {authError && <p className={styles.errorNotice}>{authError}</p>}
-
             <div className={styles.orDivider}>
-              <span>or create with email</span>
+              <span>or</span>
             </div>
 
-            {!showSignUpForm ? (
+            {!isCreatingAccount ? (
               <button 
                 type="button" 
-                onClick={() => { setAuthProvider("quadra"); setShowSignUpForm(true); }} 
+                onClick={() => setIsCreatingAccount(true)} 
                 className={styles.createAccountToggleBtn}
               >
-                Create Quadra ID Account
+                Create Quadra ID with Email
               </button>
             ) : (
-              <form onSubmit={handleCreateAccountSubmit} className={styles.signUpForm}>
-                {authProvider === "google" && (
-                  <div className={styles.auth0Notice}>
-                    ✓ Authenticated via Google. Review and complete your profile below:
-                  </div>
-                )}
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="gateRegName">Full Name</label>
-                  <input
-                    id="gateRegName"
-                    type="text"
-                    placeholder="e.g. Samuel Bacaro"
-                    value={regName}
-                    onChange={(e) => setRegName(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="gateRegEmail">Email Address</label>
-                  <input
-                    id="gateRegEmail"
-                    type="email"
-                    placeholder="name@example.com"
-                    value={regEmail}
-                    onChange={(e) => setRegEmail(e.target.value)}
-                    required
-                  />
-                </div>
-
-                {authProvider !== "google" && (
-                  <div className={styles.formGroup}>
-                    <label htmlFor="gateRegPassword">Password</label>
+              <div className={styles.cleanSignUpFlow}>
+                {signUpStep === "details" ? (
+                  <form onSubmit={handleSignUpStep1} className={styles.form}>
                     <input
-                      id="gateRegPassword"
-                      type="password"
-                      placeholder="••••••••"
-                      value={regPassword}
-                      onChange={(e) => setRegPassword(e.target.value)}
+                      type="text"
+                      placeholder="Full Name"
+                      value={regName}
+                      onChange={(e) => setRegName(e.target.value)}
+                      className={styles.emailInput}
                       required
                     />
-                  </div>
+                    <div className={styles.emailRow}>
+                      <input
+                        type="email"
+                        placeholder="Email Address"
+                        value={regEmail}
+                        onChange={(e) => setRegEmail(e.target.value)}
+                        className={styles.emailInput}
+                        required
+                      />
+                      <button type="submit" className={styles.arrowBtn} aria-label="Next">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                          <path d="M8 0L6.59 1.41 12.17 7H0v2h12.17l-5.58 5.59L8 16l8-8z"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <form onSubmit={handleSignUpFinish} className={styles.form}>
+                    <p className={styles.emailBadge}>{regEmail}</p>
+                    <div className={styles.emailRow}>
+                      <input
+                        type="password"
+                        placeholder="Create Password"
+                        value={regPassword}
+                        onChange={(e) => setRegPassword(e.target.value)}
+                        className={styles.emailInput}
+                        required
+                        autoFocus
+                      />
+                      <button type="submit" className={styles.arrowBtn} aria-label="Create Quadra ID">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                          <path d="M8 0L6.59 1.41 12.17 7H0v2h12.17l-5.58 5.59L8 16l8-8z"/>
+                        </svg>
+                      </button>
+                    </div>
+                    <button 
+                      type="button" 
+                      className={styles.backLink} 
+                      onClick={() => setSignUpStep("details")}
+                    >
+                      Back to details
+                    </button>
+                  </form>
                 )}
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="gateRegStudio">Studio / Organization (Optional)</label>
-                  <input
-                    id="gateRegStudio"
-                    type="text"
-                    placeholder="e.g. Quadra Audio Studios"
-                    value={regStudio}
-                    onChange={(e) => setRegStudio(e.target.value)}
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="gateRegCountry">Country / Region</label>
-                  <select
-                    id="gateRegCountry"
-                    value={regCountry}
-                    onChange={(e) => setRegCountry(e.target.value)}
-                  >
-                    <option value="United States">United States</option>
-                    <option value="Brazil">Brazil</option>
-                    <option value="United Kingdom">United Kingdom</option>
-                    <option value="Germany">Germany</option>
-                    <option value="France">France</option>
-                    <option value="Japan">Japan</option>
-                    <option value="Canada">Canada</option>
-                  </select>
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="gateRegPhone">Phone Number (Optional)</label>
-                  <input
-                    id="gateRegPhone"
-                    type="tel"
-                    placeholder="+1 (555) 000-0000"
-                    value={regPhone}
-                    onChange={(e) => setRegPhone(e.target.value)}
-                  />
-                </div>
-
-                <button type="submit" className={styles.submitSignUpBtn}>
-                  Create Quadra ID &amp; Continue
-                </button>
-              </form>
+              </div>
             )}
+
           </div>
 
         </div>
