@@ -21,7 +21,7 @@
 .sectionWelcome {
   width: 100%;
   max-width: 980px;
-  margin: 60px auto 40px;
+  margin: 80px auto 60px;
   padding: 0 22px;
   display: flex;
   flex-direction: column;
@@ -30,20 +30,20 @@
 }
 
 .appIconBadge {
-  width: 80px;
-  height: 80px;
-  margin-bottom: 24px;
-  border-radius: 20px;
+  width: 88px;
+  height: 88px;
+  margin-bottom: 28px;
+  border-radius: 22px;
   background: linear-gradient(135deg, #0071e3 0%, #0033aa 100%);
-  box-shadow: 0 16px 40px rgba(0, 113, 227, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  box-shadow: 0 20px 50px rgba(0, 113, 227, 0.4), inset 0 1px 1.5px rgba(255, 255, 255, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
 
   svg {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
   }
 }
 
@@ -54,7 +54,7 @@
   color: #86868b;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .welcomeHeadline {
@@ -63,7 +63,7 @@
   font-weight: 600;
   letter-spacing: -0.015em;
   color: #f5f5f7;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 
   @media (max-width: 734px) {
     font-size: 40px;
@@ -75,8 +75,8 @@
   line-height: 1.38095;
   font-weight: 400;
   color: #86868b;
-  max-width: 780px;
-  margin: 0 auto 48px;
+  max-width: 820px;
+  margin: 0 auto 56px;
 
   strong {
     color: #f5f5f7;
@@ -91,10 +91,10 @@
 .welcomeHeroMediaContainer {
   position: relative;
   width: 100%;
-  border-radius: 24px;
+  border-radius: 28px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.95);
 }
 
 .heroImage {
@@ -136,50 +136,50 @@
 }
 
 .playButton {
-  width: 68px;
-  height: 68px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
 
   svg {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     margin-left: 4px;
   }
 }
 
 /* =========================================
-   2. SECTION BANNER (Apple Creator Studio Banner)
+   2. SECTION BANNER (Apple Creator Studio Suite)
    ========================================= */
 .sectionBanner {
   width: 100%;
   max-width: 980px;
-  margin: 40px auto 100px;
+  margin: 40px auto 120px;
   padding: 0 22px;
 }
 
 .bannerCard {
   background: linear-gradient(135deg, #161617 0%, #0d0d0e 100%);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 48px;
+  border-radius: 28px;
+  padding: 56px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 40px;
+  gap: 48px;
   overflow: hidden;
 
   @media (max-width: 734px) {
     flex-direction: column;
-    padding: 32px 24px;
+    padding: 36px 24px;
     text-align: center;
   }
 }
@@ -188,28 +188,28 @@
   max-width: 480px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .bannerBadge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: #86868b;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 .bannerHeadline {
-  font-size: 32px;
-  line-height: 1.125;
+  font-size: 36px;
+  line-height: 1.11111;
   font-weight: 600;
   color: #f5f5f7;
 
   @media (max-width: 734px) {
-    font-size: 24px;
+    font-size: 26px;
   }
 }
 
@@ -223,7 +223,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-top: 8px;
+  margin-top: 12px;
 
   @media (max-width: 734px) {
     justify-content: center;
@@ -232,7 +232,7 @@
 
 .bannerAsset {
   flex: 1;
-  max-width: 380px;
+  max-width: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -250,7 +250,7 @@
 .sectionHighlights {
   width: 100%;
   max-width: 980px;
-  margin: 0 auto 120px;
+  margin: 0 auto 140px;
   padding: 0 22px;
 }
 
@@ -259,7 +259,7 @@
   line-height: 1.08333;
   font-weight: 600;
   color: #f5f5f7;
-  margin-bottom: 32px;
+  margin-bottom: 40px;
 
   @media (max-width: 734px) {
     font-size: 32px;
@@ -269,7 +269,7 @@
 .highlightsGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  gap: 24px;
 
   @media (max-width: 734px) {
     grid-template-columns: 1fr;
@@ -279,7 +279,7 @@
 .highlightCard {
   background: #161617;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
+  border-radius: 24px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -287,21 +287,21 @@
   transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease;
 
   &:hover {
-    transform: translateY(-4px);
-    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-6px);
+    border-color: rgba(255, 255, 255, 0.22);
   }
 }
 
 .highlightCardHeader {
-  padding: 28px 28px 16px;
+  padding: 32px 32px 20px;
 }
 
 .highlightHeadline {
-  font-size: 22px;
-  line-height: 1.18182;
+  font-size: 24px;
+  line-height: 1.16667;
   font-weight: 600;
   color: #f5f5f7;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .highlightBody {
@@ -312,7 +312,7 @@
 
 .highlightVisual {
   width: 100%;
-  height: 220px;
+  height: 240px;
   overflow: hidden;
 
   img {
@@ -324,17 +324,17 @@
 }
 
 /* =========================================
-   4. FEATURE SECTIONS (Continuous Apple Canvas)
+   4. APPLE INTERACTIVE TABBED FEATURE CANVASES
    ========================================= */
 .sectionApp {
   width: 100%;
   max-width: 980px;
-  margin: 0 auto 120px;
+  margin: 0 auto 140px;
   padding: 0 22px;
 }
 
 .appHeaderCopy {
-  margin-bottom: 40px;
+  margin-bottom: 36px;
 }
 
 .appEyebrow {
@@ -344,12 +344,12 @@
   color: #2997ff;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .appHeadline {
-  font-size: 44px;
-  line-height: 1.09091;
+  font-size: 48px;
+  line-height: 1.08333;
   font-weight: 600;
   color: #f5f5f7;
   margin-bottom: 16px;
@@ -375,67 +375,94 @@
   }
 }
 
-.appBannerMedia {
-  width: 100%;
-  border-radius: 24px;
-  overflow: hidden;
-  margin-bottom: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+/* Interactive Tabs Bar */
+.tabNavRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  -webkit-overflow-scrolling: touch;
 
-  img {
-    width: 100%;
-    height: auto;
-    display: block;
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
-/* Feature Cards Row */
-.captionTileRow {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+.tabPill {
+  padding: 10px 20px;
+  border-radius: 980px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #86868b;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    color: #f5f5f7;
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.activeTabPill {
+  color: #ffffff !important;
+  background: #0071e3 !important;
+  border-color: #0071e3 !important;
+  box-shadow: 0 4px 16px rgba(0, 113, 227, 0.4);
+}
+
+/* Interactive Display Screen Showcase */
+.interactiveCanvasFrame {
+  position: relative;
+  width: 100%;
+  background: #161617;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.8);
+}
+
+.canvasMediaWrapper {
+  width: 100%;
+  height: 460px;
+  position: relative;
+  overflow: hidden;
 
   @media (max-width: 734px) {
-    grid-template-columns: 1fr;
+    height: 280px;
   }
-}
-
-.captionTileCard {
-  background: #161617;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-
-  h3 {
-    font-size: 19px;
-    font-weight: 600;
-    color: #f5f5f7;
-    margin-bottom: 6px;
-  }
-
-  p {
-    font-size: 14px;
-    line-height: 1.42857;
-    color: #86868b;
-  }
-}
-
-.tileText {
-  padding: 24px 24px 16px;
-}
-
-.tileMedia {
-  width: 100%;
-  height: 160px;
-  overflow: hidden;
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: opacity 0.4s ease;
+  }
+}
+
+.canvasTextOverlay {
+  padding: 32px 36px;
+  background: linear-gradient(180deg, rgba(22, 22, 23, 0.95) 0%, #161617 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #f5f5f7;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 1.4375;
+    color: #86868b;
   }
 }
 
@@ -444,24 +471,24 @@
    ========================================= */
 .trialSection {
   width: 100%;
-  background: linear-gradient(180deg, #0a0a0c 0%, #000000 100%);
+  background: linear-gradient(180deg, #0d0d0e 0%, #000000 100%);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 100px 22px;
+  padding: 120px 22px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
 }
 
 .trialTitle {
-  font-size: 48px;
-  line-height: 1.08333;
+  font-size: 56px;
+  line-height: 1.07143;
   font-weight: 600;
   color: #f5f5f7;
 
   @media (max-width: 734px) {
-    font-size: 32px;
+    font-size: 36px;
   }
 }
 
@@ -469,12 +496,12 @@
   font-size: 21px;
   line-height: 1.38095;
   color: #86868b;
-  max-width: 600px;
+  max-width: 640px;
 }
 
 .trialCtas {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-top: 12px;
+  gap: 18px;
+  margin-top: 16px;
 }

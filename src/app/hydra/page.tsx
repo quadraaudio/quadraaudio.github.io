@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import ThemeSetter from "@/components/ThemeSetter";
 import LocalNav from "@/components/LocalNav";
 import ProductRibbon from "@/components/ProductRibbon";
@@ -26,10 +27,83 @@ const APPLE_ASSETS = {
   }
 };
 
+interface TabContent {
+  id: string;
+  tabLabel: string;
+  title: string;
+  description: string;
+  mediaUrl: string;
+}
+
+const VIRTUAL_TOOLS_TABS: TabContent[] = [
+  {
+    id: "patchbay",
+    tabLabel: "256-Channel Patchbay",
+    title: "Virtual Soundcard Matrix Engine",
+    description: "Create custom Core Audio virtual devices with up to 256 input and output channels per device. Route audio uncompressed between DAWs, virtual devices, and system apps with zero latency.",
+    mediaUrl: APPLE_ASSETS.tiles.drumKit,
+  },
+  {
+    id: "capture",
+    tabLabel: "App Audio Capture",
+    title: "System-wide Application Loopback",
+    description: "Isolate and capture audio streams directly from Zoom, Chrome, Discord, or Spotify without needing third-party virtual cables or complex aggregate drivers.",
+    mediaUrl: APPLE_ASSETS.tiles.sampler,
+  },
+  {
+    id: "plugin",
+    tabLabel: "GroundControl LINK",
+    title: "Direct DAW Plugin Insertion",
+    description: "AU / VST3 / AAX plugin for direct sub-millisecond audio routing straight from your DAW channel strips into Hydra's virtual patchbay.",
+    mediaUrl: APPLE_ASSETS.tiles.sequencer,
+  },
+];
+
+const NETWORK_TABS: TabContent[] = [
+  {
+    id: "ndi",
+    tabLabel: "NDI® Multichannel",
+    title: "128-Channel NDI® Audio over IP",
+    description: "Stream up to 128 channels of uncompressed broadcast-grade audio over local Ethernet directly to any Mac, PC, or broadcast receiver.",
+    mediaUrl: APPLE_ASSETS.soundsHero,
+  },
+  {
+    id: "avb",
+    tabLabel: "AVB Protocol",
+    title: "256-Channel AVB Hardware Networking",
+    description: "Native AVB protocol integration allows seamless hardware networking with zero buffer latency and guaranteed bandwidth reservation.",
+    mediaUrl: APPLE_ASSETS.highlights.partner,
+  },
+];
+
+const SPATIAL_TABS: TabContent[] = [
+  {
+    id: "atmos",
+    tabLabel: "Dolby Atmos 9.1.6",
+    title: "Immersive Dolby Atmos Matrix",
+    description: "Full 9.1.6 surround monitoring with integrated binaural renderers, room speaker alignment, and quad-subwoofer bass management.",
+    mediaUrl: APPLE_ASSETS.highlights.mixed,
+  },
+  {
+    id: "hrtf",
+    tabLabel: "Binaural Head-Tracking",
+    title: "Apple Spatial Audio HRTF Monitoring",
+    description: "Monitor spatial audio mixes directly on AirPods Max with dynamic head tracking and personalized HRTF binaural rendering.",
+    mediaUrl: APPLE_ASSETS.highlights.devices,
+  },
+];
+
 export default function Hydra() {
+  const [activeToolTab, setActiveToolTab] = useState(0);
+  const [activeNetworkTab, setActiveNetworkTab] = useState(0);
+  const [activeSpatialTab, setActiveSpatialTab] = useState(0);
+
+  const currentTool = VIRTUAL_TOOLS_TABS[activeToolTab];
+  const currentNetwork = NETWORK_TABS[activeNetworkTab];
+  const currentSpatial = SPATIAL_TABS[activeSpatialTab];
+
   return (
     <div className={styles.hydraPage} data-theme="dark">
-      {/* Force global theme state to DARK MODE for Hydra page */}
       <ThemeSetter theme="dark" />
 
       {/* Apple Sticky LocalNav */}
@@ -197,7 +271,7 @@ export default function Hydra() {
 
 
         {/* =========================================
-           4. SECTION VIRTUAL ROUTING TOOLS
+           4. SECTION VIRTUAL ROUTING TOOLS (INTERACTIVE TABS)
            ========================================= */}
         <section className={styles.sectionApp} id="tools">
           <div className={styles.appHeaderCopy}>
@@ -208,48 +282,34 @@ export default function Hydra() {
             </p>
           </div>
 
-          <div className={styles.captionTileRow}>
-            <div className={styles.captionTileCard}>
-              <div className={styles.tileText}>
-                <h3>Virtual Soundcard Engine</h3>
-                <p>Create custom Core Audio virtual devices with up to 256 input and output channels per device.</p>
-              </div>
-              <div className={styles.tileMedia}>
-                <img src={APPLE_ASSETS.tiles.drumKit} alt="Virtual Soundcard routing pads" />
-              </div>
-            </div>
+          <div className={styles.tabNavRow}>
+            {VIRTUAL_TOOLS_TABS.map((tab, idx) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveToolTab(idx)}
+                className={`${styles.tabPill} ${activeToolTab === idx ? styles.activeTabPill : ''}`}
+              >
+                {tab.tabLabel}
+              </button>
+            ))}
+          </div>
 
-            <div className={styles.captionTileCard}>
-              <div className={styles.tileText}>
-                <h3>Application Audio Capture</h3>
-                <p>Grab audio directly from Zoom, Chrome, Discord, or Spotify without needing third-party virtual cables.</p>
-              </div>
-              <div className={styles.tileMedia}>
-                <img src={APPLE_ASSETS.tiles.sampler} alt="Application Audio Capture module" />
-              </div>
+          <div className={styles.interactiveCanvasFrame}>
+            <div className={styles.canvasMediaWrapper}>
+              <img src={currentTool.mediaUrl} alt={currentTool.title} />
             </div>
-
-            <div className={styles.captionTileCard}>
-              <div className={styles.tileText}>
-                <h3>GroundControl LINK Plugin</h3>
-                <p>AU / VST3 / AAX plugin for direct sub-millisecond audio routing straight from your DAW to Hydra.</p>
-              </div>
-              <div className={styles.tileMedia}>
-                <img src={APPLE_ASSETS.tiles.sequencer} alt="GroundControl LINK routing plugin" />
-              </div>
+            <div className={styles.canvasTextOverlay}>
+              <h3>{currentTool.title}</h3>
+              <p>{currentTool.description}</p>
             </div>
           </div>
         </section>
 
 
         {/* =========================================
-           5. SECTION NETWORK AUDIO & SOUNDS
+           5. SECTION NETWORK AUDIO (INTERACTIVE TABS)
            ========================================= */}
         <section className={styles.sectionApp} id="network">
-          <div className={styles.appBannerMedia}>
-            <img src={APPLE_ASSETS.soundsHero} alt="Studio Display running Hydra Audio Matrix" />
-          </div>
-
           <div className={styles.appHeaderCopy}>
             <span className={styles.appEyebrow}>Networked Audio & Broadcast</span>
             <h2 className={styles.appHeadline}>Audio over IP made seamless.</h2>
@@ -257,11 +317,33 @@ export default function Hydra() {
               Turn your Mac into a high-capacity network audio hub. Send and receive <strong>multichannel uncompressed audio over local Ethernet</strong> using NDI® and AVB protocols.
             </p>
           </div>
+
+          <div className={styles.tabNavRow}>
+            {NETWORK_TABS.map((tab, idx) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveNetworkTab(idx)}
+                className={`${styles.tabPill} ${activeNetworkTab === idx ? styles.activeTabPill : ''}`}
+              >
+                {tab.tabLabel}
+              </button>
+            ))}
+          </div>
+
+          <div className={styles.interactiveCanvasFrame}>
+            <div className={styles.canvasMediaWrapper}>
+              <img src={currentNetwork.mediaUrl} alt={currentNetwork.title} />
+            </div>
+            <div className={styles.canvasTextOverlay}>
+              <h3>{currentNetwork.title}</h3>
+              <p>{currentNetwork.description}</p>
+            </div>
+          </div>
         </section>
 
 
         {/* =========================================
-           6. SECTION SPATIAL AUDIO & MONITOR CONTROL
+           6. SECTION SPATIAL AUDIO (INTERACTIVE TABS)
            ========================================= */}
         <section className={styles.sectionApp} id="spatial">
           <div className={styles.appHeaderCopy}>
@@ -270,6 +352,28 @@ export default function Hydra() {
             <p className={styles.appCopy}>
               Monitor <strong>9.1.6 Dolby Atmos mixes</strong> with built-in binaural renderers, Apple Spatial Audio HRTF head-tracking integration, custom AU plugin slots for speaker calibration, and bass management for up to four subwoofers.
             </p>
+          </div>
+
+          <div className={styles.tabNavRow}>
+            {SPATIAL_TABS.map((tab, idx) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveSpatialTab(idx)}
+                className={`${styles.tabPill} ${activeSpatialTab === idx ? styles.activeTabPill : ''}`}
+              >
+                {tab.tabLabel}
+              </button>
+            ))}
+          </div>
+
+          <div className={styles.interactiveCanvasFrame}>
+            <div className={styles.canvasMediaWrapper}>
+              <img src={currentSpatial.mediaUrl} alt={currentSpatial.title} />
+            </div>
+            <div className={styles.canvasTextOverlay}>
+              <h3>{currentSpatial.title}</h3>
+              <p>{currentSpatial.description}</p>
+            </div>
           </div>
         </section>
 
