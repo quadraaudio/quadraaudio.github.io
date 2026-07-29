@@ -54,6 +54,14 @@ CREATE POLICY "Users read own licenses" ON public.licenses FOR SELECT USING (tru
 -- 5. Insert Initial Quadra Audio Products
 INSERT INTO public.products (slug, name, tagline, description, price, category, badge, available)
 VALUES 
+  ('hydra', 'Hydra', 'Sound thinking. Boundless routing.', 'The ultimate virtual soundcard, AoIP network matrix, and spatial audio monitor controller for macOS.', 199.99, 'software', 'Virtual Audio Matrix', true),
   ('hydra-pro', 'Hydra Pro', 'Pure spatial audio matrix routing.', 'The premier 128-channel virtual audio router engineered for macOS.', 199.99, 'software', 'New Software', true),
   ('quadra-core-io', 'Quadra Core I/O', 'Studio Thunderbolt audio interface.', 'Hardware companion rack for Hydra Pro with 32-bit float AD/DA converters.', 0, 'hardware', 'Coming Soon', false)
-ON CONFLICT (slug) DO NOTHING;
+ON CONFLICT (slug) DO UPDATE SET
+  name = EXCLUDED.name,
+  tagline = EXCLUDED.tagline,
+  description = EXCLUDED.description,
+  price = EXCLUDED.price,
+  category = EXCLUDED.category,
+  badge = EXCLUDED.badge,
+  available = EXCLUDED.available;

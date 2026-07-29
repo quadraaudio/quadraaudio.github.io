@@ -43,9 +43,9 @@ const footerDirectory = [
   {
     title: 'Quadra Values',
     links: [
-      { label: 'Accessibility', url: '#' },
-      { label: 'Environment', url: '#' },
-      { label: 'Privacy', url: '#' },
+      { label: 'Accessibility', url: '/support' },
+      { label: 'Environment', url: '/hydra#specs' },
+      { label: 'Privacy', url: '/legal/privacy' },
     ]
   },
 ];
@@ -120,7 +120,7 @@ export default function GlobalFooter() {
         {/* Legal and Copyright Section */}
         <section className={styles.footerLegal}>
           <div className={styles.legalTop}>
-            <p>More ways to shop: <Link href="/store" className={styles.textLink}>Find a Quadra Store</Link> or <Link href="#" className={styles.textLink}>other retailer</Link> near you.</p>
+            <p>More ways to shop: <Link href="/store" className={styles.textLink}>Find a Quadra Store</Link> or <Link href="/store" className={styles.textLink}>other retailer</Link> near you.</p>
           </div>
           
           <div className={styles.legalBottom}>
@@ -129,13 +129,13 @@ export default function GlobalFooter() {
             </div>
             
             <div className={styles.legalLinks}>
-              <Link href="#">Privacy Policy</Link>
+              <Link href="/legal/privacy">Privacy Policy</Link>
               <div className={styles.divider}></div>
-              <Link href="#">Terms of Use</Link>
+              <Link href="/legal/terms">Terms of Use</Link>
               <div className={styles.divider}></div>
-              <Link href="#">Sales and Refunds</Link>
+              <Link href="/legal/refunds">Sales and Refunds</Link>
               <div className={styles.divider}></div>
-              <Link href="#">Site Map</Link>
+              <Link href="/sitemap-page">Site Map</Link>
             </div>
             
             <div className={styles.locale}>

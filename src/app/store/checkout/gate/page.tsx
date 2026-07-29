@@ -198,7 +198,7 @@ export default function CheckoutGatePage() {
                   <label htmlFor="remember">Remember me</label>
                 </div>
 
-                <Link href="#" className={styles.forgotLink}>
+                <Link href="/support/article/quadra-id-account" className={styles.forgotLink}>
                   Forgot password?
                 </Link>
               </form>

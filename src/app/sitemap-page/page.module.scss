@@ -1,0 +1,90 @@
+.page {
+  min-height: 100vh;
+  background-color: #f5f5f7;
+  color: #1d1d1f;
+  padding-top: 80px;
+  padding-bottom: 120px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.container {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.header {
+  margin-bottom: 48px;
+
+  h1 {
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    margin-bottom: 12px;
+  }
+
+  p {
+    font-size: 19px;
+    color: #86868b;
+  }
+}
+
+.sitemapGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+}
+
+.sectionCard {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 32px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+
+  h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #1d1d1f;
+    border-bottom: 1px solid #e5e5e7;
+    padding-bottom: 12px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      margin-bottom: 12px;
+
+      a {
+        font-size: 15px;
+        color: #0071e3;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        &:hover {
+          text-decoration: underline;
+        }
+
+        .badge {
+          font-size: 11px;
+          background: #e8f2ff;
+          color: #0071e3;
+          padding: 2px 8px;
+          border-radius: 12px;
+          font-weight: 600;
+        }
+      }
+
+      .desc {
+        font-size: 13px;
+        color: #86868b;
+        margin-top: 2px;
+      }
+    }
+  }
+}

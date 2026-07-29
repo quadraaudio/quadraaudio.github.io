@@ -137,21 +137,21 @@ export default function AccountDashboard() {
                 <div className={styles.infoRow}>
                   <span className={styles.infoLabel}>Order Reference</span>
                   <span className={styles.infoValue}>
-                    <Link href="#" className={styles.inlineLink}>{userOrderRef}</Link>
+                    <Link href="/legal/refunds" className={styles.inlineLink}>{userOrderRef}</Link>
                   </span>
                 </div>
               </div>
 
               {/* Actions Row */}
               <div className={styles.actionRow}>
-                <a href="#" className={styles.downloadButton}>
+                <Link href="/hydra" className={styles.downloadButton}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                     <polyline points="7 10 12 15 17 10"/>
                     <line x1="12" y1="15" x2="12" y2="3"/>
                   </svg>
                   Download Hydra Software
-                </a>
+                </Link>
 
                 <button
                   className={styles.offlineKeyBtn}
@@ -217,7 +217,7 @@ export default function AccountDashboard() {
           <h2 className={styles.sectionTitle}>Account Settings</h2>
 
           <div className={styles.quickLinksGrid}>
-            <Link href="#" className={styles.linkCard}>
+            <Link href="/store/checkout/payment" className={styles.linkCard}>
               <div className={styles.linkCardIcon}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0071e3" strokeWidth="1.5" strokeLinecap="round">
                   <rect x="2" y="5" width="20" height="14" rx="2"/>
@@ -226,11 +226,11 @@ export default function AccountDashboard() {
               </div>
               <div>
                 <h3>Payment Methods</h3>
-                <p>Manage your saved credit cards.</p>
+                <p>Manage your saved payment methods.</p>
               </div>
             </Link>
 
-            <Link href="#" className={styles.linkCard}>
+            <Link href="/support/article/quadra-id-account" className={styles.linkCard}>
               <div className={styles.linkCardIcon}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0071e3" strokeWidth="1.5" strokeLinecap="round">
                   <path d="M9 11l3 3L22 4"/>
@@ -239,11 +239,11 @@ export default function AccountDashboard() {
               </div>
               <div>
                 <h3>Order History</h3>
-                <p>View invoices and receipts.</p>
+                <p>View invoices and license receipts.</p>
               </div>
             </Link>
 
-            <Link href="/login" className={styles.linkCard}>
+            <Link href="/support/contact" className={styles.linkCard}>
               <div className={styles.linkCardIcon}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0071e3" strokeWidth="1.5" strokeLinecap="round">
                   <circle cx="12" cy="8" r="4"/>
@@ -251,8 +251,8 @@ export default function AccountDashboard() {
                 </svg>
               </div>
               <div>
-                <h3>Quadra ID</h3>
-                <p>Update email, password, and security.</p>
+                <h3>Quadra ID Support</h3>
+                <p>Contact security &amp; account team.</p>
               </div>
             </Link>
           </div>

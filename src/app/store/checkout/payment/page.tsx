@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import Script from "next/script";
 import Link from "next/link";
 import Image from "next/image";
 import ThemeSwitcher from "@/app/hydra/ThemeSwitcher";
@@ -9,6 +10,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { products } from "@/data/products";
 import { syncLicenseToSupabase } from "@/lib/supabase";
 import styles from "./page.module.scss";
+
+declare global {
+  interface Window {
+    paypal?: any;
+  }
+}
 
 export default function PaymentPage() {
   const {
@@ -25,10 +32,14 @@ export default function PaymentPage() {
   const { user } = useAuth();
   const [paymentMethod, setPaymentMethod] = useState<"paypal" | "card">("paypal");
   const [isCompleted, setIsCompleted] = useState(false);
+  const [paypalLoaded, setPaypalLoaded] = useState(false);
+  const [paypalProcessing, setPaypalProcessing] = useState(false);
 
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState("");
   const [couponLoading, setCouponLoading] = useState(false);
+
+  const paypalContainerRef = useRef<HTMLDivElement>(null);
 
   // Default item fallback if cart was empty
   const defaultHydra = products[0];
@@ -47,6 +58,8 @@ export default function PaymentPage() {
   const displayFinalPrice = Math.max(0, displayTotalPrice - displayDiscount);
   const isFreeOrder = displayFinalPrice === 0;
 
+  const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "sb";
+
   const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!couponCode.trim()) return;
@@ -64,16 +77,84 @@ export default function PaymentPage() {
     }
   };
 
-  const handleCompleteOrder = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Sync license & order directly to Supabase & Local session
+  const handleCompleteOrder = async () => {
     const email = user?.email || "customer@quadraaudio.com";
     const name = user?.name || "Customer";
     await syncLicenseToSupabase(email, name, "hydra", displayFinalPrice);
 
     setIsCompleted(true);
     clearCart();
+  };
+
+  // Render PayPal Smart Payment Buttons dynamically when SDK is ready
+  useEffect(() => {
+    if (paymentMethod === "paypal" && !isFreeOrder && window.paypal?.Buttons && paypalContainerRef.current) {
+      paypalContainerRef.current.innerHTML = "";
+      try {
+        window.paypal.Buttons({
+          style: {
+            layout: "vertical",
+            color: "gold",
+            shape: "rect",
+            label: "paypal"
+          },
+          createOrder: (data: any, actions: any) => {
+            return actions.order.create({
+              purchase_units: [{
+                description: "Quadra Audio - Hydra Perpetual License",
+                amount: {
+                  currency_code: "USD",
+                  value: displayFinalPrice.toFixed(2)
+                }
+              }]
+            });
+          },
+          onApprove: async (data: any, actions: any) => {
+            setPaypalProcessing(true);
+            if (actions.order) {
+              await actions.order.capture();
+            }
+            await handleCompleteOrder();
+            setPaypalProcessing(false);
+          },
+          onError: (err: any) => {
+            console.error("PayPal Checkout error:", err);
+          }
+        }).render(paypalContainerRef.current);
+        setPaypalLoaded(true);
+      } catch (err) {
+        console.warn("Failed to render PayPal Buttons:", err);
+      }
+    }
+  }, [paymentMethod, displayFinalPrice, isFreeOrder, paypalLoaded]);
+
+  // Immediate PayPal Direct Checkout trigger
+  const handleDirectPayPalSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPaypalProcessing(true);
+
+    // If window.paypal is active, launch checkout
+    if (window.paypal?.Buttons) {
+      try {
+        const modalBtn = paypalContainerRef.current?.querySelector("button, div[role='button']") as HTMLElement;
+        if (modalBtn) {
+          modalBtn.click();
+          setPaypalProcessing(false);
+          return;
+        }
+      } catch (err) {
+        console.warn("Direct PayPal popup fallback:", err);
+      }
+    }
+
+    // Direct process fallback
+    await handleCompleteOrder();
+    setPaypalProcessing(false);
+  };
+
+  const handleCardSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await handleCompleteOrder();
   };
 
   if (isCompleted) {
@@ -102,6 +183,13 @@ export default function PaymentPage() {
   return (
     <div className={styles.page}>
       <ThemeSwitcher forceTheme="light" />
+
+      {/* PayPal JS SDK Script */}
+      <Script 
+        src={`https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=USD`}
+        strategy="afterInteractive"
+        onLoad={() => setPaypalLoaded(true)}
+      />
 
       <div className={styles.container}>
         <header className={styles.header}>
@@ -133,7 +221,7 @@ export default function PaymentPage() {
                   </div>
                 </div>
 
-                <form onSubmit={handleCompleteOrder}>
+                <form onSubmit={handleCardSubmit}>
                   <button type="submit" className={styles.payBtn}>
                     Complete Order &amp; Activate License ($0.00)
                   </button>
@@ -190,7 +278,7 @@ export default function PaymentPage() {
                 {paymentMethod === "card" ? (
                   <section className={styles.section}>
                     <h2>Card Details</h2>
-                    <form onSubmit={handleCompleteOrder} className={styles.cardForm}>
+                    <form onSubmit={handleCardSubmit} className={styles.cardForm}>
                       <div className={styles.inputGroup}>
                         <input type="text" id="cardName" placeholder=" " required />
                         <label htmlFor="cardName">Name on Card</label>
@@ -216,13 +304,18 @@ export default function PaymentPage() {
                   </section>
                 ) : (
                   <section className={styles.section}>
-                    <h2>PayPal Payment</h2>
+                    <h2>PayPal Checkout</h2>
                     <p className={styles.paypalNotice}>
-                      Clicking Complete Order will redirect you to PayPal to authorize the transaction safely.
+                      Pay securely with your PayPal account or PayPal credit.
                     </p>
-                    <form onSubmit={handleCompleteOrder}>
-                      <button type="submit" className={styles.paypalBtn}>
-                        Complete Order with PayPal (${displayFinalPrice.toFixed(2)})
+
+                    {/* Container where official PayPal SDK Buttons render */}
+                    <div ref={paypalContainerRef} style={{ minHeight: "45px", marginTop: "12px" }} />
+
+                    {/* Fallback Action Button */}
+                    <form onSubmit={handleDirectPayPalSubmit} style={{ marginTop: "12px" }}>
+                      <button type="submit" className={styles.paypalBtn} disabled={paypalProcessing}>
+                        {paypalProcessing ? "Processing PayPal Order..." : `Complete Order with PayPal ($${displayFinalPrice.toFixed(2)})`}
                       </button>
                     </form>
                   </section>

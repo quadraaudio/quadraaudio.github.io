@@ -12,42 +12,42 @@ const supportArticles = [
     category: "Setup",
     title: "Configuring NDI® Audio Streaming in Hydra",
     desc: "Learn how to route uncompressed multichannel audio across your local Ethernet network using NDI technology.",
-    link: "#"
+    link: "/support/article/configuring-ndi"
   },
   {
     id: 2,
     category: "Activation",
     title: "Managing Quadra ID License Activations",
     desc: "Find out how to activate your Hydra license across 2 machines simultaneously or transfer activations.",
-    link: "#"
+    link: "/support/article/license-activation"
   },
   {
     id: 3,
     category: "Troubleshooting",
     title: "Optimizing Buffer Size & Preventing Audio Dropouts",
     desc: "Configure Core Audio buffer sizes and network switch QoS settings for heavy multichannel workloads.",
-    link: "#"
+    link: "/support/article/optimizing-buffer"
   },
   {
     id: 4,
     category: "Virtual Soundcard",
     title: "Setting Up GroundControl Fusion Audio Drivers",
     desc: "Combine multiple physical audio interfaces into a single unified driver without clock drift.",
-    link: "#"
+    link: "/support/article/groundcontrol-fusion"
   },
   {
     id: 5,
     category: "Spatial Audio",
     title: "Dolby Atmos 9.1.6 Matrix & HRTF Binaural Monitoring",
     desc: "How to configure Hydra's 256-channel matrix for spatial audio rendering and headphone head tracking.",
-    link: "#"
+    link: "/support/article/dolby-atmos-916"
   },
   {
     id: 6,
     category: "Account",
     title: "Updating Quadra ID Profile & Commercial Subscriptions",
     desc: "Manage your personal details, invoice history, and organization volume licenses.",
-    link: "#"
+    link: "/support/article/quadra-id-account"
   }
 ];
 
@@ -171,7 +171,7 @@ export default function SupportPage() {
         <div className={styles.supportBanner}>
           <h2>Need specialized technical support?</h2>
           <p>If you need assistance configuring complex multichannel NDI audio networks or DAW matrices, our audio engineers are ready to help.</p>
-          <Link href="#">Speak with an Audio Specialist</Link>
+          <Link href="/support/contact">Speak with an Audio Specialist</Link>
         </div>
       </div>
     </div>

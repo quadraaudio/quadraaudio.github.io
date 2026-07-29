@@ -123,26 +123,10 @@ export default function Hydra() {
       <div className={styles.hydraContent}>
         
         {/* =========================================
-           1. SECTION WELCOME (Full Viewport Video + Text Overlay & Shadow Fade)
+           1. SECTION WELCOME (Apple Pro App Showcase Layout)
            ========================================= */}
         <section className={styles.sectionWelcome} id="overview">
           
-          {/* Full Viewport Background Video Canvas */}
-          <div className={styles.welcomeHeroMediaContainer}>
-            <video 
-              autoPlay 
-              loop 
-              muted 
-              playsInline 
-              poster={APPLE_ASSETS.images.heroFallback}
-              className={styles.heroVideo}
-            >
-              <source src={APPLE_ASSETS.videos.hero} type="video/mp4" />
-            </video>
-            <div className={styles.shadowOverlay} />
-          </div>
-
-          {/* Overlaid Content with Shadow Fade Animation */}
           <div className={styles.welcomeHeroOverlayContent}>
             <div className={styles.appIconBadge}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -156,6 +140,29 @@ export default function Hydra() {
               Hydra is the ultimate virtual soundcard, AoIP network matrix, and spatial audio monitor controller for macOS.
               Engineered directly around native Core Audio driver extensions, Hydra features 4 configurable virtual audio soundcards with up to 256 I/O channels per driver, GroundControl hardware interface fusion, zero-latency application process capture, and high-density NDI® and AVB network streaming — giving producers, mix engineers, and broadcasters <strong>unrestricted freedom to route, process, and monitor sound without physical patchbays or limits.</strong>
             </p>
+
+            <div className={styles.welcomeCtas}>
+              <Link href="/store" className="apple-button-primary">
+                Try free for 90 days
+              </Link>
+              <Link href="/store/buy-hydra" className="apple-button-secondary">
+                Buy Hydra ($199.99)
+              </Link>
+            </div>
+          </div>
+
+          {/* Sleek Framed Media Canvas Showcase */}
+          <div className={styles.heroShowcaseFrame}>
+            <video 
+              autoPlay 
+              loop 
+              muted 
+              playsInline 
+              poster={APPLE_ASSETS.images.heroFallback}
+              className={styles.heroShowcaseVideo}
+            >
+              <source src={APPLE_ASSETS.videos.hero} type="video/mp4" />
+            </video>
           </div>
 
         </section>
