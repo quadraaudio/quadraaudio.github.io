@@ -17,12 +17,12 @@ export const metadata: Metadata = {
   applicationName: "Quadra",
   icons: {
     icon: [
-      { url: "/icon.png", type: "image/png", sizes: "64x64" },
-      { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico" },
+      { url: "/icon.png?v=quadra2", type: "image/png", sizes: "64x64" },
+      { url: "/icon.svg?v=quadra2", type: "image/svg+xml" },
+      { url: "/favicon.ico?v=quadra2" },
     ],
-    shortcut: "/icon.png",
-    apple: "/apple-touch-icon.png",
+    shortcut: "/icon.png?v=quadra2",
+    apple: "/apple-touch-icon.png?v=quadra2",
   },
   appleWebApp: {
     title: "Quadra",
