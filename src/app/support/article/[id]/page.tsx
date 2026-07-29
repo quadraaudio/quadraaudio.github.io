@@ -2,10 +2,16 @@ import Link from "next/link";
 import ThemeSwitcher from "../../../hydra/ThemeSwitcher";
 import styles from "./page.module.scss";
 
-// Next.js App Router dynamic route component
+export function generateStaticParams() {
+  return [
+    { id: "getting-started" },
+    { id: "configuring-ndi" },
+    { id: "spatial-audio" },
+    { id: "license-activation" },
+  ];
+}
+
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
-  // Convert slug to a readable title for the mock display
-  // e.g., "configuring-ndi" -> "Configuring Ndi"
   const generateTitle = (slug: string) => {
     if (!slug) return "Support Article";
     return slug
@@ -19,10 +25,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
 
   return (
     <div className={styles.articlePage}>
-      {/* Force pure white background globally for support articles */}
       <ThemeSwitcher forceTheme="light" />
 
-      {/* Breadcrumb Navigation */}
       <div className={styles.breadcrumb}>
         <Link href="/support">Support</Link>
         <span>&gt;</span>
@@ -71,7 +75,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
           </p>
         </div>
 
-        {/* Feedback Section */}
         <div className={styles.feedbackBox}>
           <div className={styles.feedbackText}>Was this helpful?</div>
           <div className={styles.feedbackButtons}>

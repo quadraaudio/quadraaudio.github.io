@@ -1,18 +1,24 @@
-import { redirect } from "next/navigation";
+"use client";
+
+import { Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import CheckoutClient from "./CheckoutClient";
-import { getProductBySlug } from "@/data/products";
+import { getProductBySlug, products } from "@/data/products";
 
-export default async function CheckoutPage(props: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-  const searchParams = await props.searchParams;
-  const slug = searchParams?.product as string | undefined;
+function CheckoutContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const slug = searchParams.get("product") || "hydra";
 
-  // If no product specified, redirect to store
-  if (!slug) redirect("/store");
-
-  const product = getProductBySlug(slug);
-  if (!product || !product.available) redirect("/store");
+  const product = getProductBySlug(slug) || products[0];
 
   return <CheckoutClient product={product} />;
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: "80px", textAlign: "center" }}>Loading Checkout...</div>}>
+      <CheckoutContent />
+    </Suspense>
+  );
 }

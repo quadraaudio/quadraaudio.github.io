@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-static";
+
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const email = searchParams.get("email") || "user@quadraaudio.com";
+  const email = "user@quadraaudio.com";
 
   const licensePayload = {
     domain: "quadraaudio.com",
@@ -31,21 +32,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    const email = body.email || "user@quadraaudio.com";
-    const hardwareId = body.hardwareId || "MAC-000-000";
-
-    return NextResponse.json({
-      success: true,
-      activated: true,
-      email: email,
-      hardwareId: hardwareId,
-      licenseId: `LIC-${Buffer.from(email + hardwareId).toString("hex").substring(0, 10).toUpperCase()}`,
-      expiresAt: "PERPETUAL",
-      message: "Hydra software activated successfully on macOS device."
-    });
-  } catch (error) {
-    return NextResponse.json({ success: false, error: "Invalid activation request" }, { status: 400 });
-  }
+  return NextResponse.json({
+    success: true,
+    activated: true,
+    message: "Hydra software activated successfully on macOS device."
+  });
 }
