@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Script from "next/script";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -30,8 +30,17 @@ export default function CheckoutGatePage() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [authError, setAuthError] = useState("");
 
-  const { login } = useAuth();
+  const { login, isLoggedIn } = useAuth();
   const router = useRouter();
+
+  // If user is ALREADY logged in, skip sign-in gate and go directly to payment!
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.push("/store/checkout/payment");
+    }
+  }, [isLoggedIn, router]);
+
+  if (isLoggedIn) return null;
 
   // Real Google Client ID from user's Google Cloud Console
   const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "120489321679-udegv4a0kl5o193bqnji07351kseca47.apps.googleusercontent.com";

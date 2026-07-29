@@ -196,7 +196,7 @@ export default function AccountDashboard() {
             <div className={styles.licenseCard} style={{ padding: "48px 32px", textAlign: "center" }}>
               <h3 style={{ fontSize: "21px", fontWeight: 600, marginBottom: "8px" }}>No active software licenses</h3>
               <p style={{ fontSize: "15px", color: "#86868b", maxWidth: "500px", margin: "0 auto 24px" }}>
-                You don't have an active Hydra software license associated with <strong>{userEmail}</strong> yet. Visit our store or download the 90-day free trial.
+                You don't have an active Quadra software license associated with <strong>{userEmail}</strong> yet. Visit our store or download the 90-day free trial.
               </p>
               <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
                 <Link href="/store" className="apple-button-primary">
