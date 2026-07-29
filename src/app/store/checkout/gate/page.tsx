@@ -35,7 +35,8 @@ export default function CheckoutGatePage() {
   const { login } = useAuth();
   const router = useRouter();
 
-  const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "1083492817234-quadraaudio.apps.googleusercontent.com";
+  // Real Google Client ID from user's Google Cloud Console
+  const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "120489321679-udegv4a0kl5o193bqnji07351kseca47.apps.googleusercontent.com";
 
   const handleSignInEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
