@@ -5,15 +5,24 @@ import Link from "next/link";
 import Image from "next/image";
 import ThemeSwitcher from "@/app/hydra/ThemeSwitcher";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { syncLicenseToSupabase } from "@/lib/supabase";
 import styles from "./page.module.scss";
 
 export default function PaymentPage() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, appliedCoupon, discountTotal, finalPrice, clearCart } = useCart();
+  const { user } = useAuth();
   const [paymentMethod, setPaymentMethod] = useState<"paypal" | "card">("paypal");
   const [isCompleted, setIsCompleted] = useState(false);
 
-  const handleCompleteOrder = (e: React.FormEvent) => {
+  const handleCompleteOrder = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Trigger sync to Supabase licenses table
+    const email = user?.email || "customer@quadraaudio.com";
+    const name = user?.name || "Customer";
+    await syncLicenseToSupabase(email, name, "hydra");
+
     setIsCompleted(true);
     clearCart();
   };
@@ -31,7 +40,7 @@ export default function PaymentPage() {
           <h1>Thank you for your order.</h1>
           <p className={styles.orderNumber}>Order number: QDR-89210492</p>
           <p className={styles.successSub}>
-            We've sent a confirmation email with your license keys and download instructions.
+            We've sent a confirmation email with your license keys and download instructions. Your license is now active on Supabase.
           </p>
           <Link href="/account" className={styles.primaryBtn}>
             Go to Your Account
@@ -122,7 +131,7 @@ export default function PaymentPage() {
                     </div>
                   </div>
                   <button type="submit" className={styles.payBtn}>
-                    Pay ${totalPrice.toFixed(2)}
+                    Pay ${finalPrice.toFixed(2)}
                   </button>
                 </form>
               </section>
@@ -134,7 +143,7 @@ export default function PaymentPage() {
                 </p>
                 <form onSubmit={handleCompleteOrder}>
                   <button type="submit" className={styles.paypalBtn}>
-                    Complete Order with PayPal
+                    Complete Order with PayPal (${finalPrice.toFixed(2)})
                   </button>
                 </form>
               </section>
@@ -168,13 +177,21 @@ export default function PaymentPage() {
                   <span>Subtotal</span>
                   <span>${totalPrice.toFixed(2)}</span>
                 </div>
+
+                {appliedCoupon && (
+                  <div className={styles.row} style={{ color: "#1b5e20", fontWeight: 500 }}>
+                    <span>Discount ({appliedCoupon.code})</span>
+                    <span>-${discountTotal.toFixed(2)}</span>
+                  </div>
+                )}
+
                 <div className={styles.row}>
                   <span>Shipping</span>
                   <span className={styles.free}>FREE</span>
                 </div>
                 <div className={`${styles.row} ${styles.totalRow}`}>
                   <span>Total</span>
-                  <span>${totalPrice.toFixed(2)}</span>
+                  <span>${finalPrice.toFixed(2)}</span>
                 </div>
               </div>
             </div>

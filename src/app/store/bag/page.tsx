@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -9,8 +10,41 @@ import { products } from "@/data/products";
 import styles from "./page.module.scss";
 
 export default function BagPage() {
-  const { items, totalPrice, totalCount, removeItem, updateQuantity } = useCart();
+  const {
+    items,
+    totalPrice,
+    totalCount,
+    appliedCoupon,
+    discountTotal,
+    finalPrice,
+    removeItem,
+    updateQuantity,
+    applyCoupon,
+    removeCoupon,
+  } = useCart();
+
+  const [couponCode, setCouponCode] = useState("");
+  const [couponError, setCouponError] = useState("");
+  const [couponLoading, setCouponLoading] = useState(false);
+
   const router = useRouter();
+
+  const handleApplyCoupon = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!couponCode.trim()) return;
+
+    setCouponError("");
+    setCouponLoading(true);
+
+    const res = await applyCoupon(couponCode.trim());
+    setCouponLoading(false);
+
+    if (!res.success) {
+      setCouponError(res.error || "Invalid promo code");
+    } else {
+      setCouponCode("");
+    }
+  };
 
   // Related products: available products not already in bag
   const bagSlugs = new Set(items.map((i) => i.product.slug));
@@ -108,24 +142,62 @@ export default function BagPage() {
 
         <div className={styles.divider} />
 
-        {/* Order summary */}
-        <section className={styles.summary}>
-          <div className={styles.summaryRow}>
-            <span>Subtotal</span>
-            <span>${totalPrice.toFixed(2)}</span>
-          </div>
-          <div className={styles.summaryRow}>
-            <span>Delivery</span>
-            <span className={styles.free}>Free</span>
-          </div>
-          <div className={`${styles.summaryRow} ${styles.summaryTotal}`}>
-            <span>Total</span>
-            <span>${totalPrice.toFixed(2)}</span>
+        {/* Promo Code & Order summary */}
+        <section className={styles.summarySection}>
+
+          {/* Promo Code Input */}
+          <div className={styles.promoBox}>
+            <h3>Promo Code / Discount Coupon</h3>
+            {appliedCoupon ? (
+              <div className={styles.appliedBadge}>
+                <span>✓ Code <strong>{appliedCoupon.code}</strong> Applied ({appliedCoupon.discountPercent > 0 ? `${appliedCoupon.discountPercent}% OFF` : `-$${appliedCoupon.discountAmount}`})</span>
+                <button type="button" onClick={removeCoupon} className={styles.removeCouponBtn}>Remove</button>
+              </div>
+            ) : (
+              <form onSubmit={handleApplyCoupon} className={styles.couponForm}>
+                <input
+                  type="text"
+                  placeholder="Enter code e.g. QUADRA10"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                  className={styles.couponInput}
+                />
+                <button type="submit" className={styles.couponBtn} disabled={couponLoading}>
+                  {couponLoading ? "Applying..." : "Apply"}
+                </button>
+              </form>
+            )}
+            {couponError && <p className={styles.couponError}>{couponError}</p>}
           </div>
 
-          <Link href="/store/checkout/gate" className={styles.checkoutBtn}>
-            Check Out
-          </Link>
+          <div className={styles.summary}>
+            <div className={styles.summaryRow}>
+              <span>Subtotal</span>
+              <span>${totalPrice.toFixed(2)}</span>
+            </div>
+
+            {appliedCoupon && (
+              <div className={`${styles.summaryRow} ${styles.discountRow}`}>
+                <span>Discount ({appliedCoupon.code})</span>
+                <span>-${discountTotal.toFixed(2)}</span>
+              </div>
+            )}
+
+            <div className={styles.summaryRow}>
+              <span>Delivery</span>
+              <span className={styles.free}>Free</span>
+            </div>
+
+            <div className={`${styles.summaryRow} ${styles.summaryTotal}`}>
+              <span>Total</span>
+              <span>${finalPrice.toFixed(2)}</span>
+            </div>
+
+            <Link href="/store/checkout/gate" className={styles.checkoutBtn}>
+              Check Out
+            </Link>
+          </div>
+
         </section>
 
         {/* Related products */}
