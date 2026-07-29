@@ -106,22 +106,6 @@ const ARTICLES_DB: Record<string, {
         ]
       }
     ]
-  },
-  "quadra-id-account": {
-    title: "Updating Quadra ID Profile & Commercial Subscriptions",
-    category: "Account & Billing",
-    date: "July 2026",
-    summary: "How to update your profile details, manage commercial studio subscriptions, and download invoices.",
-    steps: [
-      {
-        heading: "1. Account Management",
-        text: "Access your Quadra ID portal to view order references, active machine authorizations, and commercial volume licensing details.",
-        bullets: [
-          "Update primary email and security credentials.",
-          "View lifetime software update history."
-        ]
-      }
-    ]
   }
 };
 
@@ -164,32 +148,35 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
 
   return (
     <div className={styles.articlePage}>
-      <ThemeSwitcher forceTheme="light" />
+      <ThemeSwitcher forceTheme="dark" />
 
-      <div className={styles.breadcrumb}>
-        <Link href="/support">Support</Link>
-        <span>&gt;</span>
-        <span>{article.title}</span>
+      {/* Apple Support Breadcrumb Bar */}
+      <div className={styles.breadcrumbBar}>
+        <div className={styles.breadcrumbContent}>
+          <Link href="/support">Support Hub</Link>
+          <span className={styles.slash}>/</span>
+          <span className={styles.activePage}>{article.category}</span>
+        </div>
       </div>
 
       <article className={styles.articleContainer}>
         <header className={styles.articleHeader}>
           <span className={styles.categoryBadge}>{article.category}</span>
-          <h1>{article.title}</h1>
-          <p className={styles.publishDate}>Published: {article.date}</p>
+          <h1 className={styles.articleTitle}>{article.title}</h1>
+          <p className={styles.publishDate}>Published: {article.date} • Reference ID: Q-KB-{id}</p>
         </header>
 
         <div className={styles.articleContent}>
-          <p className={styles.leadSummary}>
+          <div className={styles.leadSummary}>
             {article.summary}
-          </p>
+          </div>
 
           {article.steps.map((step, idx) => (
             <div key={idx} className={styles.stepSection}>
               <h2>{step.heading}</h2>
               <p>{step.text}</p>
               {step.bullets && (
-                <ul>
+                <ul className={styles.stepList}>
                   {step.bullets.map((b, bidx) => (
                     <li key={bidx}>{b}</li>
                   ))}
@@ -199,18 +186,18 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
           ))}
 
           <div className={styles.helpNote}>
-            <h3>Need further assistance with this setup?</h3>
+            <h3>Need further assistance with this configuration?</h3>
             <p>
-              Our audio engineering support team is available 24/7. Submit a technical ticket on the <Link href="/support/contact" style={{ color: "#0071e3", textDecoration: "none" }}>Engineering Support Desk</Link>.
+              Our engineering team is ready to assist. Submit a technical ticket on the <Link href="/support/contact">Engineering Support Desk</Link>.
             </p>
           </div>
         </div>
 
         <div className={styles.feedbackBox}>
-          <div className={styles.feedbackText}>Was this article helpful?</div>
+          <span className={styles.feedbackText}>Was this article helpful?</span>
           <div className={styles.feedbackButtons}>
-            <button type="button">Yes</button>
-            <button type="button">No</button>
+            <button type="button" className={styles.feedbackBtn}>Yes</button>
+            <button type="button" className={styles.feedbackBtn}>No</button>
           </div>
         </div>
       </article>

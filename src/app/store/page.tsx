@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import ThemeSwitcher from "../hydra/ThemeSwitcher";
 import { products } from "@/data/products";
@@ -21,29 +20,25 @@ export default function StorePage() {
 
   return (
     <div className={styles.storePage}>
-      <ThemeSwitcher forceTheme="light" />
+      <ThemeSwitcher forceTheme="dark" />
 
       <div className={styles.storeContent}>
 
-        {/* =========================================
-           Apple Store Header Ribbon
-           ========================================= */}
+        {/* Apple Store Header */}
         <header className={styles.storeHeader}>
           <h1>
-            <span className={styles.blackText}>Store.</span>{" "}
+            <span className={styles.whiteText}>Store.</span>{" "}
             <span className={styles.grayText}>The best way to buy Hydra software.</span>
           </h1>
         </header>
 
         <div className={styles.divider} />
 
-        {/* =========================================
-           Product Shelf: Featured Hydra Software
-           ========================================= */}
+        {/* Product Shelf: Featured Hydra Software */}
         <section className={styles.storeShelf}>
           <div className={styles.shelfHeader}>
             <h2>
-              <span className={styles.blackText}>Software.</span>{" "}
+              <span className={styles.whiteText}>Software.</span>{" "}
               <span className={styles.grayText}>Professional virtual audio routing for Mac.</span>
             </h2>
           </div>
@@ -79,13 +74,11 @@ export default function StorePage() {
 
         <div className={styles.divider} />
 
-        {/* =========================================
-           Store Help & Quadra Advantages Grid
-           ========================================= */}
+        {/* Store Advantages Grid */}
         <section className={styles.storeShelf}>
           <div className={styles.shelfHeader}>
             <h2>
-              <span className={styles.blackText}>Why buy from Quadra?</span>{" "}
+              <span className={styles.whiteText}>Why buy from Quadra?</span>{" "}
               <span className={styles.grayText}>Direct licensing and expert audio support.</span>
             </h2>
           </div>
@@ -93,7 +86,7 @@ export default function StorePage() {
           <div className={styles.helpGrid}>
             <div className={styles.helpCard}>
               <div className={styles.helpIcon}>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                 </svg>
               </div>
@@ -105,7 +98,7 @@ export default function StorePage() {
 
             <div className={styles.helpCard}>
               <div className={styles.helpIcon}>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <rect x="2" y="4" width="20" height="16" rx="2"/>
                   <path d="M10 9l5 3-5 3V9z"/>
                 </svg>
@@ -118,12 +111,12 @@ export default function StorePage() {
 
             <div className={styles.helpCard}>
               <div className={styles.helpIcon}>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                 </svg>
               </div>
               <div>
-                <h3 className={styles.helpTitle}>Expert Audio Specialist Support</h3>
+                <h3 className={styles.helpTitle}>Audio Specialist Support</h3>
                 <p className={styles.helpDescription}>Get dedicated setup support for Core Audio, NDI®, and Dolby Atmos workflows.</p>
               </div>
             </div>

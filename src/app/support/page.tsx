@@ -9,45 +9,45 @@ import styles from "./page.module.scss";
 const supportArticles = [
   {
     id: 1,
-    category: "Setup",
+    category: "Setup & AoIP",
     title: "Configuring NDI® Audio Streaming in Hydra",
-    desc: "Learn how to route uncompressed multichannel audio across your local Ethernet network using NDI technology.",
+    desc: "Route uncompressed multichannel Ethernet audio across local machines using high-density NDI technology.",
     link: "/support/article/configuring-ndi"
   },
   {
     id: 2,
-    category: "Activation",
+    category: "Licensing",
     title: "Managing Quadra ID License Activations",
-    desc: "Find out how to activate your Hydra license across 2 machines simultaneously or transfer activations.",
+    desc: "Activate your Hydra license across 2 Mac machines simultaneously or manage offline .qkey licenses.",
     link: "/support/article/license-activation"
   },
   {
     id: 3,
-    category: "Troubleshooting",
+    category: "Performance",
     title: "Optimizing Buffer Size & Preventing Audio Dropouts",
-    desc: "Configure Core Audio buffer sizes and network switch QoS settings for heavy multichannel workloads.",
+    desc: "Configure Core Audio buffer sizes and network switch QoS settings for heavy 256-channel workloads.",
     link: "/support/article/optimizing-buffer"
   },
   {
     id: 4,
     category: "Virtual Soundcard",
     title: "Setting Up GroundControl Fusion Audio Drivers",
-    desc: "Combine multiple physical audio interfaces into a single unified driver without clock drift.",
+    desc: "Combine multiple physical hardware audio interfaces into a single unified driver without clock drift.",
     link: "/support/article/groundcontrol-fusion"
   },
   {
     id: 5,
     category: "Spatial Audio",
-    title: "Dolby Atmos 9.1.6 Matrix & HRTF Binaural Monitoring",
-    desc: "How to configure Hydra's 256-channel matrix for spatial audio rendering and headphone head tracking.",
+    title: "Dolby Atmos 9.4.6 Matrix & HRTF Binaural Monitoring",
+    desc: "Configure Hydra's matrix for spatial audio rendering, binaural monitoring, and head tracking.",
     link: "/support/article/dolby-atmos-916"
   },
   {
     id: 6,
-    category: "Account",
+    category: "Account & Billing",
     title: "Updating Quadra ID Profile & Commercial Subscriptions",
-    desc: "Manage your personal details, invoice history, and organization volume licenses.",
-    link: "/support/article/quadra-id-account"
+    desc: "Manage your personal details, order invoices, and organization volume license keys.",
+    link: "/support/article/license-activation"
   }
 ];
 
@@ -67,82 +67,53 @@ export default function SupportPage() {
 
   return (
     <div className={styles.supportPage}>
-      <ThemeSwitcher forceTheme="light" />
+      <ThemeSwitcher forceTheme="dark" />
       
       {/* Hero Search Section */}
       <section className={styles.heroSection}>
-        <h1 className={styles.heroTitle}>Quadra Support</h1>
-        
-        <div className={styles.searchContainer}>
-          <svg className={styles.searchIcon} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <input 
-            type="text" 
-            className={styles.searchInput} 
-            placeholder="Search for topics, virtual drivers, or NDI routing solutions..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-
-        {/* Quick Topic Filters */}
-        <div className={styles.productGrid}>
-          <button 
-            className={styles.productItem}
-            onClick={() => setSearchQuery("Hydra")}
-          >
-            <div className={styles.iconWrapper}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                <line x1="8" y1="21" x2="16" y2="21"></line>
-                <line x1="12" y1="17" x2="12" y2="21"></line>
-              </svg>
-            </div>
-            <span>Hydra Software</span>
-          </button>
+        <div className={styles.heroContent}>
+          <span className={styles.heroEyebrow}>Quadra Customer Care</span>
+          <h1 className={styles.heroTitle}>Quadra Support</h1>
+          <p className={styles.heroSub}>
+            Search technical guides, virtual soundcard documentation, and network routing setup articles.
+          </p>
           
-          <button 
-            className={styles.productItem}
-            onClick={() => setSearchQuery("Virtual Soundcard")}
-          >
-            <div className={styles.iconWrapper}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
-                <rect x="9" y="9" width="6" height="6"></rect>
-                <line x1="9" y1="1" x2="9" y2="4"></line>
-                <line x1="15" y1="1" x2="15" y2="4"></line>
-                <line x1="9" y1="20" x2="9" y2="23"></line>
-                <line x1="15" y1="20" x2="15" y2="23"></line>
-                <line x1="20" y1="9" x2="23" y2="9"></line>
-                <line x1="20" y1="14" x2="23" y2="14"></line>
-                <line x1="1" y1="9" x2="4" y2="9"></line>
-                <line x1="1" y1="14" x2="4" y2="14"></line>
-              </svg>
-            </div>
-            <span>Virtual Drivers</span>
-          </button>
+          <div className={styles.searchContainer}>
+            <svg className={styles.searchIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input 
+              type="text" 
+              className={styles.searchInput} 
+              placeholder="Search topics, Core Audio drivers, NDI® or Atmos..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
 
-          <button 
-            className={styles.productItem}
-            onClick={() => setSearchQuery("Quadra ID")}
-          >
-            <div className={styles.iconWrapper}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-            </div>
-            <span>Quadra ID</span>
-          </button>
+          {/* Quick Category Filter Pills */}
+          <div className={styles.filterGrid}>
+            <button className={styles.filterPill} onClick={() => setSearchQuery("NDI")}>
+              <span>NDI® Audio</span>
+            </button>
+            <button className={styles.filterPill} onClick={() => setSearchQuery("Licensing")}>
+              <span>Quadra ID Licenses</span>
+            </button>
+            <button className={styles.filterPill} onClick={() => setSearchQuery("Buffer")}>
+              <span>Buffer &amp; Xruns</span>
+            </button>
+            <button className={styles.filterPill} onClick={() => setSearchQuery("Atmos")}>
+              <span>Spatial 9.4.6</span>
+            </button>
+          </div>
         </div>
       </section>
 
       {/* Helpful Topics Section */}
       <div className={styles.contentContainer}>
         <div className={styles.sectionHeader}>
-          <h2>{searchQuery.trim() === "" ? "Helpful Topics" : "Search Results"}</h2>
+          <h2>{searchQuery.trim() === "" ? "Knowledge Base Articles" : "Search Results"}</h2>
         </div>
         
         {filteredArticles.length > 0 ? (
@@ -152,6 +123,7 @@ export default function SupportPage() {
                 <span className={styles.topicCategory}>{article.category}</span>
                 <h3>{article.title}</h3>
                 <p>{article.desc}</p>
+                <span className={styles.cardArrow}>Read guide ›</span>
               </Link>
             ))}
           </div>
@@ -161,17 +133,23 @@ export default function SupportPage() {
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <h3>No results found for "{searchQuery}"</h3>
-            <p>Try searching for a different keyword or check the product filters above.</p>
-            <button onClick={() => setSearchQuery("")}>Clear Search</button>
+            <h3>No articles found for "{searchQuery}"</h3>
+            <p>Try searching for a different term or check our direct help desk below.</p>
+            <button onClick={() => setSearchQuery("")} className={styles.clearBtn}>
+              Clear Search Filters
+            </button>
           </div>
         )}
 
         {/* Human Support Escalation */}
         <div className={styles.supportBanner}>
-          <h2>Need specialized technical support?</h2>
-          <p>If you need assistance configuring complex multichannel NDI audio networks or DAW matrices, our audio engineers are ready to help.</p>
-          <Link href="/support/contact">Speak with an Audio Specialist</Link>
+          <div className={styles.bannerCopy}>
+            <h2>Need direct engineering assistance?</h2>
+            <p>Our audio engineers can help you configure custom Core Audio matrices, hardware driver fusion, or air-gapped studio licensing.</p>
+          </div>
+          <Link href="/support/contact" className="apple-button-primary">
+            Contact Support Desk
+          </Link>
         </div>
       </div>
     </div>

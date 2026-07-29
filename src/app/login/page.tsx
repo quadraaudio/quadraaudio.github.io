@@ -28,15 +28,11 @@ export default function LoginPage() {
   const [regPassword, setRegPassword] = useState("");
 
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [authError, setAuthError] = useState("");
-
   const { login } = useAuth();
   const router = useRouter();
 
-  // Real Google Client ID from user's Google Cloud Console
   const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "120489321679-udegv4a0kl5o193bqnji07351kseca47.apps.googleusercontent.com";
 
-  // Sign in existing Quadra ID
   const handleSignInEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim()) setSignInStep("password");
@@ -48,9 +44,7 @@ export default function LoginPage() {
     router.push("/account");
   };
 
-  // 1-Click Frictionless Google OAuth Sign-In (Apple UX)
   const handleGoogleSignIn = () => {
-    setAuthError("");
     setGoogleLoading(true);
 
     if (window.google?.accounts?.oauth2) {
@@ -66,7 +60,6 @@ export default function LoginPage() {
               const googleUser = await res.json();
 
               if (googleUser.email) {
-                // Instant 1-click login & account creation (Pure Apple UX)
                 login(googleUser.email, {
                   name: googleUser.name || googleUser.given_name || googleUser.email.split("@")[0],
                   authProvider: "google",
@@ -81,14 +74,12 @@ export default function LoginPage() {
           }
           setGoogleLoading(false);
         },
-        error_callback: (err: any) => {
-          console.error("Google OAuth error:", err);
+        error_callback: () => {
           setGoogleLoading(false);
         }
       });
       client.requestAccessToken();
     } else {
-      // Direct Google OAuth 2.0 Popup
       const redirectUri = window.location.origin + "/login";
       const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(GOOGLE_CLIENT_ID)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=email%20profile`;
       
@@ -112,7 +103,6 @@ export default function LoginPage() {
     }
   };
 
-  // Clean 2-Step Email Account Creation
   const handleSignUpStep1 = (e: React.FormEvent) => {
     e.preventDefault();
     if (regName.trim() && regEmail.trim()) {
@@ -133,31 +123,32 @@ export default function LoginPage() {
   };
 
   return (
-    <div className={styles.page}>
-      <ThemeSwitcher forceTheme="light" />
+    <div className={styles.loginPage}>
+      <ThemeSwitcher forceTheme="dark" />
 
-      {/* Google Identity Services SDK */}
       <Script 
         src="https://accounts.google.com/gsi/client" 
         strategy="afterInteractive"
       />
 
-      <div className={styles.container}>
+      <div className={styles.loginContainer}>
 
-        <h1 className={styles.title}>
-          Sign in to Quadra.
-        </h1>
+        {/* Quadra ID Badge Header */}
+        <div className={styles.idBadgeHeader}>
+          <div className={styles.idIconCircle}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <h1 className={styles.loginTitle}>Quadra ID</h1>
+          <p className={styles.loginSub}>Manage your Hydra licenses, active Mac devices, and studio updates.</p>
+        </div>
 
-        <div className={styles.columns}>
+        <div className={styles.loginColumns}>
 
-          {/* =========================================
-             Left Column: Sign in with Quadra ID
-             ========================================= */}
-          <div className={styles.column}>
-            <h2 className={styles.colTitle}>Sign in with your Quadra ID</h2>
-            <p className={styles.colDesc}>
-              Your order information, virtual drivers, and licenses will be saved to your account.
-            </p>
+          {/* Left Column: Sign in */}
+          <div className={styles.loginColumn}>
+            <h2 className={styles.colTitle}>Sign In</h2>
 
             {signInStep === "email" ? (
               <form onSubmit={handleSignInEmailSubmit} className={styles.form}>
@@ -189,8 +180,8 @@ export default function LoginPage() {
                   <label htmlFor="remember">Remember me</label>
                 </div>
 
-                <Link href="/support/article/quadra-id-account" className={styles.forgotLink}>
-                  Forgot password?
+                <Link href="/support/article/license-activation" className={styles.forgotLink}>
+                  Forgot Quadra ID or password?
                 </Link>
               </form>
             ) : (
@@ -227,16 +218,10 @@ export default function LoginPage() {
 
           <div className={styles.columnDivider} />
 
-          {/* =========================================
-             Right Column: Create Quadra ID / 1-Click Google OAuth (Apple HIG UX)
-             ========================================= */}
-          <div className={styles.column}>
-            <h2 className={styles.colTitle}>Create your Quadra ID</h2>
-            <p className={styles.colDesc}>
-              One account to manage your Hydra software licenses, active Mac devices, and updates.
-            </p>
+          {/* Right Column: Register / 1-Click Google OAuth */}
+          <div className={styles.loginColumn}>
+            <h2 className={styles.colTitle}>Create Account</h2>
 
-            {/* 1-Click Google OAuth Button (Apple HIG UX) */}
             <button 
               type="button" 
               onClick={handleGoogleSignIn} 
@@ -327,11 +312,9 @@ export default function LoginPage() {
 
         </div>
 
-        {/* Footer */}
         <footer className={styles.gateFooter}>
           <p>
-            Need more help?{" "}
-            <Link href="/support">Contact support</Link>
+            Need help signing in? <Link href="/support">Visit Support Hub</Link>
           </p>
         </footer>
 

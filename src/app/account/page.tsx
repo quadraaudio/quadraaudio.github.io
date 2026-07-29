@@ -20,7 +20,6 @@ export default function AccountDashboard() {
   const [hardwareId, setHardwareId] = useState("");
   const [downloadedQKey, setDownloadedQKey] = useState<any>(null);
 
-  // Guard: if not logged in, redirect to login page
   useEffect(() => {
     if (!isLoggedIn) {
       router.push("/login");
@@ -66,7 +65,6 @@ export default function AccountDashboard() {
 
     setDownloadedQKey(lic);
 
-    // Auto-download real encrypted Base64 .qkey file for Hydra native Mac app
     const blob = new Blob([lic.signature], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -78,14 +76,14 @@ export default function AccountDashboard() {
 
   return (
     <div className={styles.accountPage}>
-      <ThemeSwitcher forceTheme="light" />
+      <ThemeSwitcher forceTheme="dark" />
 
       <div className={styles.accountContainer}>
 
         {/* Greeting Header */}
         <header className={styles.accountHeader}>
           <div>
-            <p className={styles.accountLabel}>Quadra ID Account ({userEmail})</p>
+            <p className={styles.accountLabel}>Quadra ID Account • {userEmail}</p>
             <h1>Hi, {user?.name || "Samuel"}.</h1>
           </div>
           <button onClick={logout} className={styles.signOutBtn}>
@@ -101,22 +99,21 @@ export default function AccountDashboard() {
 
           {loadingDb ? (
             <div className={styles.licenseCard} style={{ padding: "40px", textAlign: "center", color: "#86868b" }}>
-              Checking active licenses on Supabase...
+              Verifying active licenses on Supabase database...
             </div>
           ) : hasActiveLicense ? (
-            /* Active License Card (From Supabase DB) */
             <div className={styles.licenseCard}>
               <div className={styles.cardHeaderRow}>
                 <Image
                   src="/images/hydra_app_icon.jpg"
                   alt="Hydra"
-                  width={80}
-                  height={80}
+                  width={72}
+                  height={72}
                   className={styles.softwareIcon}
                 />
                 <div className={styles.headerMeta}>
                   <h3 className={styles.productName}>Hydra</h3>
-                  <p className={styles.productType}>Perpetual Commercial License · macOS Sonoma 14.0+</p>
+                  <p className={styles.productType}>Perpetual Commercial License • macOS Sonoma 14.0+</p>
                 </div>
               </div>
 
@@ -131,7 +128,7 @@ export default function AccountDashboard() {
                 <div className={styles.infoRow}>
                   <span className={styles.infoLabel}>License Key ID</span>
                   <span className={styles.infoValue}>
-                    <strong>{userLicenseId}</strong>
+                    <code>{userLicenseId}</code>
                   </span>
                 </div>
                 <div className={styles.infoRow}>
@@ -144,27 +141,27 @@ export default function AccountDashboard() {
 
               {/* Actions Row */}
               <div className={styles.actionRow}>
-                <Link href="/hydra" className={styles.downloadButton}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <Link href="/hydra" className="apple-button-primary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: "6px" }}>
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                     <polyline points="7 10 12 15 17 10"/>
                     <line x1="12" y1="15" x2="12" y2="3"/>
                   </svg>
-                  Download Hydra Software
+                  Download Hydra Installer
                 </Link>
 
                 <button
                   className={styles.offlineKeyBtn}
                   onClick={() => setShowOfflineBox(!showOfflineBox)}
                 >
-                  {showOfflineBox ? "Hide Offline Generator" : "Generate Offline License (.qkey)"}
+                  {showOfflineBox ? "Hide Generator" : "Generate Offline .qkey File"}
                 </button>
               </div>
 
               {/* Offline License Generator Box */}
               {showOfflineBox && (
                 <div className={styles.offlineBox}>
-                  <h4>Offline Studio License (.qkey)</h4>
+                  <h4>Air-Gapped Studio License Generator (.qkey)</h4>
                   <p>
                     For studio computers without internet access. Enter your Mac's Hardware ID (found in Hydra &gt; License &gt; Offline Activation):
                   </p>
@@ -185,25 +182,24 @@ export default function AccountDashboard() {
 
                   {downloadedQKey && (
                     <div className={styles.qkeySuccess}>
-                      ✓ File <strong>hydra_{downloadedQKey.hardwareId}.qkey</strong> downloaded for {userEmail}! Import this file into Hydra software on your offline studio Mac.
+                      ✓ File <strong>hydra_{downloadedQKey.hardwareId}.qkey</strong> downloaded for {userEmail}! Import this file into Hydra software on your air-gapped Mac.
                     </div>
                   )}
                 </div>
               )}
             </div>
           ) : (
-            /* Empty State: No Licenses Yet */
             <div className={styles.licenseCard} style={{ padding: "48px 32px", textAlign: "center" }}>
-              <h3 style={{ fontSize: "21px", fontWeight: 600, marginBottom: "8px" }}>No active software licenses</h3>
+              <h3 style={{ fontSize: "21px", fontWeight: 600, marginBottom: "8px", color: "#ffffff" }}>No active software licenses</h3>
               <p style={{ fontSize: "15px", color: "#86868b", maxWidth: "500px", margin: "0 auto 24px" }}>
-                You don't have an active Quadra software license associated with <strong>{userEmail}</strong> yet. Visit our store or download the 90-day free trial.
+                You don't have an active Quadra software license associated with <strong>{userEmail}</strong> yet. Download our 90-day trial or purchase a commercial license.
               </p>
               <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
                 <Link href="/store" className="apple-button-primary">
                   Visit Quadra Store
                 </Link>
                 <Link href="/hydra" className="apple-button-secondary">
-                  Download Free Trial
+                  Download 90-Day Free Trial
                 </Link>
               </div>
             </div>
@@ -214,45 +210,45 @@ export default function AccountDashboard() {
 
         {/* Section: Account Settings */}
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Account Settings</h2>
+          <h2 className={styles.sectionTitle}>Account &amp; Security</h2>
 
           <div className={styles.quickLinksGrid}>
             <Link href="/store/checkout/payment" className={styles.linkCard}>
               <div className={styles.linkCardIcon}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0071e3" strokeWidth="1.5" strokeLinecap="round">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2997ff" strokeWidth="1.5">
                   <rect x="2" y="5" width="20" height="14" rx="2"/>
                   <path d="M2 10h20"/>
                 </svg>
               </div>
               <div>
                 <h3>Payment Methods</h3>
-                <p>Manage your saved payment methods.</p>
+                <p>Manage express checkout cards &amp; PayPal.</p>
               </div>
             </Link>
 
-            <Link href="/support/article/quadra-id-account" className={styles.linkCard}>
+            <Link href="/support/article/license-activation" className={styles.linkCard}>
               <div className={styles.linkCardIcon}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0071e3" strokeWidth="1.5" strokeLinecap="round">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2997ff" strokeWidth="1.5">
                   <path d="M9 11l3 3L22 4"/>
                   <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
                 </svg>
               </div>
               <div>
-                <h3>Order History</h3>
-                <p>View invoices and license receipts.</p>
+                <h3>Order Receipts</h3>
+                <p>View invoices and VAT tax records.</p>
               </div>
             </Link>
 
             <Link href="/support/contact" className={styles.linkCard}>
               <div className={styles.linkCardIcon}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0071e3" strokeWidth="1.5" strokeLinecap="round">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2997ff" strokeWidth="1.5">
                   <circle cx="12" cy="8" r="4"/>
                   <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
                 </svg>
               </div>
               <div>
-                <h3>Quadra ID Support</h3>
-                <p>Contact security &amp; account team.</p>
+                <h3>Security &amp; Support</h3>
+                <p>Contact Quadra ID security team.</p>
               </div>
             </Link>
           </div>

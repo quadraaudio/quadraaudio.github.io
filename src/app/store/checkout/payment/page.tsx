@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import Script from "next/script";
 import Link from "next/link";
-import Image from "next/image";
 import ThemeSwitcher from "@/app/hydra/ThemeSwitcher";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -23,7 +22,6 @@ export default function PaymentPage() {
     totalPrice,
     appliedCoupon,
     discountTotal,
-    finalPrice,
     applyCoupon,
     removeCoupon,
     clearCart,
@@ -41,7 +39,6 @@ export default function PaymentPage() {
 
   const paypalContainerRef = useRef<HTMLDivElement>(null);
 
-  // Default item fallback if cart was empty
   const defaultHydra = products[0];
   const displayItems = items.length > 0 ? items : [{ product: defaultHydra, quantity: 1 }];
   const displayTotalPrice = items.length > 0 ? totalPrice : defaultHydra.price;
@@ -58,7 +55,7 @@ export default function PaymentPage() {
   const displayFinalPrice = Math.max(0, displayTotalPrice - displayDiscount);
   const isFreeOrder = displayFinalPrice === 0;
 
-  const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "sb";
+  const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "AbhXZI5d82CYX2gs9-iCyIWTcTNcH0j9mhoZoge7gR-5_B7eZY4I6MlV3zwqB7M-1lLyZhac_n1-4asNEJGIdgyaQvc0279zm7pzZDamrJ5JvLt1dpqiX1VcTBAShmY2bODAm4IW1Kaa5CaOsTy_SeM95yRjd8u2";
 
   const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,7 +83,6 @@ export default function PaymentPage() {
     clearCart();
   };
 
-  // Render PayPal Smart Payment Buttons dynamically when SDK is ready
   useEffect(() => {
     if (paymentMethod === "paypal" && !isFreeOrder && window.paypal?.Buttons && paypalContainerRef.current) {
       paypalContainerRef.current.innerHTML = "";
@@ -128,12 +124,10 @@ export default function PaymentPage() {
     }
   }, [paymentMethod, displayFinalPrice, isFreeOrder, paypalLoaded]);
 
-  // Immediate PayPal Direct Checkout trigger
   const handleDirectPayPalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setPaypalProcessing(true);
 
-    // If window.paypal is active, launch checkout
     if (window.paypal?.Buttons) {
       try {
         const modalBtn = paypalContainerRef.current?.querySelector("button, div[role='button']") as HTMLElement;
@@ -147,7 +141,6 @@ export default function PaymentPage() {
       }
     }
 
-    // Direct process fallback
     await handleCompleteOrder();
     setPaypalProcessing(false);
   };
@@ -160,20 +153,20 @@ export default function PaymentPage() {
   if (isCompleted) {
     return (
       <div className={styles.page}>
-        <ThemeSwitcher forceTheme="light" />
+        <ThemeSwitcher forceTheme="dark" />
         <div className={styles.successContainer}>
           <div className={styles.checkIcon}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#34c759" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#34c759" strokeWidth="2.5">
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
           </div>
           <h1>Thank you for your order.</h1>
-          <p className={styles.orderNumber}>Order number: QDR-89210492</p>
+          <p className={styles.orderNumber}>Order reference: QDR-89210492</p>
           <p className={styles.successSub}>
             We've sent a confirmation email with your license keys and download instructions. Your license is now active on your Quadra ID.
           </p>
-          <Link href="/account" className={styles.primaryBtn}>
-            Go to Your Account
+          <Link href="/account" className="apple-button-primary">
+            Go to Quadra ID Account
           </Link>
         </div>
       </div>
@@ -182,9 +175,8 @@ export default function PaymentPage() {
 
   return (
     <div className={styles.page}>
-      <ThemeSwitcher forceTheme="light" />
+      <ThemeSwitcher forceTheme="dark" />
 
-      {/* PayPal JS SDK Script */}
       <Script 
         src={`https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=USD`}
         strategy="afterInteractive"
@@ -202,15 +194,12 @@ export default function PaymentPage() {
           <div className={styles.mainColumn}>
             
             {isFreeOrder ? (
-              /* =========================================
-                 Zero-Payment Mode ($0.00 Order - 100% OFF)
-                 ========================================= */
               <section className={styles.section}>
                 <h2>Order Summary &amp; License Activation</h2>
                 <div className={styles.freeOrderNoticeCard}>
                   <div className={styles.freeOrderIcon}>
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#34c759" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20 6L9 17l-5-5"/>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#34c759" strokeWidth="2.5">
+                      <polyline points="20 6 9 17 4 12"/>
                     </svg>
                   </div>
                   <div>
@@ -222,21 +211,17 @@ export default function PaymentPage() {
                 </div>
 
                 <form onSubmit={handleCardSubmit}>
-                  <button type="submit" className={styles.payBtn}>
+                  <button type="submit" className="apple-button-primary" style={{ width: "100%", padding: "14px", marginTop: "16px" }}>
                     Complete Order &amp; Activate License ($0.00)
                   </button>
                 </form>
               </section>
             ) : (
-              /* =========================================
-                 Standard Payment Methods (> $0.00)
-                 ========================================= */
               <>
                 <section className={styles.section}>
                   <h2>Payment Method</h2>
                   
                   <div className={styles.paymentMethods}>
-                    {/* PayPal Radio Card */}
                     <label className={`${styles.methodCard} ${paymentMethod === "paypal" ? styles.selected : ""}`}>
                       <input
                         type="radio"
@@ -246,8 +231,8 @@ export default function PaymentPage() {
                         onChange={() => setPaymentMethod("paypal")}
                       />
                       <div className={styles.methodInfo}>
-                        <span className={styles.methodName}>PayPal</span>
-                        <span className={styles.methodDesc}>Fast and secure checkout via PayPal account.</span>
+                        <span className={styles.methodName}>PayPal Express</span>
+                        <span className={styles.methodDesc}>Fast, encrypted checkout via PayPal account or credit.</span>
                       </div>
                       <div className={styles.paypalLogo}>
                         <svg width="60" height="16" viewBox="0 0 124 33" fill="none">
@@ -257,7 +242,6 @@ export default function PaymentPage() {
                       </div>
                     </label>
 
-                    {/* Credit Card Radio Card */}
                     <label className={`${styles.methodCard} ${paymentMethod === "card" ? styles.selected : ""}`}>
                       <input
                         type="radio"
@@ -274,7 +258,6 @@ export default function PaymentPage() {
                   </div>
                 </section>
 
-                {/* Dynamic Form based on payment method */}
                 {paymentMethod === "card" ? (
                   <section className={styles.section}>
                     <h2>Card Details</h2>
@@ -297,7 +280,7 @@ export default function PaymentPage() {
                           <label htmlFor="cvv">CVV</label>
                         </div>
                       </div>
-                      <button type="submit" className={styles.payBtn}>
+                      <button type="submit" className="apple-button-primary" style={{ width: "100%", padding: "14px", marginTop: "12px" }}>
                         Pay ${displayFinalPrice.toFixed(2)}
                       </button>
                     </form>
@@ -309,12 +292,10 @@ export default function PaymentPage() {
                       Pay securely with your PayPal account or PayPal credit.
                     </p>
 
-                    {/* Container where official PayPal SDK Buttons render */}
                     <div ref={paypalContainerRef} style={{ minHeight: "45px", marginTop: "12px" }} />
 
-                    {/* Fallback Action Button */}
                     <form onSubmit={handleDirectPayPalSubmit} style={{ marginTop: "12px" }}>
-                      <button type="submit" className={styles.paypalBtn} disabled={paypalProcessing}>
+                      <button type="submit" className="apple-button-primary" style={{ width: "100%", padding: "14px" }} disabled={paypalProcessing}>
                         {paypalProcessing ? "Processing PayPal Order..." : `Complete Order with PayPal ($${displayFinalPrice.toFixed(2)})`}
                       </button>
                     </form>
@@ -328,7 +309,6 @@ export default function PaymentPage() {
           {/* Sidebar Summary Column */}
           <div className={styles.sidebarColumn}>
 
-            {/* Promo Code Box */}
             <div className={styles.promoCard}>
               <h4>Promo Code / Coupon</h4>
               {appliedCoupon ? (
@@ -375,15 +355,15 @@ export default function PaymentPage() {
                 </div>
 
                 {appliedCoupon && (
-                  <div className={styles.row} style={{ color: "#1b5e20", fontWeight: 500 }}>
+                  <div className={styles.row} style={{ color: "#34c759", fontWeight: 500 }}>
                     <span>Discount ({appliedCoupon.code})</span>
                     <span>-${displayDiscount.toFixed(2)}</span>
                   </div>
                 )}
 
                 <div className={styles.row}>
-                  <span>Shipping</span>
-                  <span className={styles.free}>FREE</span>
+                  <span>Delivery</span>
+                  <span className={styles.free}>FREE Digital</span>
                 </div>
                 <div className={`${styles.row} ${styles.totalRow}`}>
                   <span>Total</span>

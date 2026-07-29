@@ -1,29 +1,32 @@
 .page {
   width: 100%;
   min-height: 100vh;
-  background-color: #fff;
-  color: #1d1d1f;
+  background-color: var(--bg-primary, #000000);
+  color: var(--text-primary, #f5f5f7);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  padding-bottom: 120px;
 }
 
 .container {
   width: 100%;
   max-width: 980px;
   margin: 0 auto;
-  padding: 60px 22px 120px;
+  padding: 60px 22px 0;
 }
 
 .header {
   margin-bottom: 40px;
 
   h1 {
-    font-size: 40px;
-    font-weight: 600;
-    letter-spacing: -0.015em;
+    font-size: clamp(32px, 5vw, 44px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #ffffff;
     margin-bottom: 8px;
   }
 
   p {
-    font-size: 17px;
+    font-size: 16px;
     color: #86868b;
   }
 }
@@ -31,7 +34,7 @@
 .layoutGrid {
   display: grid;
   grid-template-columns: 1fr 340px;
-  gap: 48px;
+  gap: 40px;
 
   @media (max-width: 834px) {
     grid-template-columns: 1fr;
@@ -53,14 +56,15 @@
     font-size: 21px;
     font-weight: 600;
     letter-spacing: -0.01em;
+    color: #ffffff;
   }
 }
 
 /* Zero-Payment Mode ($0.00 Order) */
 .freeOrderNoticeCard {
-  background-color: #f2f9f4;
-  border: 1px solid #c8e6c9;
-  border-radius: 16px;
+  background-color: rgba(52, 199, 89, 0.1);
+  border: 1px solid rgba(52, 199, 89, 0.3);
+  border-radius: 20px;
   padding: 24px;
   display: flex;
   align-items: flex-start;
@@ -71,7 +75,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background-color: #e8f5e9;
+  background-color: rgba(52, 199, 89, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -79,26 +83,26 @@
 }
 
 .freeOrderTitle {
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 600;
-  color: #1b5e20;
+  color: #34c759;
   margin-bottom: 6px;
 }
 
 .freeOrderDesc {
-  font-size: 15px;
-  color: #2e7d32;
-  line-height: 1.4;
+  font-size: 14px;
+  color: #a1a1a6;
+  line-height: 1.45;
 
   strong {
-    font-weight: 600;
+    color: #ffffff;
   }
 }
 
 .paymentMethods {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .methodCard {
@@ -106,25 +110,26 @@
   align-items: center;
   gap: 16px;
   padding: 20px;
-  border: 1px solid #d2d2d7;
-  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  background-color: #111112;
   cursor: pointer;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition: all 0.2s ease;
 
   input[type="radio"] {
-    accent-color: #0071e3;
-    width: 20px;
-    height: 20px;
+    accent-color: #2997ff;
+    width: 18px;
+    height: 18px;
   }
 
   &:hover {
-    background-color: #f5f5f7;
+    border-color: #2997ff;
   }
 }
 
 .selected {
-  border-color: #0071e3;
-  background-color: rgba(0, 113, 227, 0.03);
+  border-color: #2997ff;
+  background-color: rgba(41, 151, 255, 0.08);
 }
 
 .methodInfo {
@@ -133,12 +138,13 @@
   flex-direction: column;
 
   .methodName {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 600;
+    color: #ffffff;
   }
 
   .methodDesc {
-    font-size: 14px;
+    font-size: 13px;
     color: #86868b;
   }
 }
@@ -155,16 +161,19 @@
 
   input {
     width: 100%;
-    height: 52px;
+    height: 48px;
     padding: 16px;
-    font-size: 16px;
-    border: 1px solid #d2d2d7;
-    border-radius: 10px;
+    font-size: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
     outline: none;
-    transition: border-color 0.2s ease;
+    transition: all 0.2s ease;
 
     &:focus {
-      border-color: #0071e3;
+      border-color: #2997ff;
+      background-color: rgba(255, 255, 255, 0.1);
     }
   }
 
@@ -174,7 +183,7 @@
     top: 50%;
     transform: translateY(-50%);
     color: #86868b;
-    font-size: 16px;
+    font-size: 15px;
     pointer-events: none;
     transition: transform 0.2s ease, font-size 0.2s ease, color 0.2s ease;
   }
@@ -183,7 +192,7 @@
   input:not(:placeholder-shown) ~ label {
     transform: translateY(-130%);
     font-size: 12px;
-    color: #0071e3;
+    color: #2997ff;
   }
 }
 
@@ -192,29 +201,10 @@
   gap: 16px;
 }
 
-.payBtn,
-.paypalBtn {
-  width: 100%;
-  height: 52px;
-  background-color: #0071e3;
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  font-size: 17px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-  margin-top: 12px;
-
-  &:hover {
-    opacity: 0.9;
-  }
-}
-
 .paypalNotice {
-  font-size: 15px;
+  font-size: 14px;
   color: #86868b;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .sidebarColumn {
@@ -224,17 +214,18 @@
 }
 
 .promoCard {
-  background-color: #f5f5f7;
-  border-radius: 16px;
-  padding: 18px 20px;
+  background-color: #111112;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 
   h4 {
     font-size: 14px;
     font-weight: 600;
-    color: #1d1d1f;
+    color: #ffffff;
   }
 }
 
@@ -248,13 +239,15 @@
   height: 38px;
   padding: 0 10px;
   font-size: 13px;
-  border: 1px solid #d2d2d7;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
   outline: none;
   text-transform: uppercase;
 
   &:focus {
-    border-color: #0071e3;
+    border-color: #2997ff;
   }
 }
 
@@ -276,8 +269,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #e8f5e9;
-  color: #1b5e20;
+  background-color: rgba(52, 199, 89, 0.12);
+  border: 1px solid rgba(52, 199, 89, 0.3);
+  color: #34c759;
   padding: 8px 12px;
   border-radius: 8px;
   font-size: 12px;
@@ -288,7 +282,7 @@
 .removeCouponBtn {
   background: none;
   border: none;
-  color: #d32f2f;
+  color: #ff453a;
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
@@ -298,20 +292,22 @@
 
 .couponError {
   font-size: 12px;
-  color: #d32f2f;
+  color: #ff453a;
 }
 
 .summaryCard {
-  background-color: #f5f5f7;
-  border-radius: 18px;
+  background-color: #111112;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
   padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 20px;
 
   h3 {
-    font-size: 19px;
+    font-size: 18px;
     font-weight: 600;
+    color: #ffffff;
   }
 }
 
@@ -326,6 +322,7 @@
   justify-content: space-between;
   align-items: start;
   font-size: 14px;
+  color: #f5f5f7;
 
   p {
     font-size: 12px;
@@ -333,16 +330,11 @@
   }
 }
 
-.emptyText {
-  font-size: 14px;
-  color: #86868b;
-}
-
 .summaryTotals {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  border-top: 1px solid #d2d2d7;
+  gap: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
   padding-top: 16px;
 }
 
@@ -350,6 +342,7 @@
   display: flex;
   justify-content: space-between;
   font-size: 14px;
+  color: #a1a1a6;
 }
 
 .free {
@@ -358,67 +351,56 @@
 }
 
 .totalRow {
-  font-size: 17px;
-  font-weight: 600;
-  padding-top: 8px;
-  border-top: 1px solid #d2d2d7;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .successContainer {
   width: 100%;
-  max-width: 600px;
-  margin: 80px auto;
-  padding: 0 22px;
+  max-width: 540px;
+  margin: 80px auto 0;
+  padding: 48px 32px;
+  background: #111112;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
 
   h1 {
-    font-size: 36px;
-    font-weight: 600;
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffffff;
     margin-bottom: 8px;
   }
 }
 
 .checkIcon {
-  width: 80px;
-  height: 80px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  background-color: rgba(52, 199, 89, 0.1);
+  background-color: rgba(52, 199, 89, 0.15);
+  border: 1px solid rgba(52, 199, 89, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .orderNumber {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
-  color: #86868b;
+  color: #2997ff;
   margin-bottom: 16px;
 }
 
 .successSub {
-  font-size: 17px;
-  color: #515154;
-  line-height: 1.4;
-  margin-bottom: 36px;
-}
-
-.primaryBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 14px 28px;
-  background-color: #0071e3;
-  color: #fff;
-  border-radius: 980px;
-  font-size: 17px;
-  text-decoration: none;
-  transition: opacity 0.2s ease;
-
-  &:hover {
-    opacity: 0.85;
-  }
+  font-size: 15px;
+  color: #a1a1a6;
+  line-height: 1.45;
+  margin-bottom: 32px;
 }

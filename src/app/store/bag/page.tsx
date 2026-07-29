@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import ThemeSwitcher from "@/app/hydra/ThemeSwitcher";
 import { useCart } from "@/contexts/CartContext";
 import { products } from "@/data/products";
@@ -13,7 +12,6 @@ export default function BagPage() {
   const {
     items,
     totalPrice,
-    totalCount,
     appliedCoupon,
     discountTotal,
     finalPrice,
@@ -26,8 +24,6 @@ export default function BagPage() {
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState("");
   const [couponLoading, setCouponLoading] = useState(false);
-
-  const router = useRouter();
 
   const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,18 +42,17 @@ export default function BagPage() {
     }
   };
 
-  // Related products: available products not already in bag
   const bagSlugs = new Set(items.map((i) => i.product.slug));
   const related = products.filter((p) => p.available && !bagSlugs.has(p.slug));
 
   if (items.length === 0) {
     return (
       <div className={styles.page}>
-        <ThemeSwitcher forceTheme="light" />
+        <ThemeSwitcher forceTheme="dark" />
         <div className={styles.emptyState}>
           <h1>Your bag is empty.</h1>
-          <p>Browse our store to find your next tool.</p>
-          <Link href="/store" className={styles.shopBtn}>Continue Shopping</Link>
+          <p>Browse our store to find your next professional audio tool.</p>
+          <Link href="/store" className="apple-button-primary">Continue Shopping</Link>
         </div>
       </div>
     );
@@ -65,7 +60,7 @@ export default function BagPage() {
 
   return (
     <div className={styles.page}>
-      <ThemeSwitcher forceTheme="light" />
+      <ThemeSwitcher forceTheme="dark" />
 
       <div className={styles.container}>
 
@@ -73,9 +68,9 @@ export default function BagPage() {
         <header className={styles.header}>
           <div>
             <h1>Review your bag.</h1>
-            <p className={styles.headerSub}>Free delivery on all software orders.</p>
+            <p className={styles.headerSub}>Instant digital license delivery on all Quadra software.</p>
           </div>
-          <Link href="/store/checkout/gate" className={styles.checkoutBtnTop}>
+          <Link href="/store/checkout/gate" className="apple-button-primary">
             Check Out
           </Link>
         </header>
@@ -87,17 +82,11 @@ export default function BagPage() {
           {items.map((item) => (
             <div key={item.product.slug} className={styles.item}>
               <div className={styles.itemMedia}>
-                {item.product.cardImage ? (
-                  <Image
-                    src={item.product.cardImage}
-                    alt={item.product.name}
-                    width={100}
-                    height={100}
-                    className={styles.itemImg}
-                  />
-                ) : (
-                  <div className={styles.itemImgPlaceholder} />
-                )}
+                <div className={styles.itemImgPlaceholder}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
               </div>
 
               <div className={styles.itemDetails}>
@@ -105,7 +94,7 @@ export default function BagPage() {
                   <h3>{item.product.name}</h3>
                   <p className={styles.itemType}>
                     {item.product.category === "software"
-                      ? "Digital License (Perpetual)"
+                      ? "Perpetual License (2 Mac Activations)"
                       : item.product.category}
                   </p>
                 </div>
@@ -142,12 +131,11 @@ export default function BagPage() {
 
         <div className={styles.divider} />
 
-        {/* Promo Code & Order summary */}
+        {/* Order Summary & Promo Code */}
         <section className={styles.summarySection}>
 
-          {/* Promo Code Input */}
           <div className={styles.promoBox}>
-            <h3>Promo Code / Discount Coupon</h3>
+            <h3>Promo Code / Discount Voucher</h3>
             {appliedCoupon ? (
               <div className={styles.appliedBadge}>
                 <span>✓ Code <strong>{appliedCoupon.code}</strong> Applied ({appliedCoupon.discountPercent > 0 ? `${appliedCoupon.discountPercent}% OFF` : `-$${appliedCoupon.discountAmount}`})</span>
@@ -185,7 +173,7 @@ export default function BagPage() {
 
             <div className={styles.summaryRow}>
               <span>Delivery</span>
-              <span className={styles.free}>Free</span>
+              <span className={styles.free}>Instant Digital</span>
             </div>
 
             <div className={`${styles.summaryRow} ${styles.summaryTotal}`}>
@@ -193,14 +181,13 @@ export default function BagPage() {
               <span>${finalPrice.toFixed(2)}</span>
             </div>
 
-            <Link href="/store/checkout/gate" className={styles.checkoutBtn}>
+            <Link href="/store/checkout/gate" className="apple-button-primary" style={{ width: "100%", padding: "14px", marginTop: "12px" }}>
               Check Out
             </Link>
           </div>
 
         </section>
 
-        {/* Related products */}
         {related.length > 0 && (
           <>
             <div className={styles.divider} />
@@ -211,15 +198,6 @@ export default function BagPage() {
               <div className={styles.relatedGrid}>
                 {related.map((p) => (
                   <Link key={p.slug} href={`/store/${p.slug}`} className={styles.relatedCard}>
-                    {p.cardImage && (
-                      <Image
-                        src={p.cardImage}
-                        alt={p.name}
-                        width={120}
-                        height={120}
-                        className={styles.relatedImg}
-                      />
-                    )}
                     <div className={styles.relatedInfo}>
                       <h3>{p.name}</h3>
                       <p>{p.priceLabel}</p>
