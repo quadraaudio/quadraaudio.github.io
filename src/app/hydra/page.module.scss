@@ -34,8 +34,8 @@
   height: 80px;
   margin-bottom: 24px;
   border-radius: 20px;
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #1e1b4b 100%);
-  box-shadow: 0 12px 36px rgba(59, 130, 246, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  background: linear-gradient(135deg, #0071e3 0%, #0033aa 100%);
+  box-shadow: 0 12px 36px rgba(0, 113, 227, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -81,30 +81,50 @@
   }
 }
 
-.welcomeHeroMedia {
+.welcomeHeroMediaContainer {
+  position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
   border-radius: 24px;
-  background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #0f0c29 60%, #000000 100%);
+  overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.9), inset 0 0 100px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.9);
+}
+
+.heroImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.heroPlayOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 16px;
   cursor: pointer;
-  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+  transition: background 0.3s ease;
 
   &:hover {
-    transform: scale(1.008);
-    box-shadow: 0 50px 120px rgba(59, 130, 246, 0.25);
+    background: rgba(0, 0, 0, 0.4);
+
+    .playButton {
+      transform: scale(1.08);
+    }
   }
 
   span {
     font-size: 15px;
     font-weight: 500;
-    color: #2997ff;
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   }
 }
 
@@ -112,14 +132,15 @@
   width: 68px;
   height: 68px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
 
   svg {
     width: 28px;
@@ -147,6 +168,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 40px;
+  overflow: hidden;
 
   @media (max-width: 734px) {
     flex-direction: column;
@@ -156,7 +178,7 @@
 }
 
 .bannerCopy {
-  max-width: 520px;
+  max-width: 480px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -201,8 +223,22 @@
   }
 }
 
+.bannerAsset {
+  flex: 1;
+  max-width: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+}
+
 /* =========================================
-   Apple Highlights Section ("Get to know Logic Pro")
+   Apple Highlights Section ("Get to know Hydra")
    ========================================= */
 .sectionHighlights {
   width: 100%;
@@ -237,8 +273,7 @@
   background: #161617;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
-  padding: 32px;
-  min-height: 320px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -250,12 +285,16 @@
   }
 }
 
+.highlightCardHeader {
+  padding: 28px 28px 16px;
+}
+
 .highlightHeadline {
-  font-size: 24px;
-  line-height: 1.16667;
+  font-size: 22px;
+  line-height: 1.18182;
   font-weight: 600;
   color: #f5f5f7;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .highlightBody {
@@ -265,19 +304,15 @@
 }
 
 .highlightVisual {
-  margin-top: 24px;
   width: 100%;
-  height: 160px;
-  border-radius: 12px;
-  background: radial-gradient(circle at 50% 50%, #2e1065 0%, #090514 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #a855f7;
+  height: 220px;
+  overflow: hidden;
 
-  svg {
-    width: 64px;
-    height: 64px;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
 }
 
@@ -332,6 +367,20 @@
   }
 }
 
+.appBannerMedia {
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
 /* Feature Cards Row */
 .captionTileRow {
   display: grid;
@@ -347,15 +396,15 @@
   background: #161617;
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 24px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 12px;
 
   h3 {
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 600;
     color: #f5f5f7;
+    margin-bottom: 6px;
   }
 
   p {
@@ -365,19 +414,20 @@
   }
 }
 
+.tileText {
+  padding: 24px 24px 16px;
+}
+
 .tileMedia {
   width: 100%;
-  height: 140px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #1e1b4b 0%, #060417 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #3b82f6;
+  height: 160px;
+  overflow: hidden;
 
-  svg {
-    width: 48px;
-    height: 48px;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
 }
 

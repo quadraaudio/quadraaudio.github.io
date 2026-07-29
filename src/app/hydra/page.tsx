@@ -6,6 +6,26 @@ import ProductRibbon from "@/components/ProductRibbon";
 import Link from "next/link";
 import styles from "./page.module.scss";
 
+// Real high-resolution Apple media assets
+const APPLE_ASSETS = {
+  hero: "https://www.apple.com/v/logic-pro/n/images/overview/welcome/hero_endframe__dc7irycb3gia_large.jpg",
+  banner: "https://www.apple.com/v/logic-pro/n/images/overview/welcome/welcome_banner__ehgiu77lsru6_large.png",
+  highlights: {
+    playground: "https://www.apple.com/v/logic-pro/n/images/overview/highlights/playground__d9sjwzqicsqe_large.jpg",
+    partner: "https://www.apple.com/v/logic-pro/n/images/overview/highlights/partner__exi088xbzt26_large.jpg",
+    beatMaking: "https://www.apple.com/v/logic-pro/n/images/overview/highlights/beat_making__io5w14fjrl6q_large.jpg",
+    sounds: "https://www.apple.com/v/logic-pro/n/images/overview/highlights/sounds_instruments__fpsglohz2jee_large.jpg",
+    mixed: "https://www.apple.com/v/logic-pro/n/images/overview/highlights/mixed_mastered__gfhgq7ngylim_large.jpg",
+    devices: "https://www.apple.com/v/logic-pro/n/images/overview/highlights/devices__d9ntdk3mic2u_large.jpg",
+  },
+  soundsHero: "https://www.apple.com/v/logic-pro/n/images/overview/sounds/hero__ebfnroijwc6e_large.jpg",
+  tiles: {
+    drumKit: "https://www.apple.com/v/logic-pro/n/images/overview/beat_making/drum_kit__cioqfuz0ic2u_large.jpg",
+    sampler: "https://www.apple.com/v/logic-pro/n/images/overview/beat_making/sampler__d2etbz4szeoi_large.jpg",
+    sequencer: "https://www.apple.com/v/logic-pro/n/images/overview/beat_making/sequencer__f1h9xqirvxqq_large.jpg",
+  }
+};
+
 export default function Hydra() {
   return (
     <div className={styles.hydraPage} data-theme="dark">
@@ -48,19 +68,22 @@ export default function Hydra() {
             Combine physical audio interfaces into a single unified driver, patch uncompressed audio between DAWs like Logic Pro and Pro Tools, and stream multichannel audio over NDI® and AVB networks with zero latency.
           </p>
 
-          <div className={styles.welcomeHeroMedia}>
-            <div className={styles.playButton}>
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M8 5v14l11-7z" />
-              </svg>
+          <div className={styles.welcomeHeroMediaContainer}>
+            <img src={APPLE_ASSETS.hero} alt="MacBook Pro and iPad Pro running Hydra audio matrix" className={styles.heroImage} />
+            <div className={styles.heroPlayOverlay}>
+              <div className={styles.playButton}>
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+              <span>Watch the launch film</span>
             </div>
-            <span>Watch the launch film</span>
           </div>
         </section>
 
 
         {/* =========================================
-           2. SECTION BANNER (Quadra Studio Suite)
+           2. SECTION BANNER (Quadra Creator Studio)
            ========================================= */}
         <section className={styles.sectionBanner}>
           <div className={styles.bannerCard}>
@@ -84,6 +107,9 @@ export default function Hydra() {
                 </Link>
               </div>
             </div>
+            <div className={styles.bannerAsset}>
+              <img src={APPLE_ASSETS.banner} alt="Quadra Creator Studio suite icons" />
+            </div>
           </div>
         </section>
 
@@ -96,62 +122,74 @@ export default function Hydra() {
           
           <div className={styles.highlightsGrid}>
             <div className={styles.highlightCard}>
-              <div>
+              <div className={styles.highlightCardHeader}>
                 <h3 className={styles.highlightHeadline}>256-Channel Virtual Patchbay</h3>
                 <p className={styles.highlightBody}>
-                  Route audio freely between any application, hardware input, or virtual Core Audio driver with zero latency and complete signal isolation.
+                  Route audio freely between any application, hardware input, or virtual Core Audio driver with zero latency.
                 </p>
               </div>
               <div className={styles.highlightVisual}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="2" y="4" width="20" height="16" rx="3" />
-                  <path d="M6 12h12M12 6v12" />
-                </svg>
+                <img src={APPLE_ASSETS.highlights.playground} alt="Producer using Hydra on MacBook Pro" />
               </div>
             </div>
 
             <div className={styles.highlightCard}>
-              <div>
+              <div className={styles.highlightCardHeader}>
                 <h3 className={styles.highlightHeadline}>GroundControl Driver Fusion</h3>
                 <p className={styles.highlightBody}>
-                  Combine multiple physical audio interfaces into a single, unified high-channel-count driver without aggregate device clock drift.
+                  Combine multiple physical audio interfaces into a single, unified high-channel-count driver without clock drift.
                 </p>
               </div>
               <div className={styles.highlightVisual}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
-                </svg>
+                <img src={APPLE_ASSETS.highlights.partner} alt="Hydra DSP channel strip and routing controls" />
               </div>
             </div>
 
             <div className={styles.highlightCard}>
-              <div>
+              <div className={styles.highlightCardHeader}>
                 <h3 className={styles.highlightHeadline}>32-Bit Float Audio Engine</h3>
                 <p className={styles.highlightBody}>
                   Ultra-pristine signal quality offering infinite dynamic headroom, zero digital clipping, and sample rates up to 384 kHz.
                 </p>
               </div>
               <div className={styles.highlightVisual}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="12" cy="12" r="9" />
-                  <path d="M12 8v8M8 12h8" />
-                </svg>
+                <img src={APPLE_ASSETS.highlights.beatMaking} alt="Hydra matrix and waveform display" />
               </div>
             </div>
 
             <div className={styles.highlightCard}>
-              <div>
+              <div className={styles.highlightCardHeader}>
                 <h3 className={styles.highlightHeadline}>NDI® & AVB Network Audio</h3>
                 <p className={styles.highlightBody}>
                   Stream up to 128 NDI channels and 256 AVB channels uncompressed over local Ethernet to any Mac or broadcast receiver.
                 </p>
               </div>
               <div className={styles.highlightVisual}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M9 18V5l12-2v13M9 9l12-2" />
-                  <circle cx="6" cy="18" r="3" />
-                  <circle cx="18" cy="16" r="3" />
-                </svg>
+                <img src={APPLE_ASSETS.highlights.sounds} alt="Hydra network audio routing matrix" />
+              </div>
+            </div>
+
+            <div className={styles.highlightCard}>
+              <div className={styles.highlightCardHeader}>
+                <h3 className={styles.highlightHeadline}>Mixing & Master Suite Pro</h3>
+                <p className={styles.highlightBody}>
+                  Integrated precision faders, real-time spectral analysis, and custom AU plugin slots for room calibration.
+                </p>
+              </div>
+              <div className={styles.highlightVisual}>
+                <img src={APPLE_ASSETS.highlights.mixed} alt="Hydra mixing console with 24 track faders" />
+              </div>
+            </div>
+
+            <div className={styles.highlightCard}>
+              <div className={styles.highlightCardHeader}>
+                <h3 className={styles.highlightHeadline}>Seamless Ecosystem Integration</h3>
+                <p className={styles.highlightBody}>
+                  Works effortlessly across Mac, iPadOS, AirPods Max head-tracking, and external controllers like Stream Deck.
+                </p>
+              </div>
+              <div className={styles.highlightVisual}>
+                <img src={APPLE_ASSETS.highlights.devices} alt="Apple ecosystem devices running Hydra software" />
               </div>
             </div>
           </div>
@@ -172,85 +210,52 @@ export default function Hydra() {
 
           <div className={styles.captionTileRow}>
             <div className={styles.captionTileCard}>
-              <div className={styles.tileMedia}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="4" y="4" width="16" height="16" rx="2" />
-                  <circle cx="9" cy="9" r="2" />
-                  <circle cx="15" cy="15" r="2" />
-                </svg>
+              <div className={styles.tileText}>
+                <h3>Virtual Soundcard Engine</h3>
+                <p>Create custom Core Audio virtual devices with up to 256 input and output channels per device.</p>
               </div>
-              <h3>Virtual Soundcard Engine</h3>
-              <p>Create custom Core Audio virtual devices with up to 256 input and output channels per device.</p>
+              <div className={styles.tileMedia}>
+                <img src={APPLE_ASSETS.tiles.drumKit} alt="Virtual Soundcard routing pads" />
+              </div>
             </div>
 
             <div className={styles.captionTileCard}>
-              <div className={styles.tileMedia}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M3 12h18M3 6h18M3 18h18" />
-                </svg>
+              <div className={styles.tileText}>
+                <h3>Application Audio Capture</h3>
+                <p>Grab audio directly from Zoom, Chrome, Discord, or Spotify without needing third-party virtual cables.</p>
               </div>
-              <h3>Application Audio Capture</h3>
-              <p>Grab audio directly from Zoom, Chrome, Discord, or Spotify without needing third-party virtual cables.</p>
+              <div className={styles.tileMedia}>
+                <img src={APPLE_ASSETS.tiles.sampler} alt="Application Audio Capture module" />
+              </div>
             </div>
 
             <div className={styles.captionTileCard}>
-              <div className={styles.tileMedia}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M12 3v18M3 12h18" />
-                </svg>
+              <div className={styles.tileText}>
+                <h3>GroundControl LINK Plugin</h3>
+                <p>AU / VST3 / AAX plugin for direct sub-millisecond audio routing straight from your DAW to Hydra.</p>
               </div>
-              <h3>GroundControl LINK Plugin</h3>
-              <p>AU / VST3 / AAX plugin for direct sub-millisecond audio routing straight from your DAW to Hydra.</p>
+              <div className={styles.tileMedia}>
+                <img src={APPLE_ASSETS.tiles.sequencer} alt="GroundControl LINK routing plugin" />
+              </div>
             </div>
           </div>
         </section>
 
 
         {/* =========================================
-           5. SECTION NETWORK AUDIO & BROADCAST
+           5. SECTION NETWORK AUDIO & SOUNDS
            ========================================= */}
         <section className={styles.sectionApp} id="network">
+          <div className={styles.appBannerMedia}>
+            <img src={APPLE_ASSETS.soundsHero} alt="Studio Display running Hydra Audio Matrix" />
+          </div>
+
           <div className={styles.appHeaderCopy}>
             <span className={styles.appEyebrow}>Networked Audio & Broadcast</span>
             <h2 className={styles.appHeadline}>Audio over IP made seamless.</h2>
             <p className={styles.appCopy}>
               Turn your Mac into a high-capacity network audio hub. Send and receive <strong>multichannel uncompressed audio over local Ethernet</strong> using NDI® and AVB protocols.
             </p>
-          </div>
-
-          <div className={styles.captionTileRow}>
-            <div className={styles.captionTileCard}>
-              <div className={styles.tileMedia}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="12" cy="12" r="8" />
-                  <path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
-                </svg>
-              </div>
-              <h3>128-Channel NDI® Audio Streaming</h3>
-              <p>Send uncompressed multichannel audio across your local network to any NDI-compatible broadcast receiver.</p>
-            </div>
-
-            <div className={styles.captionTileCard}>
-              <div className={styles.tileMedia}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7" />
-                </svg>
-              </div>
-              <h3>256-Channel AVB Protocol Support</h3>
-              <p>Ultra-stable, low-latency Audio Video Bridging network streaming designed for large-scale studio facilities.</p>
-            </div>
-
-            <div className={styles.captionTileCard}>
-              <div className={styles.tileMedia}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="2" y="6" width="20" height="12" rx="2" />
-                  <circle cx="7" cy="12" r="2" />
-                  <circle cx="17" cy="12" r="2" />
-                </svg>
-              </div>
-              <h3>Real-Time Remote Collaboration</h3>
-              <p>Stream studio-quality uncompressed audio directly to remote collaborators over IP with low latency.</p>
-            </div>
           </div>
         </section>
 
@@ -280,18 +285,24 @@ export default function Hydra() {
 
           <div className={styles.captionTileRow}>
             <div className={styles.captionTileCard}>
-              <h3>Mac Compatibility</h3>
-              <p>macOS Sonoma 14.0 or later. Fully native on Apple Silicon (M1/M2/M3/M4) and Intel-based Macs.</p>
+              <div className={styles.tileText}>
+                <h3>Mac Compatibility</h3>
+                <p>macOS Sonoma 14.0 or later. Fully native on Apple Silicon (M1/M2/M3/M4) and Intel-based Macs.</p>
+              </div>
             </div>
 
             <div className={styles.captionTileCard}>
-              <h3>Driver Architecture</h3>
-              <p>Native Core Audio extension with 0ms added driver latency and 32-bit Float processing precision.</p>
+              <div className={styles.tileText}>
+                <h3>Driver Architecture</h3>
+                <p>Native Core Audio extension with 0ms added driver latency and 32-bit Float processing precision.</p>
+              </div>
             </div>
 
             <div className={styles.captionTileCard}>
-              <h3>Channel & Sample Rates</h3>
-              <p>Up to 256 virtual channels. Sample rates from 44.1 kHz to 384 kHz with automatic clock synchronization.</p>
+              <div className={styles.tileText}>
+                <h3>Channel & Sample Rates</h3>
+                <p>Up to 256 virtual channels. Sample rates from 44.1 kHz to 384 kHz with automatic clock synchronization.</p>
+              </div>
             </div>
           </div>
         </section>
