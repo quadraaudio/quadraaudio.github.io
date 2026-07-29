@@ -160,33 +160,59 @@ export async function syncLicenseToSupabase(
 }
 
 /**
- * Fetch licenses for user from Supabase `public.licenses` table with LocalStorage fallback
+ * Fetch licenses for user from Supabase `public.licenses` table with LocalStorage fallback (Foolproof multi-stage query)
  */
 export async function getSupabaseUserLicenses(userEmail: string) {
   if (!userEmail) return [];
 
   const cleanEmail = userEmail.trim().toLowerCase();
 
-  // 1. Query Supabase Database (case-insensitive)
   try {
-    const { data, error } = await supabase
+    // Stage 1: Exact match query
+    const { data: eqData, error: eqErr } = await supabase
+      .from("licenses")
+      .select("*")
+      .eq("user_email", cleanEmail);
+
+    if (!eqErr && eqData && eqData.length > 0) {
+      return eqData;
+    }
+
+    // Stage 2: Case-insensitive ilike query
+    const { data: ilikeData, error: ilikeErr } = await supabase
       .from("licenses")
       .select("*")
       .ilike("user_email", cleanEmail);
 
-    if (!error && data && data.length > 0) {
-      return data;
+    if (!ilikeErr && ilikeData && ilikeData.length > 0) {
+      return ilikeData;
+    }
+
+    // Stage 3: Full table fetch & client-side filter (guarantees match if row exists in DB)
+    const { data: allData, error: allErr } = await supabase
+      .from("licenses")
+      .select("*");
+
+    if (!allErr && allData && allData.length > 0) {
+      const filtered = allData.filter(
+        (l: any) => l.user_email?.trim().toLowerCase() === cleanEmail
+      );
+      if (filtered.length > 0) {
+        return filtered;
+      }
     }
   } catch (err) {
     console.error("Failed to fetch licenses from Supabase:", err);
   }
 
-  // 2. LocalStorage Fallback
+  // Stage 4: LocalStorage Fallback
   try {
     const saved = localStorage.getItem(LOCAL_LICENSES_KEY);
     if (saved) {
       const list = JSON.parse(saved);
-      const filtered = list.filter((l: any) => l.user_email?.toLowerCase() === cleanEmail);
+      const filtered = list.filter(
+        (l: any) => l.user_email?.trim().toLowerCase() === cleanEmail
+      );
       if (filtered.length > 0) return filtered;
     }
   } catch (e) {
