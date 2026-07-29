@@ -63,8 +63,8 @@ export default function Hydra() {
           <h1 className={styles.welcomeEyebrow}>Hydra</h1>
           <h2 className={styles.welcomeHeadline}>Sound thinking.</h2>
           <p className={styles.welcomeBody}>
-            Hydra is the ultimate virtual soundcard and multichannel audio routing software for Mac and iPad.
-            It features a 256-channel virtual patchbay, driver fusion engine, and zero-latency AoIP streaming — giving you <strong>unrestricted creative freedom to route and capture sound without limits.</strong>
+            Hydra is the ultimate virtual soundcard, AoIP network matrix, and spatial audio monitor controller for Mac.
+            It features 4 configurable virtual audio devices with up to 256 I/O channels, GroundControl interface fusion, system-wide application capture, and zero-latency NDI® / AVB streaming — giving you <strong>unrestricted creative freedom to route and capture sound without limits.</strong>
           </p>
 
           <div className={styles.welcomeHeroMediaContainer}>
@@ -95,7 +95,7 @@ export default function Hydra() {
               </span>
               <h2 className={styles.bannerHeadline}>A suite deal for any creator.</h2>
               <p className={styles.bannerDescription}>
-                Hydra is part of Quadra Creator Studio, the essential collection of creative audio software built for macOS and Quadra Silicon.
+                Hydra acts as your central virtual patchbay, monitor controller, and spatial audio renderer — connecting every DAW, interface, and hardware device without physical cabling.
               </p>
               <div className={styles.bannerCtas}>
                 <Link href="/store" className="apple-button-primary">
@@ -127,42 +127,42 @@ export default function Hydra() {
               <div className={styles.highlightMediaCard}>
                 <img src={APPLE_ASSETS.highlights.playground} alt="Producer creating without boundaries on MacBook Pro" />
                 <div className={styles.highlightCaptionOverlay}>
-                  <h3>A musical playground for beats, songwriting, recording, and remixing.</h3>
+                  <h3>256-Channel Configurable Virtual Patchbay for DAWs and system apps.</h3>
                 </div>
               </div>
 
               <div className={styles.highlightMediaCard}>
                 <img src={APPLE_ASSETS.highlights.partner} alt="Hydra channel strip and DSP routing controls" />
                 <div className={styles.highlightCaptionOverlay}>
-                  <h3>Intelligent tools handle the complex so you can focus on the creative.</h3>
+                  <h3>GroundControl Driver Fusion combines up to 8 interfaces into one driver.</h3>
                 </div>
               </div>
 
               <div className={styles.highlightMediaCard}>
                 <img src={APPLE_ASSETS.highlights.beatMaking} alt="Hydra matrix and waveform display" />
                 <div className={styles.highlightCaptionOverlay}>
-                  <h3>Unbeatable features for quick and easy virtual audio routing.</h3>
+                  <h3>32-Bit Float audio engine with infinite dynamic headroom up to 384 kHz.</h3>
                 </div>
               </div>
 
               <div className={styles.highlightMediaCard}>
                 <img src={APPLE_ASSETS.highlights.sounds} alt="Hydra network audio routing matrix" />
                 <div className={styles.highlightCaptionOverlay}>
-                  <h3>Network audio over IP with up to 128 NDI and 256 AVB channels.</h3>
+                  <h3>Stream 128 NDI® and 256 AVB channels over Ethernet with zero latency.</h3>
                 </div>
               </div>
 
               <div className={styles.highlightMediaCard}>
                 <img src={APPLE_ASSETS.highlights.mixed} alt="Hydra mixing console with 24 track faders" />
                 <div className={styles.highlightCaptionOverlay}>
-                  <h3>The tools you need to turn your ideas into fully mixed and mastered tracks.</h3>
+                  <h3>Dolby Atmos 9.4.6 monitoring with Apple Spatial Audio binaural HRTF.</h3>
                 </div>
               </div>
 
               <div className={styles.highlightMediaCard}>
                 <img src={APPLE_ASSETS.highlights.devices} alt="Apple ecosystem devices running Hydra software" />
                 <div className={styles.highlightCaptionOverlay}>
-                  <h3>Your Apple devices, apps, and accessories all play well together.</h3>
+                  <h3>Stream Deck, EUCON, MIDI, and OSC automation for snapshot recall.</h3>
                 </div>
               </div>
 
@@ -179,7 +179,7 @@ export default function Hydra() {
             <span className={styles.appEyebrow}>Virtual Routing Tools</span>
             <h2 className={styles.appHeadline}>Unleash the beats.</h2>
             <p className={styles.appCopy}>
-              Build custom virtual soundcards, <strong>route audio directly between software applications</strong>, and transform samples into entirely new instruments. It’s everything you need to route, split, and bring your ideas to life.
+              Build custom virtual soundcards, <strong>route audio directly between software applications</strong>, and capture system audio with zero latency. It’s everything you need to route, split, and bring your ideas to life.
             </p>
           </div>
 
@@ -188,8 +188,8 @@ export default function Hydra() {
               
               <div className={styles.captionTileItem}>
                 <div className={styles.tileCopy}>
-                  <h3>Build custom virtual soundcards.</h3>
-                  <p>Create Core Audio virtual devices with up to 256 input/output channels per device. Integrated with Step Sequencer for fast workflows.</p>
+                  <h3>4 Custom Virtual Soundcards.</h3>
+                  <p>Configure 4 independent virtual audio drivers with 2 to 256 input/output channels per device. Route audio freely between Logic Pro, Pro Tools, and OBS.</p>
                 </div>
                 <div className={styles.tileMediaFrame}>
                   <img src={APPLE_ASSETS.tiles.drumKit} alt="Virtual Soundcard Engine" />
@@ -198,8 +198,8 @@ export default function Hydra() {
 
               <div className={styles.captionTileItem}>
                 <div className={styles.tileCopy}>
-                  <h3>App Audio Capture & Loopback.</h3>
-                  <p>Record, chop, flip, and transform application audio streams directly from Zoom, Chrome, Discord, or Spotify.</p>
+                  <h3>Core Audio Process Tap.</h3>
+                  <p>Isolate and capture audio streams directly from specific running applications like Zoom, Chrome, Discord, or Spotify with 0ms added driver latency.</p>
                 </div>
                 <div className={styles.tileMediaFrame}>
                   <img src={APPLE_ASSETS.tiles.sampler} alt="App Audio Capture" />
@@ -209,7 +209,7 @@ export default function Hydra() {
               <div className={styles.captionTileItem}>
                 <div className={styles.tileCopy}>
                   <h3>GroundControl LINK Plugin.</h3>
-                  <p>Sub-millisecond DAW routing plugin (AU / VST3 / AAX) for direct signal insertion straight from your DAW channel strips.</p>
+                  <p>Sub-millisecond DAW routing plugin (AU / VST3 / AAX) for direct signal insertion straight from your DAW channel strips into Hydra's virtual patchbay.</p>
                 </div>
                 <div className={styles.tileMediaFrame}>
                   <img src={APPLE_ASSETS.tiles.sequencer} alt="GroundControl LINK plugin" />
@@ -229,7 +229,7 @@ export default function Hydra() {
             <span className={styles.appEyebrow}>Networked Audio & Broadcast</span>
             <h2 className={styles.appHeadline}>Sounds by the trackload.</h2>
             <p className={styles.appCopy}>
-              Turn your Mac into a high-capacity network audio hub. Send and receive <strong>multichannel uncompressed audio over local Ethernet</strong> using NDI® and AVB protocols.
+              Turn your Mac into a high-capacity network audio hub. Send and receive <strong>multichannel uncompressed audio over local Ethernet</strong> using NDI®, AVB, and AES67 RTP protocols.
             </p>
           </div>
 
@@ -247,7 +247,7 @@ export default function Hydra() {
             <span className={styles.appEyebrow}>Spatial Audio & Monitor Control</span>
             <h2 className={styles.appHeadline}>Surround yourself in sound.</h2>
             <p className={styles.appCopy}>
-              Monitor <strong>9.1.6 Dolby Atmos mixes</strong> with built-in binaural renderers, Apple Spatial Audio HRTF head-tracking integration, and custom AU plugin slots for speaker calibration.
+              Monitor <strong>9.4.6 Dolby Atmos mixes</strong> with built-in binaural renderers, Apple Spatial Audio HRTF head-tracking integration, quad-subwoofer bass management, and per-channel AU plugin slots for room correction.
             </p>
           </div>
         </section>
@@ -267,21 +267,21 @@ export default function Hydra() {
               <div className={styles.captionTileItem}>
                 <div className={styles.tileCopy}>
                   <h3>Mac Compatibility</h3>
-                  <p>macOS Sonoma 14.0 or later. Fully native on Apple Silicon (M1/M2/M3/M4) and Intel-based Macs.</p>
+                  <p>macOS Sonoma 14.0 or later. Universal Binary natively optimized for Apple Silicon (M1/M2/M3/M4) and Intel Macs.</p>
                 </div>
               </div>
 
               <div className={styles.captionTileItem}>
                 <div className={styles.tileCopy}>
-                  <h3>Driver Architecture</h3>
-                  <p>Native Core Audio extension with 0ms added driver latency and 32-bit Float processing precision.</p>
+                  <h3>Driver & DSP Architecture</h3>
+                  <p>32-bit Float real-time C++ engine with 0ms added driver latency and sample rates from 44.1 kHz to 384 kHz.</p>
                 </div>
               </div>
 
               <div className={styles.captionTileItem}>
                 <div className={styles.tileCopy}>
-                  <h3>Channel & Sample Rates</h3>
-                  <p>Up to 256 virtual channels. Sample rates from 44.1 kHz to 384 kHz with automatic clock synchronization.</p>
+                  <h3>Network & Protocols</h3>
+                  <p>128 NDI® channels, 256 AVB channels, AES67 SAP/SDP, Core Audio Process Tap, Elgato Stream Deck, EUCON, MIDI, and OSC automation.</p>
                 </div>
               </div>
             </div>

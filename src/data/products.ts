@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────
 // Quadra Product Catalog
-// Single Standalone Software: Hydra
+// Standalone Software: Hydra
 // ─────────────────────────────────────────────
 
 export interface ProductFeature {
@@ -41,88 +41,87 @@ export const products: Product[] = [
   {
     slug: "hydra",
     name: "Hydra",
-    tagline: "Sound thinking. Endless routing.",
+    tagline: "Sound thinking. Boundless routing.",
     description:
-      "The premier virtual soundcard and multichannel audio routing software for macOS. Combine hardware interfaces, route multi-app audio with zero latency, and stream NDI® or AVB network audio with 32-bit float precision.",
+      "The ultimate virtual soundcard, AoIP network matrix, and spatial audio monitor controller for macOS. Combine physical audio interfaces, route multi-app audio with zero latency, stream 128 NDI® / 256 AVB channels, and render 9.4.6 Dolby Atmos mixes with 32-bit float precision.",
     price: 199.99,
     priceLabel: "$199.99 (90-Day Free Trial)",
     badge: "Virtual Audio Matrix",
     badgeColor: "orange",
     category: "software",
-    heroImage: "/images/hydra_app_icon.jpg",
+    heroImage: "https://www.apple.com/v/logic-pro/n/images/overview/welcome/hero_endframe__dc7irycb3gia_large.jpg",
     cardImage: "/images/hydra_app_icon.jpg",
     available: true,
     features: [
       {
         title: "256-Channel Virtual Patchbay",
         description:
-          "Route uncompressed audio freely between any DAW, system application, or virtual driver.",
+          "Route uncompressed audio freely between any DAW, system application, hardware interface, or virtual driver with sub-millisecond buffer speeds.",
       },
       {
         title: "GroundControl Driver Fusion",
         description:
-          "Combine multiple physical audio interfaces into a single unified driver without aggregate clock drift.",
+          "Combine up to 8 physical audio interfaces into a single unified driver without aggregate clock drift or channel loss.",
       },
       {
-        title: "NDI® & AVB Network Streaming",
+        title: "NDI®, AVB & AES67 Network AoIP",
         description:
-          "Stream up to 128 NDI channels and 256 AVB channels over local Ethernet networks.",
+          "Stream up to 128 NDI® channels, 256 AVB channels, and AES67 RTP streams over local Ethernet networks.",
       },
       {
-        title: "Spatial Audio 9.1.6 Monitoring",
+        title: "Spatial Audio 9.4.6 & HRTF",
         description:
-          "Integrated Dolby Atmos rendering with Apple Spatial Audio HRTF binaural headphone monitoring.",
+          "Integrated Dolby Atmos rendering with Apple Spatial Audio HRTF binaural headphone monitoring and head tracking.",
       },
       {
-        title: "32-Bit Float Audio Engine",
+        title: "32-Bit Float C++ Audio Engine",
         description:
-          "Pristine signal quality offering infinite dynamic headroom up to 384 kHz sample rates.",
+          "Pristine signal processing offering infinite dynamic headroom, zero digital clipping, and sample rates up to 384 kHz.",
       },
       {
-        title: "External Controller Automation",
+        title: "Stream Deck, MIDI & OSC Automation",
         description:
-          "Automate routing snapshots using Stream Deck, Eucon, MIDI, or OSC control.",
+          "Save and recall complex matrix routing snapshots via Elgato Stream Deck, EUCON, MIDI Program Changes, or OSC protocols.",
       },
     ],
     specGroups: [
       {
-        title: "Virtual Routing Engine",
+        title: "Virtual Driver & Routing Engine",
         specs: [
-          { label: "Bit Depth", value: "32-bit float processing" },
-          { label: "Sample Rates", value: "44.1 / 48 / 88.2 / 96 / 176.4 / 192 / 384 kHz" },
-          { label: "Channel Capacity", value: "Up to 256 I/O virtual channels per device" },
-          { label: "Added Latency", value: "0ms (Native macOS Core Audio Kernel/System Extension)" },
+          { label: "Processing Precision", value: "32-bit float real-time engine" },
+          { label: "Supported Sample Rates", value: "44.1 / 48 / 88.2 / 96 / 176.4 / 192 / 384 kHz" },
+          { label: "Virtual Devices", value: "4 configurable virtual drivers (2 to 256 I/O channels per device)" },
+          { label: "Added Driver Latency", value: "0ms (Core Audio System Extension)" },
         ],
       },
       {
-        title: "Protocol & Compatibility",
+        title: "Network & Plugin Protocols",
         specs: [
-          { label: "macOS", value: "macOS Sonoma (14.0) or later" },
-          { label: "Architecture", value: "Universal Binary (Apple Silicon M1/M2/M3/M4 & Intel)" },
-          { label: "Network Protocols", value: "NDI® Audio (128 Ch), AVB (256 Ch)" },
-          { label: "Plugin Format", value: "AU / VST3 / AAX (GroundControl LINK)" },
+          { label: "Network Audio (AoIP)", value: "NDI® Audio (128 Ch), AVB (256 Ch), AES67 / SAP SDP" },
+          { label: "Plugin Formats", value: "AU / VST3 / AAX (GroundControl LINK insert plugin)" },
+          { label: "System Audio Capture", value: "Core Audio Process Tap (isolate Chrome, Zoom, Spotify, Discord)" },
+          { label: "Hardware Control", value: "Elgato Stream Deck, EUCON, MIDI, OSC, iOS/Android Remote" },
         ],
       },
       {
         title: "Licensing & Support",
         specs: [
-          { label: "License Type", value: "Single Purchase License — Lifetime Access" },
-          { label: "Activations", value: "2 simultaneous machine activations via Quadra ID" },
-          { label: "Updates", value: "Free minor & major updates included" },
-          { label: "Trial", value: "90-day fully functional trial" },
+          { label: "License Type", value: "Single Purchase Perpetual License — Lifetime Access" },
+          { label: "Machine Activations", value: "2 simultaneous Mac activations via Quadra ID" },
+          { label: "Updates", value: "All minor & major v1.x updates included" },
+          { label: "Free Trial", value: "90-day fully functional trial" },
         ],
       },
     ],
     systemRequirements: [
-      "macOS Sonoma 14.0 or later",
-      "Apple Silicon (M1 or later) or Intel Core i5/i7/i9",
+      "macOS Sonoma (14.0) or later",
+      "Apple Silicon (M1/M2/M3/M4) or Intel Core i5/i7/i9",
       "8 GB RAM minimum (16 GB recommended)",
-      "Gigabit or 10GbE network connection for NDI® / AVB streaming",
+      "Gigabit or 10GbE network connection for NDI® / AVB AoIP streaming",
     ],
   },
 ];
 
-/** Helper: find a product by its slug. Returns Hydra software as default fallback. */
 export function getProductBySlug(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug) || products[0];
 }
