@@ -1,42 +1,32 @@
 // ─────────────────────────────────────────────────────────
-// Quadra Audio — Sanity.io / Decap Headless CMS Integration Layer
+// Quadra Audio — Sanity.io Headless CMS Client Integration
 // Domain: quadraaudio.com
-// Purpose: Interactive Drag-and-Drop Visual Content Editor
+// Purpose: Drag-and-Drop Visual Content & Carousel Editor
 // ─────────────────────────────────────────────────────────
 
-export interface SanityCmsConfig {
-  projectId: string;
-  dataset: string;
-  apiVersion: string;
-  useCdn: boolean;
-}
+import { createClient } from "next-sanity";
 
-export const defaultSanityConfig: SanityCmsConfig = {
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "quadra-audio-cms",
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
-  apiVersion: "2026-07-29",
+export const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "quadra-audio";
+export const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
+export const apiVersion = "2026-07-29";
+
+export const sanityClient = createClient({
+  projectId,
+  dataset,
+  apiVersion,
   useCdn: true,
-};
+});
 
 /**
- * Fetch page content from Sanity.io Headless CMS GROQ query.
- * Non-programmers edit content in Sanity Studio (https://sanity.io/studio)
+ * Fetch page content dynamically from Sanity.io GROQ query
  */
-export async function getSanityPageContent(pageSlug: string) {
-  if (process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) {
-    try {
-      const query = encodeURIComponent(`*[_type == "page" && slug.current == "${pageSlug}"][0]`);
-      const url = `https://${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v${defaultSanityConfig.apiVersion}/data/query/${defaultSanityConfig.dataset}?query=${query}`;
-      
-      const res = await fetch(url);
-      if (res.ok) {
-        const json = await res.json();
-        if (json.result) return json.result;
-      }
-    } catch (err) {
-      console.warn("Sanity.io connection fallback:", err);
-    }
+export async function getSanityPageContent(slug: string = "home") {
+  try {
+    const query = `*[_type == "page" && slug.current == "${slug}"][0]`;
+    const page = await sanityClient.fetch(query);
+    if (page) return page;
+  } catch (err) {
+    console.warn("Sanity CMS fetch fallback to local defaults:", err);
   }
-
-  return null; // Fallback to local default state
+  return null;
 }
