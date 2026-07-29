@@ -8,12 +8,16 @@ export interface User {
   name: string;
   email: string;
   role: "user" | "admin";
+  organization?: string;
+  country?: string;
+  phone?: string;
+  authProvider?: "google" | "quadra";
 }
 
 interface AuthContextValue {
   user: User | null;
   isLoggedIn: boolean;
-  login: (email: string) => void;
+  login: (email: string, details?: Partial<User>) => void;
   logout: () => void;
 }
 
@@ -38,15 +42,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsInitialized(true);
   }, []);
 
-  const login = (email: string) => {
-    // Check if admin email or regular user
+  const login = (email: string, details?: Partial<User>) => {
     const isAdmin = email.toLowerCase().includes("admin") || email.toLowerCase() === "samuel@quadraaudio.com";
 
     const sessionUser: User = {
-      id: "usr_" + Math.random().toString(36).substring(2, 9),
-      name: email.split("@")[0] || "User",
+      id: details?.id || "usr_" + Math.random().toString(36).substring(2, 9),
+      name: details?.name || email.split("@")[0] || "User",
       email: email,
       role: isAdmin ? "admin" : "user",
+      organization: details?.organization || "",
+      country: details?.country || "United States",
+      phone: details?.phone || "",
+      authProvider: details?.authProvider || "quadra",
     };
 
     setUser(sessionUser);
