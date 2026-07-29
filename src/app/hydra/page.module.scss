@@ -16,7 +16,7 @@
 }
 
 /* =========================================
-   1. SECTION WELCOME (Apple Hero)
+   1. SECTION WELCOME (Apple Logic Pro Hero)
    ========================================= */
 .sectionWelcome {
   width: 100%;
@@ -32,7 +32,7 @@
 .appIconBadge {
   width: 88px;
   height: 88px;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
   border-radius: 22px;
   background: linear-gradient(135deg, #0071e3 0%, #0033aa 100%);
   box-shadow: 0 20px 50px rgba(0, 113, 227, 0.4), inset 0 1px 1.5px rgba(255, 255, 255, 0.5);
@@ -54,7 +54,7 @@
   color: #86868b;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .welcomeHeadline {
@@ -156,12 +156,12 @@
 }
 
 /* =========================================
-   2. SECTION BANNER (Apple Creator Studio Banner)
+   2. SECTION BANNER (Apple Creator Studio)
    ========================================= */
 .sectionBanner {
   width: 100%;
   max-width: 980px;
-  margin: 40px auto 120px;
+  margin: 40px auto 140px;
   padding: 0 22px;
 }
 
@@ -242,12 +242,16 @@
 }
 
 /* =========================================
-   3. SECTION HIGHLIGHTS ("Get to know Hydra")
+   3. SECTION HIGHLIGHTS (Apple Media Card Gallery)
    ========================================= */
 .sectionHighlights {
   width: 100%;
-  max-width: 980px;
   margin: 0 auto 140px;
+}
+
+.highlightsHeaderCopy {
+  max-width: 980px;
+  margin: 0 auto 40px;
   padding: 0 22px;
 }
 
@@ -256,66 +260,88 @@
   line-height: 1.08333;
   font-weight: 600;
   color: #f5f5f7;
-  margin-bottom: 40px;
 
   @media (max-width: 734px) {
     font-size: 32px;
   }
 }
 
-/* Apple Highlights Cards: OPEN canvas layout, zero background box around text */
-.highlightsGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 32px;
+/* Apple Media Card Gallery Carousel */
+.highlightsGalleryContainer {
+  width: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-left: max(22px, calc((100vw - 980px) / 2 + 22px));
+  padding-right: max(22px, calc((100vw - 980px) / 2 + 22px));
+  scroll-padding-left: max(22px, calc((100vw - 980px) / 2 + 22px));
 
-  @media (max-width: 734px) {
-    grid-template-columns: 1fr;
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
-.highlightCard {
+.highlightsRow {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  gap: 24px;
+  width: max-content;
+  padding-bottom: 20px;
 }
 
-.highlightCardHeader {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.highlightHeadline {
-  font-size: 24px;
-  line-height: 1.16667;
-  font-weight: 600;
-  color: #f5f5f7;
-}
-
-.highlightBody {
-  font-size: 15px;
-  line-height: 1.46667;
-  color: #86868b;
-}
-
-.highlightVisual {
-  width: 100%;
-  height: 260px;
-  border-radius: 20px;
+.highlightMediaCard {
+  position: relative;
+  width: 820px;
+  height: 560px;
+  border-radius: 28px;
   overflow: hidden;
+  scroll-snap-align: start;
+  flex-shrink: 0;
+
+  @media (max-width: 1068px) {
+    width: 640px;
+    height: 440px;
+  }
+
+  @media (max-width: 734px) {
+    width: 320px;
+    height: 480px;
+  }
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    border-radius: 20px;
+  }
+}
+
+.highlightCaptionOverlay {
+  position: absolute;
+  left: 44px;
+  bottom: 44px;
+  max-width: 580px;
+  z-index: 2;
+
+  @media (max-width: 734px) {
+    left: 24px;
+    bottom: 24px;
+    right: 24px;
+  }
+
+  h3 {
+    font-size: 32px;
+    line-height: 1.125;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+
+    @media (max-width: 734px) {
+      font-size: 22px;
+    }
   }
 }
 
 /* =========================================
-   4. APPLE FLUID APP SECTIONS (Open Typography Canvas + Scroll Gallery)
+   4. APPLE APP SECTIONS (Open Typography Canvas + Caption Tile Gallery)
    ========================================= */
 .sectionApp {
   width: 100%;
@@ -335,7 +361,7 @@
   color: #2997ff;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .appHeadline {
@@ -366,7 +392,7 @@
   }
 }
 
-/* Apple Horizontal Scroll Gallery */
+/* Caption Tile Gallery */
 .scrollGalleryContainer {
   width: 100%;
   overflow-x: auto;
@@ -380,14 +406,14 @@
   }
 }
 
-.galleryRow {
+.captionTileRow {
   display: flex;
-  gap: 28px;
+  gap: 24px;
   width: max-content;
-  padding-bottom: 16px;
+  padding-bottom: 20px;
 }
 
-.galleryCard {
+.captionTileItem {
   width: 440px;
   scroll-snap-align: start;
   display: flex;
@@ -399,14 +425,14 @@
   }
 }
 
-.galleryCardCopy {
+.tileCopy {
   display: flex;
   flex-direction: column;
   gap: 8px;
 
   h3 {
-    font-size: 24px;
-    line-height: 1.16667;
+    font-size: 22px;
+    line-height: 1.18182;
     font-weight: 600;
     color: #f5f5f7;
   }
@@ -418,7 +444,7 @@
   }
 }
 
-.galleryCardMedia {
+.tileMediaFrame {
   width: 100%;
   height: 280px;
   border-radius: 20px;
