@@ -2,7 +2,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { syncLicenseToSupabase } from "@/lib/supabase";
 
 export interface User {
   id: string;
@@ -37,8 +36,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const parsed = JSON.parse(saved);
         setUser(parsed);
-        // Sync license to Supabase on restore
-        syncLicenseToSupabase(parsed.email, parsed.name);
       } catch (e) {
         console.error("Failed to parse auth session:", e);
       }
@@ -63,9 +60,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     setUser(sessionUser);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(sessionUser));
-
-    // Sync license directly into Supabase public.licenses table
-    syncLicenseToSupabase(email, userName);
   };
 
   const logout = () => {
