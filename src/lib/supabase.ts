@@ -11,8 +11,10 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "sb_publish
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+const LOCAL_LICENSES_KEY = "quadra_user_licenses_v1";
+
 /**
- * Validate discount coupon code directly against Supabase database (browser-safe for GitHub Pages static host)
+ * Validate discount coupon code directly against Supabase database
  */
 export async function validateCouponWithSupabase(code: string): Promise<{
   valid: boolean;
@@ -49,7 +51,7 @@ export async function validateCouponWithSupabase(code: string): Promise<{
     console.warn("Supabase direct coupon lookup fallback:", err);
   }
 
-  // 2. Preset Fallbacks (including user generated codes)
+  // 2. Preset Fallbacks
   const PRESET_COUPONS: Record<string, { percent: number; amount: number }> = {
     "ZUSKAB-XOCZEX-7GUGGA": { percent: 100, amount: 0 },
     "QUADRA10": { percent: 10, amount: 0 },
@@ -72,60 +74,103 @@ export async function validateCouponWithSupabase(code: string): Promise<{
 }
 
 /**
- * Sync / Create license in Supabase database `public.licenses` table directly
+ * Sync / Create license in Supabase database `public.licenses` table & LocalStorage
  */
 export async function syncLicenseToSupabase(userEmail: string, userName: string, productSlug: string = "hydra") {
+  if (!userEmail) return null;
+
+  const cleanEmail = userEmail.trim().toLowerCase();
+  const cleanName = userName ? userName.trim() : cleanEmail.split("@")[0];
+
+  const newLicObj = {
+    id: "LIC-" + Math.random().toString(36).substring(2, 10).toUpperCase(),
+    user_email: cleanEmail,
+    user_name: cleanName,
+    product_slug: productSlug,
+    status: "active",
+    issued_at: new Date().toISOString(),
+    expires_at: "PERPETUAL",
+  };
+
+  // 1. Save to LocalStorage immediately for instant UI availability
   try {
-    // Check if license exists
+    const existingLocal = localStorage.getItem(LOCAL_LICENSES_KEY);
+    const list = existingLocal ? JSON.parse(existingLocal) : [];
+    list.unshift(newLicObj);
+    localStorage.setItem(LOCAL_LICENSES_KEY, JSON.stringify(list));
+  } catch (e) {
+    console.error("Failed to save local license fallback:", e);
+  }
+
+  // 2. Sync to Supabase PostgreSQL database
+  try {
     const { data: existing } = await supabase
       .from("licenses")
       .select("*")
-      .eq("user_email", userEmail)
+      .ilike("user_email", cleanEmail)
       .eq("product_slug", productSlug);
 
     if (existing && existing.length > 0) {
       return existing[0];
     }
 
-    // Insert new license row directly into Supabase licenses table
     const { data, error } = await supabase
       .from("licenses")
       .insert([
         {
-          user_email: userEmail,
-          user_name: userName || userEmail.split("@")[0],
+          user_email: cleanEmail,
+          user_name: cleanName,
           product_slug: productSlug,
           status: "active",
         },
       ])
       .select();
 
-    if (!error && data) {
+    if (!error && data && data.length > 0) {
       return data[0];
     }
   } catch (err) {
     console.error("Supabase direct sync failed:", err);
   }
-  return null;
+
+  return newLicObj;
 }
 
 /**
- * Fetch licenses for user from Supabase `public.licenses` table
+ * Fetch licenses for user from Supabase `public.licenses` table with LocalStorage fallback
  */
 export async function getSupabaseUserLicenses(userEmail: string) {
+  if (!userEmail) return [];
+
+  const cleanEmail = userEmail.trim().toLowerCase();
+
+  // 1. Query Supabase Database (case-insensitive)
   try {
     const { data, error } = await supabase
       .from("licenses")
       .select("*")
-      .eq("user_email", userEmail);
+      .ilike("user_email", cleanEmail);
 
-    if (!error && data) {
+    if (!error && data && data.length > 0) {
       return data;
     }
   } catch (err) {
     console.error("Failed to fetch licenses from Supabase:", err);
   }
-  return null;
+
+  // 2. LocalStorage Fallback
+  try {
+    const saved = localStorage.getItem(LOCAL_LICENSES_KEY);
+    if (saved) {
+      const list = JSON.parse(saved);
+      const filtered = list.filter((l: any) => l.user_email?.toLowerCase() === cleanEmail);
+      if (filtered.length > 0) return filtered;
+    }
+  } catch (e) {
+    console.error("Failed to read local licenses:", e);
+  }
+
+  return [];
 }
 
 /**

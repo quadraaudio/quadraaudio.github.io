@@ -67,7 +67,7 @@ export default function PaymentPage() {
   const handleCompleteOrder = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Trigger sync to Supabase licenses table
+    // Sync license directly to Supabase & Local session
     const email = user?.email || "customer@quadraaudio.com";
     const name = user?.name || "Customer";
     await syncLicenseToSupabase(email, name, "hydra");
@@ -89,7 +89,7 @@ export default function PaymentPage() {
           <h1>Thank you for your order.</h1>
           <p className={styles.orderNumber}>Order number: QDR-89210492</p>
           <p className={styles.successSub}>
-            We've sent a confirmation email with your license keys and download instructions. Your license is now active on Supabase.
+            We've sent a confirmation email with your license keys and download instructions. Your license is now active on your Quadra ID.
           </p>
           <Link href="/account" className={styles.primaryBtn}>
             Go to Your Account
