@@ -1,15 +1,15 @@
 .sitemapPage {
   min-height: 100vh;
-  background-color: var(--bg-primary, #000000);
-  color: var(--text-primary, #f5f5f7);
+  background-color: #ffffff;
+  color: #1d1d1f;
   padding-bottom: 120px;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .sitemapHeaderContainer {
   width: 100%;
-  background: #0a0a0c;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: #f5f5f7;
+  border-bottom: 1px solid #d2d2d7;
   padding: 60px 22px;
 }
 
@@ -21,7 +21,7 @@
 .sitemapEyebrow {
   font-size: 12px;
   font-weight: 600;
-  color: #2997ff;
+  color: #0071e3;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   display: block;
@@ -32,7 +32,7 @@
   font-size: clamp(36px, 5vw, 48px);
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #ffffff;
+  color: #1d1d1f;
   margin-bottom: 12px;
 }
 
@@ -74,7 +74,7 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid #d2d2d7;
   padding-bottom: 8px;
 }
 
@@ -97,12 +97,12 @@
   gap: 4px;
   font-size: 15px;
   font-weight: 600;
-  color: #f5f5f7;
+  color: #1d1d1f;
   text-decoration: none;
   transition: color 0.15s ease;
 
   &:hover {
-    color: #2997ff;
+    color: #0071e3;
   }
 }
 
@@ -112,7 +112,7 @@
 
 .linkArrow {
   font-size: 14px;
-  color: #2997ff;
+  color: #0071e3;
 }
 
 .linkDesc {

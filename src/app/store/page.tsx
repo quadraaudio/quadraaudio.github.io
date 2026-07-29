@@ -20,7 +20,7 @@ export default function StorePage() {
 
   return (
     <div className={styles.storePage}>
-      <ThemeSwitcher forceTheme="dark" />
+      <ThemeSwitcher forceTheme="light" />
 
       <div className={styles.storeContent}>
 

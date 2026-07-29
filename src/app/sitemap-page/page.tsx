@@ -63,7 +63,7 @@ const sitemapData = [
 export default function SiteMapPage() {
   return (
     <div className={styles.sitemapPage}>
-      <ThemeSwitcher forceTheme="dark" />
+      <ThemeSwitcher forceTheme="light" />
 
       <div className={styles.sitemapHeaderContainer}>
         <div className={styles.sitemapHeaderContent}>

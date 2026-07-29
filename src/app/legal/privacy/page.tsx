@@ -10,7 +10,7 @@ export const metadata = {
 export default function PrivacyPolicyPage() {
   return (
     <div className={styles.legalPage}>
-      <ThemeSwitcher forceTheme="dark" />
+      <ThemeSwitcher forceTheme="light" />
 
       {/* Sticky Apple Legal SubNav Header */}
       <div className={styles.legalSubNav}>

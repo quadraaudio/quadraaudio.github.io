@@ -124,7 +124,7 @@ export default function LoginPage() {
 
   return (
     <div className={styles.loginPage}>
-      <ThemeSwitcher forceTheme="dark" />
+      <ThemeSwitcher forceTheme="light" />
 
       <Script 
         src="https://accounts.google.com/gsi/client" 

@@ -59,8 +59,8 @@ export default function BagPage() {
   }
 
   return (
-    <div className={styles.page}>
-      <ThemeSwitcher forceTheme="dark" />
+    <div className={styles.bagPage}>
+      <ThemeSwitcher forceTheme="light" />
 
       <div className={styles.container}>
 

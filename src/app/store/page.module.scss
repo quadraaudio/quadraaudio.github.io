@@ -3,8 +3,8 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: var(--bg-primary, #000000);
-  color: var(--text-primary, #f5f5f7);
+  background-color: #f5f5f7;
+  color: #1d1d1f;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
@@ -27,7 +27,7 @@
 }
 
 .whiteText {
-  color: #ffffff;
+  color: #1d1d1f;
 }
 
 .grayText {
@@ -37,7 +37,7 @@
 .divider {
   width: 100%;
   height: 1px;
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: #d2d2d7;
   margin: 40px 0;
 }
 
@@ -64,20 +64,20 @@
 }
 
 .productCard {
-  background: #111112;
+  background: #ffffff;
   border-radius: 24px;
   padding: 44px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 32px;
-  transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
     transform: translateY(-4px);
-    border-color: rgba(41, 151, 255, 0.5);
-    background: #161618;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
   }
 }
 
@@ -90,7 +90,7 @@
 .cardKicker {
   font-size: 12px;
   font-weight: 600;
-  color: #2997ff;
+  color: #bf4800; /* Apple Orange kicker */
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -98,7 +98,7 @@
 .cardTitle {
   font-size: 32px;
   font-weight: 700;
-  color: #ffffff;
+  color: #1d1d1f;
 }
 
 .cardTagline {
@@ -109,7 +109,7 @@
 .cardPrice {
   font-size: 20px;
   font-weight: 600;
-  color: #ffffff;
+  color: #1d1d1f;
   margin-top: 4px;
 }
 
@@ -129,7 +129,7 @@
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  box-shadow: 0 16px 40px rgba(0, 113, 227, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  box-shadow: 0 16px 40px rgba(0, 113, 227, 0.35);
 
   svg {
     width: 52px;
@@ -158,10 +158,11 @@
 }
 
 .helpCard {
-  background: #111112;
+  background: #ffffff;
   border-radius: 20px;
   padding: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -171,17 +172,17 @@
   width: 48px;
   height: 48px;
   border-radius: 14px;
-  background-color: rgba(41, 151, 255, 0.12);
+  background-color: #f5f5f7;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #2997ff;
+  color: #0071e3;
 }
 
 .helpTitle {
   font-size: 18px;
   font-weight: 600;
-  color: #ffffff;
+  color: #1d1d1f;
   margin-bottom: 6px;
 }
 

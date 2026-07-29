@@ -67,7 +67,7 @@ export default function SupportPage() {
 
   return (
     <div className={styles.supportPage}>
-      <ThemeSwitcher forceTheme="dark" />
+      <ThemeSwitcher forceTheme="light" />
       
       {/* Hero Search Section */}
       <section className={styles.heroSection}>

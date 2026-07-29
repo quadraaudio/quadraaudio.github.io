@@ -148,7 +148,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
 
   return (
     <div className={styles.articlePage}>
-      <ThemeSwitcher forceTheme="dark" />
+      <ThemeSwitcher forceTheme="light" />
 
       {/* Apple Support Breadcrumb Bar */}
       <div className={styles.breadcrumbBar}>

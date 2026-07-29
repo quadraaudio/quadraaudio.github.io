@@ -1,8 +1,8 @@
 .loginPage {
   width: 100%;
   min-height: 100vh;
-  background-color: var(--bg-primary, #000000);
-  color: var(--text-primary, #f5f5f7);
+  background-color: #ffffff;
+  color: #1d1d1f;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding-bottom: 120px;
 }
@@ -30,7 +30,7 @@
   height: 72px;
   border-radius: 20px;
   background: linear-gradient(135deg, #0071e3 0%, #0033aa 100%);
-  box-shadow: 0 12px 40px rgba(0, 113, 227, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  box-shadow: 0 12px 32px rgba(0, 113, 227, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -47,7 +47,7 @@
   font-size: clamp(32px, 5vw, 44px);
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #ffffff;
+  color: #1d1d1f;
   margin-bottom: 8px;
 }
 
@@ -59,9 +59,10 @@
 
 .loginColumns {
   width: 100%;
-  background: #111112;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
   padding: 44px;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -84,7 +85,7 @@
   width: 1px;
   height: 100%;
   min-height: 240px;
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: #d2d2d7;
 
   @media (max-width: 734px) {
     width: 100%;
@@ -98,7 +99,7 @@
   font-weight: 600;
   margin-bottom: 20px;
   letter-spacing: -0.01em;
-  color: #ffffff;
+  color: #1d1d1f;
 }
 
 .form {
@@ -110,8 +111,8 @@
 .emailBadge {
   font-size: 13px;
   font-weight: 600;
-  color: #2997ff;
-  background-color: rgba(41, 151, 255, 0.12);
+  color: #0071e3;
+  background-color: #e8f2ff;
   padding: 8px 12px;
   border-radius: 8px;
   margin-bottom: 4px;
@@ -128,10 +129,10 @@
   height: 48px;
   padding: 0 44px 0 16px;
   font-size: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid #d2d2d7;
   border-radius: 12px;
-  background-color: rgba(255, 255, 255, 0.06);
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #1d1d1f;
   outline: none;
   font-family: inherit;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -141,8 +142,8 @@
   }
 
   &:focus {
-    border-color: #2997ff;
-    box-shadow: 0 0 0 3px rgba(41, 151, 255, 0.25);
+    border-color: #0071e3;
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
   }
 }
 
@@ -182,7 +183,7 @@
 
 .forgotLink {
   font-size: 13px;
-  color: #2997ff;
+  color: #0071e3;
   text-decoration: none;
 
   &:hover {
@@ -193,7 +194,7 @@
 .backLink {
   background: none;
   border: none;
-  color: #2997ff;
+  color: #0071e3;
   font-size: 13px;
   cursor: pointer;
   text-align: left;
@@ -207,8 +208,8 @@
 .googleBtn {
   width: 100%;
   height: 48px;
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background-color: #ffffff;
+  border: 1px solid #d2d2d7;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -216,13 +217,13 @@
   gap: 12px;
   font-size: 15px;
   font-weight: 500;
-  color: #ffffff;
+  color: #1d1d1f;
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.14);
-    border-color: #2997ff;
+    background-color: #f5f5f7;
+    border-color: #0071e3;
   }
 }
 
@@ -240,12 +241,12 @@
     left: 0;
     right: 0;
     height: 1px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #e5e5ea;
   }
 
   span {
     position: relative;
-    background-color: #111112;
+    background-color: #ffffff;
     padding: 0 10px;
     font-size: 12px;
     color: #86868b;
@@ -255,9 +256,9 @@
 .createAccountToggleBtn {
   width: 100%;
   height: 48px;
-  background-color: rgba(41, 151, 255, 0.1);
-  color: #2997ff;
-  border: 1px solid rgba(41, 151, 255, 0.3);
+  background-color: #f5f5f7;
+  color: #0071e3;
+  border: 1px solid #d2d2d7;
   border-radius: 12px;
   font-size: 15px;
   font-weight: 500;
@@ -265,8 +266,8 @@
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: #2997ff;
-    color: #ffffff;
+    background-color: #e8e8ed;
+    border-color: #0071e3;
   }
 }
 
@@ -284,7 +285,7 @@
   text-align: center;
 
   a {
-    color: #2997ff;
+    color: #0071e3;
     text-decoration: none;
 
     &:hover {

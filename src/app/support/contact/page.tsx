@@ -20,7 +20,7 @@ export default function ContactSupportPage() {
 
   return (
     <div className={styles.contactPage}>
-      <ThemeSwitcher forceTheme="dark" />
+      <ThemeSwitcher forceTheme="light" />
 
       <div className={styles.contactContainer}>
         <header className={styles.contactHeader}>
