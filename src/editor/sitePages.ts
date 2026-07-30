@@ -13,6 +13,7 @@ export const EDITOR_SITE_PAGES = [
     description: "Página de produto Hydra.",
     href: "/hydra/",
     editable: false,
+    reason: "Página de app: tabs, FAQ e specs fixos no código.",
   },
   {
     id: "store",
@@ -20,6 +21,7 @@ export const EDITOR_SITE_PAGES = [
     description: "Loja e licenças.",
     href: "/store/",
     editable: false,
+    reason: "Página de app: carrinho e checkout com lógica de negócio.",
   },
   {
     id: "support",
@@ -27,6 +29,7 @@ export const EDITOR_SITE_PAGES = [
     description: "Central de suporte.",
     href: "/support/",
     editable: false,
+    reason: "Página de app: artigos ligados ao sistema de suporte.",
   },
   {
     id: "account",
@@ -34,6 +37,7 @@ export const EDITOR_SITE_PAGES = [
     description: "Portal da conta / licenças.",
     href: "/account/",
     editable: false,
+    reason: "Página de app: dados de licença por usuário autenticado.",
   },
   {
     id: "login",
@@ -41,5 +45,6 @@ export const EDITOR_SITE_PAGES = [
     description: "Entrada Quadra ID.",
     href: "/login/",
     editable: false,
+    reason: "Página de app: fluxo de autenticação.",
   },
 ] as const;

@@ -25,7 +25,7 @@ const EditorClient = dynamic(() => import("@/components/editor/EditorClient"), {
 export default function EditorHomePage() {
   return (
     <EditorAuthShell>
-      <EditorClient />
+      <EditorClient slug="home" title="Home" />
     </EditorAuthShell>
   );
 }

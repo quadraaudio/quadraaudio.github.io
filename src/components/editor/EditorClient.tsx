@@ -4,10 +4,14 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { Puck, type Data } from "@puckeditor/core";
 import "@puckeditor/core/puck.css";
-import { puckConfig, defaultHomeData } from "@/editor/puckConfig";
 import {
+  puckEditorConfig,
+  defaultHomeData,
+} from "@/editor/puckConfig";
+import {
+  defaultBlankPageData,
   publishPage,
-  resolveEditorHomeData,
+  resolveEditorPageData,
   saveLocalDraft,
 } from "@/lib/pageStore";
 import { useEditorSession } from "@/components/editor/EditorSession";
@@ -15,7 +19,15 @@ import styles from "./EditorClient.module.scss";
 
 type Status = "idle" | "saving" | "saved" | "error";
 
-export default function EditorClient() {
+export interface EditorClientProps {
+  slug?: string;
+  title?: string;
+}
+
+export default function EditorClient({
+  slug = "home",
+  title = "Home",
+}: EditorClientProps) {
   const { email, logout } = useEditorSession();
   const [data, setData] = useState<Data | null>(null);
   const [status, setStatus] = useState<Status>("idle");
@@ -23,22 +35,23 @@ export default function EditorClient() {
 
   useEffect(() => {
     let cancelled = false;
+    setData(null);
     (async () => {
-      const resolved = await resolveEditorHomeData();
+      const resolved = await resolveEditorPageData(slug, title);
       if (!cancelled) setData(resolved);
     })();
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [slug, title]);
 
   const handlePublish = useCallback(
     async (next: Data) => {
       setStatus("saving");
       setMessage("Publishing…");
       const result = await publishPage({
-        slug: "home",
-        title: "Home",
+        slug,
+        title,
         data: next,
         updatedBy: email,
       });
@@ -50,7 +63,7 @@ export default function EditorClient() {
         setMessage(result.error || "Could not publish to Supabase.");
       }
     },
-    [email],
+    [slug, title, email],
   );
 
   if (!data) {
@@ -61,12 +74,16 @@ export default function EditorClient() {
     );
   }
 
+  const publicPath = slug === "home" ? "/" : `/pages/${slug}/`;
+  const defaultForReset =
+    slug === "home" ? defaultHomeData : defaultBlankPageData(title);
+
   return (
     <div className={styles.shell}>
       <div className={styles.banner} role="status">
         <span>
-          Editando Home · {email} · role até ver capítulos · header/footer no
-          preview
+          Editando {title} · {email} · role até ver capítulos · header/footer
+          no preview
         </span>
         {message ? (
           <span
@@ -87,21 +104,22 @@ export default function EditorClient() {
         <button type="button" className={styles.exit} onClick={logout}>
           Sair
         </button>
-        <Link href="/" className={styles.exit}>
-          Site
+        <Link href={publicPath} className={styles.exit}>
+          Ver página
         </Link>
       </div>
 
       <div className={styles.puckHost}>
         <Puck
-          config={puckConfig}
+          key={slug}
+          config={puckEditorConfig}
           data={data}
-          headerTitle="Home"
-          headerPath="/"
+          headerTitle={title}
+          headerPath={publicPath}
           height="100%"
           iframe={{ enabled: true }}
           onChange={(next) => {
-            saveLocalDraft(next, "home");
+            saveLocalDraft(next, slug);
             setStatus("idle");
             setMessage("Draft saved on this device");
           }}
@@ -121,11 +139,11 @@ export default function EditorClient() {
         onClick={() => {
           if (
             window.confirm(
-              "Reset this page to the default Hydra layout? Unpublished drafts will be replaced.",
+              "Reset this page to the default layout? Unpublished drafts will be replaced.",
             )
           ) {
-            saveLocalDraft(defaultHomeData, "home");
-            setData(defaultHomeData);
+            saveLocalDraft(defaultForReset, slug);
+            setData(defaultForReset);
             setMessage("Reset to defaults (not published yet)");
           }
         }}

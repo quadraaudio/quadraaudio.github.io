@@ -37,23 +37,22 @@ export type QuadraPuckProps = {
   };
 };
 
+const sharedCategories: Config<QuadraPuckProps>["categories"] = {
+  hero: { title: "Hero", components: ["ProductHero"] },
+  storytelling: {
+    title: "Storytelling",
+    components: ["StoryChapter", "FeatureStrip"],
+  },
+};
+
+/**
+ * Public-facing config: no chrome here — GlobalNav/Footer are already
+ * provided by the root layout (SiteChrome) when this renders on the
+ * live site via <Render>. Do NOT add a root wrapper here or the real
+ * site will show a duplicated header/footer.
+ */
 export const puckConfig: Config<QuadraPuckProps> = {
-  categories: {
-    hero: { title: "Hero", components: ["ProductHero"] },
-    storytelling: {
-      title: "Storytelling",
-      components: ["StoryChapter", "FeatureStrip"],
-    },
-  },
-  root: {
-    render: ({ children }) => (
-      <div data-quadra-puck-root="">
-        <GlobalNav />
-        <main style={{ paddingTop: "44px" }}>{children}</main>
-        <GlobalFooter />
-      </div>
-    ),
-  },
+  categories: sharedCategories,
   components: {
     ProductHero: {
       label: "Product Hero",
@@ -188,6 +187,25 @@ export const puckConfig: Config<QuadraPuckProps> = {
         </section>
       ),
     },
+  },
+};
+
+/**
+ * Editor-only config: wraps the canvas with the real GlobalNav/Footer so
+ * admins see an accurate preview while editing. Use this ONLY inside the
+ * <Puck> editor component — never for public <Render>, or the live site
+ * would show the header/footer twice.
+ */
+export const puckEditorConfig: Config<QuadraPuckProps> = {
+  ...puckConfig,
+  root: {
+    render: ({ children }) => (
+      <div data-quadra-puck-root="">
+        <GlobalNav />
+        <main style={{ paddingTop: "44px" }}>{children}</main>
+        <GlobalFooter />
+      </div>
+    ),
   },
 };
 

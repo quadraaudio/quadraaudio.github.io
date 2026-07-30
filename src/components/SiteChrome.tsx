@@ -13,7 +13,10 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
   const isPuckCanvas =
     pathname === "/editor/home" ||
     pathname === "/editor/home/" ||
-    Boolean(pathname?.startsWith("/editor/home/"));
+    Boolean(pathname?.startsWith("/editor/home/")) ||
+    pathname === "/editor/canvas" ||
+    pathname === "/editor/canvas/" ||
+    Boolean(pathname?.startsWith("/editor/canvas/"));
 
   if (isPuckCanvas) {
     return <>{children}</>;
