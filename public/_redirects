@@ -1,0 +1,5 @@
+# Cloudflare Pages _redirects
+# When using edit.quadraaudio.com, send bare root to the editor canvas.
+# Main domain paths are unaffected (host-specific rules need CF Bulk Redirects / Access).
+
+/editor /editor/ 308
