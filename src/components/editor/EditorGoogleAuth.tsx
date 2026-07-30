@@ -100,6 +100,37 @@ export default function EditorGoogleAuthProvider({
   }, []);
 
   useEffect(() => {
+    // next/script only fires onLoad once per src across the whole app.
+    // When this provider remounts on client-side navigation (e.g. /editor/
+    // -> /editor/home/) after the script already loaded, onLoad never fires
+    // again, so we must also detect an already-ready SDK by polling.
+    if (getGoogleOAuth2()) {
+      setGisReady(true);
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      if (getGoogleOAuth2()) {
+        setGisReady(true);
+        window.clearInterval(interval);
+      }
+    }, 150);
+
+    const timeout = window.setTimeout(() => {
+      window.clearInterval(interval);
+      setGisReady((ready) => {
+        if (!ready) setError("Não foi possível carregar o Google Sign-In.");
+        return ready;
+      });
+    }, 8000);
+
+    return () => {
+      window.clearInterval(interval);
+      window.clearTimeout(timeout);
+    };
+  }, []);
+
+  useEffect(() => {
     let cancelled = false;
     async function checkAllowlist() {
       if (!user?.email) {
@@ -167,11 +198,9 @@ export default function EditorGoogleAuthProvider({
       <Script
         src="https://accounts.google.com/gsi/client"
         strategy="afterInteractive"
+        onReady={() => setGisReady(true)}
         onLoad={() => setGisReady(true)}
-        onError={() => {
-          setGisReady(true);
-          setError("Could not load Google Sign-In SDK");
-        }}
+        onError={() => setError("Não foi possível carregar o Google Sign-In SDK")}
       />
       {children}
     </EditorGoogleAuthContext.Provider>
