@@ -16,7 +16,7 @@ interface ProductContextValue {
 
 const ProductContext = createContext<ProductContextValue | null>(null);
 
-const STORAGE_KEY = "quadra_products_catalog_v1";
+const STORAGE_KEY = "quadra_products_catalog_v2";
 
 export function ProductProvider({ children }: { children: React.ReactNode }) {
   const [productsList, setProductsList] = useState<Product[]>(initialProducts);
