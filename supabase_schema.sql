@@ -83,4 +83,101 @@ ON CONFLICT (slug) DO UPDATE SET
   badge = EXCLUDED.badge,
   availability_status = EXCLUDED.availability_status;
 
+-- ─────────────────────────────────────────────────────────
+-- 7. Visual Editor (Puck) — site page JSON storage
+-- ─────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.site_pages (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  slug TEXT UNIQUE NOT NULL,
+  title TEXT NOT NULL DEFAULT 'Untitled',
+  puck_data JSONB NOT NULL DEFAULT '{}'::jsonb,
+  published BOOLEAN NOT NULL DEFAULT false,
+  updated_by TEXT,
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.site_pages ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public read published site pages" ON public.site_pages;
+CREATE POLICY "Public read published site pages"
+  ON public.site_pages
+  FOR SELECT
+  USING (published = true);
+
+CREATE TABLE IF NOT EXISTS public.site_editor_settings (
+  id INT PRIMARY KEY DEFAULT 1 CHECK (id = 1),
+  publish_secret TEXT NOT NULL
+);
+
+ALTER TABLE public.site_editor_settings ENABLE ROW LEVEL SECURITY;
+
+INSERT INTO public.site_editor_settings (id, publish_secret)
+VALUES (1, 'quadra-editor-change-me')
+ON CONFLICT (id) DO NOTHING;
+
+CREATE OR REPLACE FUNCTION public.publish_site_page(
+  p_slug TEXT,
+  p_title TEXT,
+  p_data JSONB,
+  p_secret TEXT,
+  p_updated_by TEXT DEFAULT NULL
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  result public.site_pages;
+BEGIN
+  IF p_secret IS NULL OR p_secret <> (
+    SELECT publish_secret FROM public.site_editor_settings WHERE id = 1
+  ) THEN
+    RAISE EXCEPTION 'unauthorized';
+  END IF;
+
+  INSERT INTO public.site_pages AS sp (slug, title, puck_data, published, updated_by, updated_at)
+  VALUES (p_slug, COALESCE(p_title, 'Untitled'), COALESCE(p_data, '{}'::jsonb), true, p_updated_by, NOW())
+  ON CONFLICT (slug) DO UPDATE SET
+    title = EXCLUDED.title,
+    puck_data = EXCLUDED.puck_data,
+    published = true,
+    updated_by = EXCLUDED.updated_by,
+    updated_at = NOW()
+  RETURNING * INTO result;
+
+  RETURN to_jsonb(result);
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.get_editor_site_page(
+  p_slug TEXT,
+  p_secret TEXT
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  result public.site_pages;
+BEGIN
+  IF p_secret IS NULL OR p_secret <> (
+    SELECT publish_secret FROM public.site_editor_settings WHERE id = 1
+  ) THEN
+    RAISE EXCEPTION 'unauthorized';
+  END IF;
+
+  SELECT * INTO result FROM public.site_pages WHERE slug = p_slug;
+  IF NOT FOUND THEN
+    RETURN NULL;
+  END IF;
+  RETURN to_jsonb(result);
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION public.publish_site_page(TEXT, TEXT, JSONB, TEXT, TEXT) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.get_editor_site_page(TEXT, TEXT) TO anon, authenticated;
+
 

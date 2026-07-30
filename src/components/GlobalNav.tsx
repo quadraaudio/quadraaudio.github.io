@@ -78,7 +78,8 @@ export default function GlobalNav() {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { theme } = useTheme();
   const { totalCount } = useCart();
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user } = useAuth();
+  const isAdmin = isLoggedIn && user?.role === "admin";
 
   // Scroll logic to hide/show Global Nav
   useEffect(() => {
@@ -166,6 +167,14 @@ export default function GlobalNav() {
                 Account
               </Link>
             </li>
+
+            {isAdmin ? (
+              <li className={styles.navItem} onMouseEnter={handleMouseLeave}>
+                <Link href="/editor/" className={styles.navLink}>
+                  Edit
+                </Link>
+              </li>
+            ) : null}
             
             {/* Bag Icon */}
             <li className={styles.navItem} onMouseEnter={handleMouseLeave}>
