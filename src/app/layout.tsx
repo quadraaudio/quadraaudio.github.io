@@ -3,6 +3,7 @@ import { Instrument_Sans } from "next/font/google";
 import "./globals.scss";
 import GlobalNav from "@/components/GlobalNav";
 import GlobalFooter from "@/components/GlobalFooter";
+import EditHostRedirect from "@/components/EditHostRedirect";
 import { ThemeProvider } from "@/components/ThemeContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { ProductProvider } from "@/contexts/ProductContext";
@@ -58,6 +59,7 @@ export default function RootLayout({
             <ProductProvider>
               <CartProvider>
                 <ThemeProvider>
+                  <EditHostRedirect />
                   <GlobalNav />
                   <main style={{ paddingTop: "44px" }}>{children}</main>
                   <GlobalFooter />

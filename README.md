@@ -1,40 +1,42 @@
 # Quadra Audio Website
 
-Next.js site for Quadra / Hydra.
+Next.js site for Quadra / Hydra — deployed on **Cloudflare Pages** (`quadra-audio`).
 
-## Visual Editor (self-hosted Puck)
+## Live
 
-Open-source canvas editor ([Puck](https://puckeditor.com)). **Sanity is not used.**
+- Site: https://quadraaudio.com/ (data-driven Puck home)
+- Editor: https://quadraaudio.com/editor/ (Google + Supabase allowlist)
+- Preview host: https://quadra-audio.pages.dev/
 
-### Access control (Auth0 + Google only)
+## Visual Editor
 
-1. Auth0 Application (SPA) with **only** the `google-oauth2` connection enabled.
-2. Allowed Callback URLs (trailing slash):
-   - `https://quadraaudio.com/editor/callback/`
-   - `https://edit.quadraaudio.com/editor/callback/`
-   - `http://localhost:3000/editor/callback/`
-3. Allowed Logout URLs / Web Origins: same origins.
-4. Env vars:
+Self-hosted [Puck](https://puckeditor.com). Sanity is not used.
 
-```bash
-NEXT_PUBLIC_AUTH0_DOMAIN=your-tenant.auth0.com
-NEXT_PUBLIC_AUTH0_CLIENT_ID=your_spa_client_id
-NEXT_PUBLIC_EDITOR_PUBLISH_SECRET=your-long-secret
-```
+### Access
 
-5. Allowlist in Supabase table `editor_allowlist` — only those emails can open the editor after Google login. Manage rows in the Supabase SQL editor:
+1. Open `/editor/`
+2. **Continuar com Google** (Google Identity Services — only method)
+3. Email must exist in Supabase `editor_allowlist`
 
 ```sql
-INSERT INTO editor_allowlist (email, note) VALUES ('pessoa@empresa.com', 'Editor')
+INSERT INTO editor_allowlist (email, note)
+VALUES ('pessoa@empresa.com', 'Editor')
 ON CONFLICT (email) DO UPDATE SET active = true;
 ```
 
-### Use it
+### Subdomain `edit.quadraaudio.com`
 
-1. Open `/editor/` (or subdomain `edit.quadraaudio.com` pointing at the same static host).
-2. **Continuar com Google** → Auth0 forces Google.
-3. If the Google email is in `editor_allowlist`, the Puck canvas loads.
-4. Edit inline → **Publish** (Supabase `site_pages`).
+1. Cloudflare Pages → project **quadra-audio** → Custom domains → add `edit.quadraaudio.com`
+2. DNS CNAME: `edit` → `quadra-audio.pages.dev` (proxied)
+3. Visiting `https://edit.quadraaudio.com/` redirects to `/editor/`
+
+Optional Auth0 (not required for production Google login):
+
+```bash
+NEXT_PUBLIC_AUTH0_DOMAIN=
+NEXT_PUBLIC_AUTH0_CLIENT_ID=
+NEXT_PUBLIC_EDITOR_PUBLISH_SECRET=quadra-editor-change-me
+```
 
 ### Getting Started
 
@@ -42,5 +44,3 @@ ON CONFLICT (email) DO UPDATE SET active = true;
 npm install
 npm run dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000).

@@ -1,35 +1,25 @@
 "use client";
 
-import { useEffect } from "react";
-import EditorAuthProvider from "@/components/editor/EditorAuthProvider";
-import styles from "@/components/editor/EditorClient.module.scss";
-
 /**
- * Auth0 redirect_uri target. Auth0Provider processes the code/state
- * and onRedirectCallback sends the user back to /editor/.
+ * Reserved for Auth0 redirect flow when NEXT_PUBLIC_AUTH0_* is configured.
+ * Current production auth uses Google GIS on /editor/ directly.
  */
-function CallbackInner() {
-  useEffect(() => {
-    // Fallback if Auth0 SDK does not navigate (e.g. already authenticated)
-    const timer = window.setTimeout(() => {
-      if (!window.location.search.includes("code=") && !window.location.hash) {
-        window.location.replace("/editor/");
-      }
-    }, 2500);
-    return () => window.clearTimeout(timer);
-  }, []);
-
-  return (
-    <div className={styles.gate}>
-      <p>Conectando com Google…</p>
-    </div>
-  );
-}
-
 export default function EditorCallbackPage() {
+  if (typeof window !== "undefined") {
+    window.location.replace("/editor/");
+  }
   return (
-    <EditorAuthProvider>
-      <CallbackInner />
-    </EditorAuthProvider>
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        display: "grid",
+        placeItems: "center",
+        background: "#000",
+        color: "#a1a1a6",
+      }}
+    >
+      Redirecionando…
+    </div>
   );
 }

@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { useAuth0 } from "@auth0/auth0-react";
 import { Puck, type Data } from "@puckeditor/core";
 import "@puckeditor/core/puck.css";
 import { puckConfig, defaultHomeData } from "@/editor/puckConfig";
@@ -11,13 +10,13 @@ import {
   resolveEditorHomeData,
   saveLocalDraft,
 } from "@/lib/pageStore";
-import { getEditorHomeUrl } from "@/lib/auth0Config";
+import { useEditorSession } from "@/components/editor/EditorSession";
 import styles from "./EditorClient.module.scss";
 
 type Status = "idle" | "saving" | "saved" | "error";
 
 export default function EditorClient() {
-  const { user, logout } = useAuth0();
+  const { email, logout } = useEditorSession();
   const [data, setData] = useState<Data | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
@@ -41,7 +40,7 @@ export default function EditorClient() {
         slug: "home",
         title: "Home",
         data: next,
-        updatedBy: user?.email,
+        updatedBy: email,
       });
       if (result.ok) {
         setStatus("saved");
@@ -51,7 +50,7 @@ export default function EditorClient() {
         setMessage(result.error || "Could not publish to Supabase.");
       }
     },
-    [user?.email],
+    [email],
   );
 
   if (!data) {
@@ -66,8 +65,7 @@ export default function EditorClient() {
     <div className={styles.shell}>
       <div className={styles.banner} role="status">
         <span>
-          Quadra Visual Editor · {user?.email} · Google / Auth0 · clique no
-          texto para editar
+          Quadra Visual Editor · {email} · Google · clique no texto para editar
         </span>
         {message ? (
           <span
@@ -82,13 +80,7 @@ export default function EditorClient() {
             {message}
           </span>
         ) : null}
-        <button
-          type="button"
-          className={styles.exit}
-          onClick={() =>
-            logout({ logoutParams: { returnTo: getEditorHomeUrl() } })
-          }
-        >
+        <button type="button" className={styles.exit} onClick={logout}>
           Sair
         </button>
         <Link href="/" className={styles.exit}>
