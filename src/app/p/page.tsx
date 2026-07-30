@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Render, type Data } from "@puckeditor/core";
 import ThemeSetter from "@/components/ThemeSetter";
@@ -12,32 +12,34 @@ function extractSlugFromPath(pathname: string): string | null {
   return match ? match[1] : null;
 }
 
-function CustomPageInner() {
+function useResolvedSlug(): string | null {
   const params = useSearchParams();
-  const [slug, setSlug] = useState<string | null>(null);
-  const [data, setData] = useState<Data | null>(null);
-  const [status, setStatus] = useState<"loading" | "ready" | "not-found">(
-    "loading",
-  );
+  const queryValue = params.get("slug");
 
-  useEffect(() => {
-    // Cloudflare's `/pages/* -> /p/index.html?slug=:splat` rule passes the
-    // splat verbatim, e.g. "my-page/" (trailing slash from trailingSlash
-    // routing) — normalize before using it as a lookup key.
-    const fromQuery = params.get("slug");
+  // Cloudflare's `/pages/* -> /p/?slug=:splat` rule passes the splat
+  // verbatim, e.g. "my-page/" (trailing slash from trailingSlash routing);
+  // window.location is a fallback for direct hits without the query param.
+  // Pure derivation, safe to compute during render (no effect needed).
+  return useMemo(() => {
     const fromPath =
       typeof window !== "undefined"
         ? extractSlugFromPath(window.location.pathname)
         : null;
-    const raw = (fromQuery || fromPath || "").trim().toLowerCase();
-    setSlug(raw.replace(/\/+$/, "") || null);
-  }, [params]);
+    const raw = (queryValue || fromPath || "").trim().toLowerCase();
+    return raw.replace(/\/+$/, "") || null;
+  }, [queryValue]);
+}
+
+function CustomPageInner() {
+  const slug = useResolvedSlug();
+  const [data, setData] = useState<Data | null>(null);
+  const [status, setStatus] = useState<"loading" | "ready" | "not-found">(
+    slug ? "loading" : "not-found",
+  );
 
   useEffect(() => {
-    if (!slug) {
-      setStatus("not-found");
-      return;
-    }
+    if (!slug) return;
+
     let cancelled = false;
     (async () => {
       const remote = await fetchPublishedPage(slug);

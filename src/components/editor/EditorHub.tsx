@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEditorGoogleAuth } from "@/components/editor/EditorGoogleAuth";
@@ -36,16 +36,18 @@ export default function EditorHub() {
   const [creating, setCreating] = useState(false);
   const [formError, setFormError] = useState("");
 
-  const refreshPages = useCallback(async () => {
-    setLoadingPages(true);
-    const pages = await listEditorPages();
-    setCustomPages(pages.filter((p) => p.slug !== "home"));
-    setLoadingPages(false);
-  }, []);
-
   useEffect(() => {
-    void refreshPages();
-  }, [refreshPages]);
+    let cancelled = false;
+    (async () => {
+      const pages = await listEditorPages();
+      if (cancelled) return;
+      setCustomPages(pages.filter((p) => p.slug !== "home"));
+      setLoadingPages(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
