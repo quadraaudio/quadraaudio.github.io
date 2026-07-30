@@ -65,7 +65,8 @@ export default function EditorClient() {
     <div className={styles.shell}>
       <div className={styles.banner} role="status">
         <span>
-          Quadra Visual Editor · {email} · Google · clique no texto para editar
+          Editando Home · {email} · role até ver capítulos · header/footer no
+          preview
         </span>
         {message ? (
           <span
@@ -80,6 +81,9 @@ export default function EditorClient() {
             {message}
           </span>
         ) : null}
+        <Link href="/editor/" className={styles.exit}>
+          Páginas
+        </Link>
         <button type="button" className={styles.exit} onClick={logout}>
           Sair
         </button>

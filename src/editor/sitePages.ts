@@ -1,0 +1,45 @@
+export const EDITOR_SITE_PAGES = [
+  {
+    id: "home",
+    title: "Home",
+    description: "Hero + scroll storytelling (editável no Puck).",
+    href: "/",
+    editHref: "/editor/home/",
+    editable: true,
+  },
+  {
+    id: "hydra",
+    title: "Hydra",
+    description: "Página de produto Hydra.",
+    href: "/hydra/",
+    editable: false,
+  },
+  {
+    id: "store",
+    title: "Store",
+    description: "Loja e licenças.",
+    href: "/store/",
+    editable: false,
+  },
+  {
+    id: "support",
+    title: "Support",
+    description: "Central de suporte.",
+    href: "/support/",
+    editable: false,
+  },
+  {
+    id: "account",
+    title: "Account",
+    description: "Portal da conta / licenças.",
+    href: "/account/",
+    editable: false,
+  },
+  {
+    id: "login",
+    title: "Login",
+    description: "Entrada Quadra ID.",
+    href: "/login/",
+    editable: false,
+  },
+] as const;

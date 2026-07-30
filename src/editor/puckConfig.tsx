@@ -2,6 +2,8 @@
 
 import type { Config, Data } from "@puckeditor/core";
 import type { ReactNode } from "react";
+import GlobalNav from "@/components/GlobalNav";
+import GlobalFooter from "@/components/GlobalFooter";
 import ProductHeroView from "@/components/marketing/ProductHero";
 import StoryChapterView from "@/components/marketing/StoryChapter";
 
@@ -42,6 +44,15 @@ export const puckConfig: Config<QuadraPuckProps> = {
       title: "Storytelling",
       components: ["StoryChapter", "FeatureStrip"],
     },
+  },
+  root: {
+    render: ({ children }) => (
+      <div data-quadra-puck-root="">
+        <GlobalNav />
+        <main style={{ paddingTop: "44px" }}>{children}</main>
+        <GlobalFooter />
+      </div>
+    ),
   },
   components: {
     ProductHero: {
