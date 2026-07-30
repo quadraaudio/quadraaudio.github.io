@@ -2,48 +2,6 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  background-color: var(--bg-tertiary);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
-
-/* Primary Hero: Hydra Pro (Apple Flagship Hero) */
-.heroModule {
-  background: radial-gradient(circle at 50% 65%, #180e29 0%, #080312 60%, #000000 100%);
-  border-bottom: 12px solid #ffffff;
-  position: relative;
-
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: -1px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.4), transparent);
-  }
-}
-
-/* Secondary Hero: Quadra Silicon Core */
-.heroSecondary {
-  background: linear-gradient(180deg, #f5f5f7 0%, #e2e2e7 100%);
-  border-bottom: 12px solid #ffffff;
-}
-
-/* Bento Modules */
-.quadraOsModule {
-  background: radial-gradient(circle at 50% 100%, #1e293b 0%, #0f172a 70%);
-}
-
-.hydraDuoModule {
-  background: linear-gradient(135deg, #000000 0%, #171717 100%);
-}
-
-.storeModule {
-  background: linear-gradient(180deg, #ffffff 0%, #f5f5f7 100%);
-}
-
-.supportModule {
-  background: linear-gradient(180deg, #fbfbfd 0%, #f0f0f5 100%);
-}
-

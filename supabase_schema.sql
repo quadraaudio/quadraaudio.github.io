@@ -26,14 +26,23 @@ CREATE TABLE IF NOT EXISTS public.products (
 );
 
 -- ─────────────────────────────────────────────────────────
--- MIGRATION SCRIPT FOR EXISTING SUPABASE TABLES
--- Run this in SQL Editor to remove legacy 'available' column 
--- and transform 'availability_status' into a native Dropdown!
+-- MIGRATION: ensure availability_status enum column exists
+-- (safe if already migrated)
 -- ─────────────────────────────────────────────────────────
 ALTER TABLE public.products DROP COLUMN IF EXISTS available;
-ALTER TABLE public.products DROP COLUMN IF EXISTS availability_status;
 
-ALTER TABLE public.products ADD COLUMN availability_status public.product_availability NOT NULL DEFAULT 'available';
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'products'
+      AND column_name = 'availability_status'
+  ) THEN
+    ALTER TABLE public.products
+      ADD COLUMN availability_status public.product_availability NOT NULL DEFAULT 'available';
+  END IF;
+END $$;
 
 -- 3. Create Licenses Table
 CREATE TABLE IF NOT EXISTS public.licenses (
@@ -62,10 +71,11 @@ ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.licenses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 
--- Allow public read access to products
-CREATE POLICY "Public products read" ON public.products FOR SELECT USING (true);
+-- Idempotent policies (safe to re-run)
+DROP POLICY IF EXISTS "Public products read" ON public.products;
+DROP POLICY IF EXISTS "Users read own licenses" ON public.licenses;
 
--- Allow authenticated users to view their own licenses
+CREATE POLICY "Public products read" ON public.products FOR SELECT USING (true);
 CREATE POLICY "Users read own licenses" ON public.licenses FOR SELECT USING (true);
 
 -- 6. Insert / Update Initial Quadra Audio Products
@@ -82,5 +92,72 @@ ON CONFLICT (slug) DO UPDATE SET
   category = EXCLUDED.category,
   badge = EXCLUDED.badge,
   availability_status = EXCLUDED.availability_status;
+
+-- 7. Create Pages Table for Puck Visual Editor
+CREATE TABLE IF NOT EXISTS public.pages (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  slug TEXT UNIQUE NOT NULL,
+  title TEXT NOT NULL,
+  data JSONB NOT NULL DEFAULT '{}'::jsonb,
+  status TEXT NOT NULL DEFAULT 'published',
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_by TEXT
+);
+
+ALTER TABLE public.pages ENABLE ROW LEVEL SECURITY;
+
+-- Replace legacy open policies if they exist
+DROP POLICY IF EXISTS "Public pages read" ON public.pages;
+DROP POLICY IF EXISTS "Authenticated pages edit" ON public.pages;
+DROP POLICY IF EXISTS "pages_public_read" ON public.pages;
+DROP POLICY IF EXISTS "pages_auth_write" ON public.pages;
+DROP POLICY IF EXISTS "pages_auth_select" ON public.pages;
+DROP POLICY IF EXISTS "pages_auth_insert" ON public.pages;
+DROP POLICY IF EXISTS "pages_auth_update" ON public.pages;
+DROP POLICY IF EXISTS "pages_auth_delete" ON public.pages;
+
+-- Anyone can read published pages (public site + static export)
+CREATE POLICY "pages_public_read"
+  ON public.pages
+  FOR SELECT
+  USING (status = 'published');
+
+-- Signed-in editors can read all rows (drafts + published)
+CREATE POLICY "pages_auth_select"
+  ON public.pages
+  FOR SELECT
+  TO authenticated
+  USING (true);
+
+CREATE POLICY "pages_auth_insert"
+  ON public.pages
+  FOR INSERT
+  TO authenticated
+  WITH CHECK (true);
+
+CREATE POLICY "pages_auth_update"
+  ON public.pages
+  FOR UPDATE
+  TO authenticated
+  USING (true)
+  WITH CHECK (true);
+
+CREATE POLICY "pages_auth_delete"
+  ON public.pages
+  FOR DELETE
+  TO authenticated
+  USING (true);
+
+-- Editor setup (Google OAuth — same Client ID already used on the site):
+-- 1. Google Cloud Console → OAuth client → add Authorized redirect URI:
+--    https://<YOUR_PROJECT_REF>.supabase.co/auth/v1/callback
+-- 2. Supabase → Authentication → Providers → Google → Enable
+--    paste Client ID + Client Secret from Google Cloud
+-- 3. Supabase → Authentication → URL Configuration:
+--    Site URL: http://localhost:3000  (and later https://quadraaudio.com)
+--    Redirect URLs: http://localhost:3000/edit/ , https://quadraaudio.com/edit/
+-- 4. Optional: set NEXT_PUBLIC_EDITOR_EMAILS=you@gmail.com in .env to lock the canvas
+-- 5. Open /edit/ → Sign in with Google → Publish
+
 
 

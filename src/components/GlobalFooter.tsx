@@ -76,6 +76,10 @@ export default function GlobalFooter() {
   const pathname = usePathname();
   const { theme } = useTheme();
   const { isLoggedIn } = useAuth();
+
+  if (pathname?.startsWith("/edit")) {
+    return null;
+  }
   
   // Resolve footnotes for current path, fallback to empty array if no specific footnotes exist
   const currentFootnotes = footnotesByPath[pathname] || footnotesByPath['/'];

@@ -52,7 +52,7 @@ export const products: Product[] = [
     badge: "Virtual Audio Matrix",
     badgeColor: "orange",
     category: "software",
-    heroImage: "https://www.apple.com/v/logic-pro/n/images/overview/welcome/hero_endframe__dc7irycb3gia_large.jpg",
+    heroImage: "/images/home_hero_quadra.jpg",
     cardImage: "/images/hydra_app_icon.jpg",
     available: true,
     availabilityStatus: "available",

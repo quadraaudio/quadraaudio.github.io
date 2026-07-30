@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Instrument_Sans } from "next/font/google";
 import "./globals.scss";
 import GlobalNav from "@/components/GlobalNav";
 import GlobalFooter from "@/components/GlobalFooter";
@@ -7,6 +8,13 @@ import { CartProvider } from "@/contexts/CartContext";
 import { ProductProvider } from "@/contexts/ProductContext";
 import { SiteContentProvider } from "@/contexts/SiteContentContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+
+const instrumentSans = Instrument_Sans({
+  subsets: ["latin"],
+  variable: "--font-quadra",
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
+});
 
 export const metadata: Metadata = {
   title: {
@@ -43,7 +51,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={instrumentSans.variable}>
       <body>
         <AuthProvider>
           <SiteContentProvider>

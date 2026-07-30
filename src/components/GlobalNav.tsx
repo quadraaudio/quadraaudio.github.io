@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTheme } from "./ThemeContext";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -73,12 +74,17 @@ const menuData = {
 
 
 export default function GlobalNav() {
+  const pathname = usePathname();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isHidden, setIsHidden] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { theme } = useTheme();
   const { totalCount } = useCart();
   const { isLoggedIn } = useAuth();
+
+  if (pathname?.startsWith("/edit")) {
+    return null;
+  }
 
   // Scroll logic to hide/show Global Nav
   useEffect(() => {
