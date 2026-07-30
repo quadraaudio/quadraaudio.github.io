@@ -43,7 +43,7 @@ function CanvasInner() {
     );
   }
 
-  return <EditorClient slug={slug} title={title} />;
+  return <EditorClient key={slug} slug={slug} title={title} />;
 }
 
 export default function EditorCanvasPage() {

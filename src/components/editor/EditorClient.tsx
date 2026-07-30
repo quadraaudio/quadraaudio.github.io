@@ -35,7 +35,6 @@ export default function EditorClient({
 
   useEffect(() => {
     let cancelled = false;
-    setData(null);
     (async () => {
       const resolved = await resolveEditorPageData(slug, title);
       if (!cancelled) setData(resolved);
