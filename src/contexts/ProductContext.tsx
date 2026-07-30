@@ -1,10 +1,13 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { products as initialProducts, type Product } from "@/data/products";
+import { getSupabaseProducts, supabase } from "@/lib/supabase";
 
 interface ProductContextValue {
   productsList: Product[];
+  isLoading: boolean;
+  refreshProducts: () => Promise<void>;
   addProduct: (newProduct: Product) => void;
   updateProduct: (slug: string, updated: Partial<Product>) => void;
   deleteProduct: (slug: string) => void;
@@ -17,8 +20,24 @@ const STORAGE_KEY = "quadra_products_catalog_v1";
 
 export function ProductProvider({ children }: { children: React.ReactNode }) {
   const [productsList, setProductsList] = useState<Product[]>(initialProducts);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const fetchCatalog = useCallback(async () => {
+    try {
+      const fetched = await getSupabaseProducts();
+      if (fetched && fetched.length > 0) {
+        setProductsList(fetched);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(fetched));
+      }
+    } catch (err) {
+      console.warn("Failed to sync products from Supabase:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
+    // 1. Initial LocalStorage fallback read for speed
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
@@ -27,7 +46,27 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
         console.error("Failed to parse saved products:", e);
       }
     }
-  }, []);
+
+    // 2. Fetch fresh catalog from Supabase
+    fetchCatalog();
+
+    // 3. Subscribe to Supabase Realtime changes on `products` table
+    const channel = supabase
+      .channel("supabase-products-changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "products" },
+        (_payload) => {
+          console.log("Realtime product change detected from Supabase, refreshing catalog...");
+          fetchCatalog();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchCatalog]);
 
   const saveProducts = (updatedList: Product[]) => {
     setProductsList(updatedList);
@@ -59,6 +98,8 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
     <ProductContext.Provider
       value={{
         productsList,
+        isLoading,
+        refreshProducts: fetchCatalog,
         addProduct,
         updateProduct,
         deleteProduct,
@@ -77,3 +118,4 @@ export function useProducts() {
   }
   return ctx;
 }
+

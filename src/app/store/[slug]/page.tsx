@@ -13,8 +13,6 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
 
   if (!product) notFound();
 
-  // If product exists but isn't available yet, redirect to store
-  if (!product.available) redirect("/store");
-
   return <ProductPageClient product={product} />;
 }
+

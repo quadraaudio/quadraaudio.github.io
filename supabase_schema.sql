@@ -4,7 +4,14 @@
 -- Paste this script into Supabase Dashboard -> SQL Editor
 -- ─────────────────────────────────────────────────────────
 
--- 1. Create Products Table
+-- 1. Create Enum Type for Product Availability Status
+DO $$ BEGIN
+    CREATE TYPE public.product_availability AS ENUM ('available', 'sold_out', 'coming_soon');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+-- 2. Create Products Table (Single Status Dropdown)
 CREATE TABLE IF NOT EXISTS public.products (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   slug TEXT UNIQUE NOT NULL,
@@ -14,11 +21,21 @@ CREATE TABLE IF NOT EXISTS public.products (
   price NUMERIC(10, 2) NOT NULL DEFAULT 0,
   category TEXT NOT NULL DEFAULT 'software',
   badge TEXT,
-  available BOOLEAN DEFAULT true,
+  availability_status public.product_availability NOT NULL DEFAULT 'available',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 2. Create Licenses Table
+-- ─────────────────────────────────────────────────────────
+-- MIGRATION SCRIPT FOR EXISTING SUPABASE TABLES
+-- Run this in SQL Editor to remove legacy 'available' column 
+-- and transform 'availability_status' into a native Dropdown!
+-- ─────────────────────────────────────────────────────────
+ALTER TABLE public.products DROP COLUMN IF EXISTS available;
+ALTER TABLE public.products DROP COLUMN IF EXISTS availability_status;
+
+ALTER TABLE public.products ADD COLUMN availability_status public.product_availability NOT NULL DEFAULT 'available';
+
+-- 3. Create Licenses Table
 CREATE TABLE IF NOT EXISTS public.licenses (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_email TEXT NOT NULL,
@@ -30,7 +47,7 @@ CREATE TABLE IF NOT EXISTS public.licenses (
   expires_at TEXT DEFAULT 'PERPETUAL'
 );
 
--- 3. Create Orders Table
+-- 4. Create Orders Table
 CREATE TABLE IF NOT EXISTS public.orders (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   order_number TEXT UNIQUE NOT NULL,
@@ -40,7 +57,7 @@ CREATE TABLE IF NOT EXISTS public.orders (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 4. Enable Row Level Security (RLS) for Security
+-- 5. Enable Row Level Security (RLS) for Security
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.licenses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
@@ -51,12 +68,12 @@ CREATE POLICY "Public products read" ON public.products FOR SELECT USING (true);
 -- Allow authenticated users to view their own licenses
 CREATE POLICY "Users read own licenses" ON public.licenses FOR SELECT USING (true);
 
--- 5. Insert Initial Quadra Audio Products
-INSERT INTO public.products (slug, name, tagline, description, price, category, badge, available)
+-- 6. Insert / Update Initial Quadra Audio Products
+INSERT INTO public.products (slug, name, tagline, description, price, category, badge, availability_status)
 VALUES 
-  ('hydra', 'Hydra', 'Sound thinking. Boundless routing.', 'The ultimate virtual soundcard, AoIP network matrix, and spatial audio monitor controller for macOS.', 199.99, 'software', 'Virtual Audio Matrix', true),
-  ('hydra-pro', 'Hydra Pro', 'Pure spatial audio matrix routing.', 'The premier 128-channel virtual audio router engineered for macOS.', 199.99, 'software', 'New Software', true),
-  ('quadra-core-io', 'Quadra Core I/O', 'Studio Thunderbolt audio interface.', 'Hardware companion rack for Hydra Pro with 32-bit float AD/DA converters.', 0, 'hardware', 'Coming Soon', false)
+  ('hydra', 'Hydra', 'Sound thinking. Boundless routing.', 'The ultimate virtual soundcard, AoIP network matrix, and spatial audio monitor controller for macOS.', 199.99, 'software', 'Virtual Audio Matrix', 'available'),
+  ('hydra-pro', 'Hydra Pro', 'Pure spatial audio matrix routing.', 'The premier 128-channel virtual audio router engineered for macOS.', 199.99, 'software', 'New Software', 'available'),
+  ('quadra-core-io', 'Quadra Core I/O', 'Studio Thunderbolt audio interface.', 'Hardware companion rack for Hydra Pro with 32-bit float AD/DA converters.', 0, 'hardware', 'Coming Soon', 'coming_soon')
 ON CONFLICT (slug) DO UPDATE SET
   name = EXCLUDED.name,
   tagline = EXCLUDED.tagline,
@@ -64,4 +81,6 @@ ON CONFLICT (slug) DO UPDATE SET
   price = EXCLUDED.price,
   category = EXCLUDED.category,
   badge = EXCLUDED.badge,
-  available = EXCLUDED.available;
+  availability_status = EXCLUDED.availability_status;
+
+

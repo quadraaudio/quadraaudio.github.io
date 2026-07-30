@@ -7,10 +7,14 @@ import { useRouter } from "next/navigation";
 import ThemeSwitcher from "@/app/hydra/ThemeSwitcher";
 import CarouselBlock from "@/components/blocks/CarouselBlock";
 import { useCart } from "@/contexts/CartContext";
+import { useProducts } from "@/contexts/ProductContext";
 import type { Product } from "@/data/products";
 import styles from "./page.module.scss";
 
-export default function ProductPageClient({ product }: { product: Product }) {
+export default function ProductPageClient({ product: initialProduct }: { product: Product }) {
+  const { productsList } = useProducts();
+  const product = productsList.find((p) => p.slug === initialProduct.slug) || initialProduct;
+
   const [ribbonVisible, setRibbonVisible] = useState(false);
   const [addedToBag, setAddedToBag] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
@@ -26,7 +30,17 @@ export default function ProductPageClient({ product }: { product: Product }) {
     return () => observer.disconnect();
   }, []);
 
+  const status = product.availabilityStatus || (product.available ? "available" : "sold_out");
+  const isAvailable = status === "available";
+
+  const getButtonLabel = () => {
+    if (status === "sold_out") return "Sold Out";
+    if (status === "coming_soon") return "Coming Soon";
+    return `Add to Bag — ${product.priceLabel}`;
+  };
+
   const handleAddToBag = () => {
+    if (!isAvailable) return;
     addItem(product);
     setAddedToBag(true);
     // Scroll to top to show the confirmation bar
@@ -66,8 +80,13 @@ export default function ProductPageClient({ product }: { product: Product }) {
           <span className={styles.ribbonTitle}>{product.name}</span>
           <div className={styles.ribbonActions}>
             <span className={styles.ribbonPrice}>{product.priceLabel}</span>
-            <button onClick={handleAddToBag} className={styles.ribbonButton}>
-              Add to Bag
+            <button
+              onClick={handleAddToBag}
+              disabled={!isAvailable}
+              className={`${styles.ribbonButton} ${!isAvailable ? styles.disabledRibbonBtn : ""}`}
+              style={!isAvailable ? { opacity: 0.5, cursor: "not-allowed", pointerEvents: "none" } : {}}
+            >
+              {status === "sold_out" ? "Sold Out" : status === "coming_soon" ? "Coming Soon" : "Add to Bag"}
             </button>
           </div>
         </div>
@@ -77,13 +96,30 @@ export default function ProductPageClient({ product }: { product: Product }) {
 
         {/* ── Hero ── */}
         <section className={styles.hero} ref={heroRef}>
-          <p className={styles.heroEyebrow}>{product.badge ?? product.category}</p>
+          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+            <p className={styles.heroEyebrow}>{product.badge ?? product.category}</p>
+            {status === "sold_out" && (
+              <span style={{ background: "rgba(229, 57, 53, 0.2)", color: "#ff5252", padding: "2px 8px", borderRadius: "12px", fontSize: "11px", fontWeight: "bold", textTransform: "uppercase" }}>
+                Sold Out
+              </span>
+            )}
+            {status === "coming_soon" && (
+              <span style={{ background: "rgba(103, 58, 183, 0.2)", color: "#b388ff", padding: "2px 8px", borderRadius: "12px", fontSize: "11px", fontWeight: "bold", textTransform: "uppercase" }}>
+                Coming Soon
+              </span>
+            )}
+          </div>
           <h1 className={styles.heroTagline}>{product.tagline}</h1>
           <p className={styles.heroSubtitle}>{product.description}</p>
 
           <div className={styles.heroCta}>
-            <button onClick={handleAddToBag} className={styles.buyButton}>
-              Add to Bag — {product.priceLabel}
+            <button
+              onClick={handleAddToBag}
+              disabled={!isAvailable}
+              className={styles.buyButton}
+              style={!isAvailable ? { opacity: 0.5, cursor: "not-allowed", pointerEvents: "none" } : {}}
+            >
+              {getButtonLabel()}
             </button>
             <a href="#features" className={styles.learnLink}>
               Learn more
@@ -160,8 +196,13 @@ export default function ProductPageClient({ product }: { product: Product }) {
         <section className={styles.buyFooter}>
           <h2>{product.name}</h2>
           <p>{product.priceLabel}</p>
-          <button onClick={handleAddToBag} className={styles.buyFooterButton}>
-            Add to Bag
+          <button
+            onClick={handleAddToBag}
+            disabled={!isAvailable}
+            className={styles.buyFooterButton}
+            style={!isAvailable ? { opacity: 0.5, cursor: "not-allowed", pointerEvents: "none" } : {}}
+          >
+            {status === "sold_out" ? "Sold Out" : status === "coming_soon" ? "Coming Soon" : "Add to Bag"}
           </button>
         </section>
 

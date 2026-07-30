@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
-import { products } from "@/data/products";
+import { useProducts } from "@/contexts/ProductContext";
 import styles from "./LocalNav.module.scss";
 
 interface LocalNavProps {
@@ -25,14 +25,25 @@ export default function LocalNav({
     { label: "Specs", href: "#specs" },
   ],
 }: LocalNavProps) {
+  const { productsList } = useProducts();
   const { addItem } = useCart();
   const router = useRouter();
 
+  const hydraProduct = productsList.find((p) => p.slug === "hydra") || productsList[0];
+  const status = hydraProduct?.availabilityStatus || (hydraProduct?.available ? "available" : "sold_out");
+  const isAvailable = status === "available";
+
+  const getButtonText = () => {
+    if (status === "sold_out") return "Sold Out";
+    if (status === "coming_soon") return "Coming Soon";
+    return "Buy";
+  };
+
   const handleBuyClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    const hydra = products[0];
-    if (hydra) {
-      addItem(hydra);
+    if (!isAvailable) return;
+    if (hydraProduct) {
+      addItem(hydraProduct);
     }
     router.push("/store/bag");
   };
@@ -56,11 +67,17 @@ export default function LocalNav({
             ))}
           </nav>
           {price && <span className={styles.priceTag}>{price}</span>}
-          <button onClick={handleBuyClick} className="apple-button-primary">
-            Buy
+          <button
+            onClick={handleBuyClick}
+            disabled={!isAvailable}
+            className="apple-button-primary"
+            style={!isAvailable ? { opacity: 0.5, cursor: "not-allowed", pointerEvents: "none" } : {}}
+          >
+            {getButtonText()}
           </button>
         </div>
       </div>
     </div>
   );
 }
+

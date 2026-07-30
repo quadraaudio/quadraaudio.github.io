@@ -223,16 +223,45 @@ export async function getSupabaseUserLicenses(userEmail: string) {
 /**
  * Fetch products dynamically from Supabase `public.products` table
  */
-export async function getSupabaseProducts() {
+export async function getSupabaseProducts(): Promise<import("@/data/products").Product[]> {
+  const { products: localCatalog } = await import("@/data/products");
+
   try {
     const { data, error } = await supabase.from("products").select("*");
     if (!error && data && data.length > 0) {
-      return data;
+      return data.map((row: any) => {
+        const localMatch = localCatalog.find((p) => p.slug === row.slug);
+        
+        const availabilityStatus: import("@/data/products").AvailabilityStatus = 
+          (row.availability_status as import("@/data/products").AvailabilityStatus) || "available";
+
+        const isAvailable = availabilityStatus === "available";
+
+        return {
+          ...(localMatch || {}),
+          slug: row.slug,
+          name: row.name || localMatch?.name || row.slug,
+          tagline: row.tagline || localMatch?.tagline || "",
+          description: row.description || localMatch?.description || "",
+          price: Number(row.price) || localMatch?.price || 0,
+          priceLabel: localMatch?.priceLabel || `$${row.price}`,
+          category: row.category || localMatch?.category || "software",
+          badge: row.badge || localMatch?.badge,
+          badgeColor: localMatch?.badgeColor,
+          heroImage: localMatch?.heroImage,
+          cardImage: localMatch?.cardImage,
+          features: localMatch?.features || [],
+          specGroups: localMatch?.specGroups,
+          systemRequirements: localMatch?.systemRequirements,
+          available: isAvailable,
+          availabilityStatus,
+        };
+      });
     }
   } catch (err) {
     console.warn("Supabase connection fallback to local catalog:", err);
   }
 
-  const { products } = await import("@/data/products");
-  return products;
+  return localCatalog;
 }
+

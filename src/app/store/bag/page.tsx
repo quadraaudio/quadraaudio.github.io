@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import ThemeSwitcher from "@/app/hydra/ThemeSwitcher";
 import { useCart } from "@/contexts/CartContext";
+import { useProducts } from "@/contexts/ProductContext";
 import { products } from "@/data/products";
 import styles from "./page.module.scss";
 
@@ -42,8 +43,21 @@ export default function BagPage() {
     }
   };
 
+  const { productsList } = useProducts();
   const bagSlugs = new Set(items.map((i) => i.product.slug));
-  const related = products.filter((p) => p.available && !bagSlugs.has(p.slug));
+  
+  // Find current availability status from productsList (synced with Supabase)
+  const itemsWithStatus = items.map((item) => {
+    const fresh = productsList.find((p) => p.slug === item.product.slug);
+    const status = fresh?.availabilityStatus ?? item.product.availabilityStatus ?? (item.product.available ? "available" : "sold_out");
+    return { ...item, currentStatus: status };
+  });
+
+  const hasUnavailableItem = itemsWithStatus.some((i) => i.currentStatus !== "available");
+
+  const related = productsList.filter(
+    (p) => (p.availabilityStatus ?? (p.available ? "available" : "sold_out")) === "available" && !bagSlugs.has(p.slug)
+  );
 
   if (items.length === 0) {
     return (
@@ -70,16 +84,22 @@ export default function BagPage() {
             <h1>Review your bag.</h1>
             <p className={styles.headerSub}>Instant digital license delivery on all Quadra software.</p>
           </div>
-          <Link href="/store/checkout/gate" className="apple-button-primary">
-            Check Out
-          </Link>
+          {hasUnavailableItem ? (
+            <span style={{ color: "#d32f2f", fontSize: "14px", fontWeight: 600 }}>
+              Remove unavailable items to checkout
+            </span>
+          ) : (
+            <Link href="/store/checkout/gate" className="apple-button-primary">
+              Check Out
+            </Link>
+          )}
         </header>
 
         <div className={styles.divider} />
 
         {/* Item list */}
         <section className={styles.itemList}>
-          {items.map((item) => (
+          {itemsWithStatus.map((item) => (
             <div key={item.product.slug} className={styles.item}>
               <div className={styles.itemMedia}>
                 <div className={styles.itemImgPlaceholder}>
@@ -91,7 +111,19 @@ export default function BagPage() {
 
               <div className={styles.itemDetails}>
                 <div className={styles.itemInfo}>
-                  <h3>{item.product.name}</h3>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <h3>{item.product.name}</h3>
+                    {item.currentStatus === "sold_out" && (
+                      <span style={{ background: "rgba(229, 57, 53, 0.12)", color: "#d32f2f", padding: "2px 8px", borderRadius: "10px", fontSize: "11px", fontWeight: "bold" }}>
+                        Sold Out
+                      </span>
+                    )}
+                    {item.currentStatus === "coming_soon" && (
+                      <span style={{ background: "rgba(103, 58, 183, 0.12)", color: "#673ab7", padding: "2px 8px", borderRadius: "10px", fontSize: "11px", fontWeight: "bold" }}>
+                        Coming Soon
+                      </span>
+                    )}
+                  </div>
                   <p className={styles.itemType}>
                     {item.product.category === "software"
                       ? "Perpetual License (2 Mac Activations)"
@@ -181,9 +213,19 @@ export default function BagPage() {
               <span>${finalPrice.toFixed(2)}</span>
             </div>
 
-            <Link href="/store/checkout/gate" className="apple-button-primary" style={{ width: "100%", padding: "14px", marginTop: "12px" }}>
-              Check Out
-            </Link>
+            {hasUnavailableItem ? (
+              <button
+                disabled
+                className="apple-button-primary"
+                style={{ width: "100%", padding: "14px", marginTop: "12px", opacity: 0.5, cursor: "not-allowed" }}
+              >
+                Item Unavailable - Cannot Check Out
+              </button>
+            ) : (
+              <Link href="/store/checkout/gate" className="apple-button-primary" style={{ width: "100%", padding: "14px", marginTop: "12px" }}>
+                Check Out
+              </Link>
+            )}
           </div>
 
         </section>

@@ -19,6 +19,8 @@ export interface ProductSpecGroup {
   specs: ProductSpec[];
 }
 
+export type AvailabilityStatus = "available" | "sold_out" | "coming_soon";
+
 export interface Product {
   slug: string;
   name: string;
@@ -27,11 +29,12 @@ export interface Product {
   price: number;
   priceLabel?: string;
   badge?: string;
-  badgeColor?: "orange" | "gray" | "blue";
-  category: "software";
+  badgeColor?: "orange" | "gray" | "blue" | "red";
+  category: "software" | "hardware";
   heroImage?: string;
   cardImage?: string;
   available: boolean;
+  availabilityStatus?: AvailabilityStatus;
   features: ProductFeature[];
   specGroups?: ProductSpecGroup[];
   systemRequirements?: string[];
@@ -52,6 +55,7 @@ export const products: Product[] = [
     heroImage: "https://www.apple.com/v/logic-pro/n/images/overview/welcome/hero_endframe__dc7irycb3gia_large.jpg",
     cardImage: "/images/hydra_app_icon.jpg",
     available: true,
+    availabilityStatus: "available",
     features: [
       {
         title: "256-Channel Virtual Patchbay",
@@ -120,8 +124,42 @@ export const products: Product[] = [
       "Gigabit or 10GbE network connection for NDI® / AVB AoIP streaming",
     ],
   },
+  {
+    slug: "hydra-pro",
+    name: "Hydra Pro",
+    tagline: "Pure spatial audio matrix routing.",
+    description: "The premier 128-channel virtual audio router engineered for macOS with multi-stage DSP inserts and remote OSC matrix control.",
+    price: 199.99,
+    priceLabel: "$199.99",
+    badge: "New Software",
+    badgeColor: "blue",
+    category: "software",
+    cardImage: "/images/hydra_app_icon.jpg",
+    available: true,
+    availabilityStatus: "available",
+    features: [
+      { title: "128 Channels", description: "Ultra-low latency virtual routing matrix." },
+    ],
+  },
+  {
+    slug: "quadra-core-io",
+    name: "Quadra Core I/O",
+    tagline: "Studio Thunderbolt audio interface.",
+    description: "Hardware companion rack for Hydra Pro with 32-bit float AD/DA converters, Dante/AES67 connectivity, and ultra-quiet preamps.",
+    price: 0,
+    priceLabel: "Coming Soon",
+    badge: "Hardware Rack",
+    badgeColor: "gray",
+    category: "hardware",
+    available: false,
+    availabilityStatus: "coming_soon",
+    features: [
+      { title: "32-Bit Float Converters", description: "Pristine dynamic range for professional recording." },
+    ],
+  },
 ];
 
 export function getProductBySlug(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug) || products[0];
 }
+

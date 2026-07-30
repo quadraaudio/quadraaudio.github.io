@@ -3,19 +3,39 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ThemeSwitcher from "../hydra/ThemeSwitcher";
-import { products } from "@/data/products";
+import { type Product } from "@/data/products";
 import { useCart } from "@/contexts/CartContext";
+import { useProducts } from "@/contexts/ProductContext";
 import styles from "./page.module.scss";
 
 export default function StorePage() {
-  const hydraProduct = products.find((p) => p.slug === "hydra") || products[0];
+  const { productsList } = useProducts();
   const { addItem } = useCart();
   const router = useRouter();
 
-  const handleBuyClick = (e: React.MouseEvent) => {
+  const handleBuyClick = (product: Product, e: React.MouseEvent) => {
     e.preventDefault();
-    addItem(hydraProduct);
+    if (product.availabilityStatus && product.availabilityStatus !== "available") return;
+    addItem(product);
     router.push("/store/bag");
+  };
+
+  const getStatusBadge = (product: Product) => {
+    const status = product.availabilityStatus || (product.available ? "available" : "sold_out");
+    if (status === "sold_out") {
+      return <span className={`${styles.statusTag} ${styles.statusSoldOut}`}>Sold Out</span>;
+    }
+    if (status === "coming_soon") {
+      return <span className={`${styles.statusTag} ${styles.statusComingSoon}`}>Coming Soon</span>;
+    }
+    return <span className={`${styles.statusTag} ${styles.statusAvailable}`}>Available</span>;
+  };
+
+  const getButtonText = (product: Product) => {
+    const status = product.availabilityStatus || (product.available ? "available" : "sold_out");
+    if (status === "sold_out") return "Sold Out";
+    if (status === "coming_soon") return "Coming Soon";
+    return `Buy ($${product.price > 0 ? product.price.toFixed(2) : "199.99"})`;
   };
 
   return (
@@ -28,47 +48,60 @@ export default function StorePage() {
         <header className={styles.storeHeader}>
           <h1>
             <span className={styles.whiteText}>Store.</span>{" "}
-            <span className={styles.grayText}>The best way to buy Hydra software.</span>
+            <span className={styles.grayText}>The best way to buy Quadra Audio software & hardware.</span>
           </h1>
         </header>
 
         <div className={styles.divider} />
 
-        {/* Product Shelf: Featured Hydra Software */}
+        {/* Product Shelf: Software & Hardware Products */}
         <section className={styles.storeShelf}>
           <div className={styles.shelfHeader}>
             <h2>
-              <span className={styles.whiteText}>Software.</span>{" "}
-              <span className={styles.grayText}>Professional virtual audio routing for Mac.</span>
+              <span className={styles.whiteText}>Products.</span>{" "}
+              <span className={styles.grayText}>Professional virtual audio routing & interfaces for Mac.</span>
             </h2>
           </div>
 
           <div className={styles.productGrid}>
-            <div className={styles.productCard}>
-              <div className={styles.cardHeader}>
-                <span className={styles.cardKicker}>Virtual Audio Matrix</span>
-                <h3 className={styles.cardTitle}>{hydraProduct.name}</h3>
-                <p className={styles.cardTagline}>{hydraProduct.tagline}</p>
-                <p className={styles.cardPrice}>{hydraProduct.priceLabel}</p>
-              </div>
+            {productsList.map((product) => {
+              const isAvailable = (product.availabilityStatus ?? (product.available ? "available" : "sold_out")) === "available";
 
-              <div className={styles.cardMediaCenter}>
-                <div className={styles.appIconWrapper}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
+              return (
+                <div key={product.slug} className={styles.productCard}>
+                  <div className={styles.cardHeader}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span className={styles.cardKicker}>{product.badge || product.category}</span>
+                      {getStatusBadge(product)}
+                    </div>
+                    <h3 className={styles.cardTitle}>{product.name}</h3>
+                    <p className={styles.cardTagline}>{product.tagline}</p>
+                    <p className={styles.cardPrice}>{product.priceLabel}</p>
+                  </div>
+
+                  <div className={styles.cardMediaCenter}>
+                    <div className={styles.appIconWrapper}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                  </div>
+
+                  <div className={styles.cardFooter}>
+                    <Link href={`/store/${product.slug}`} className="apple-button-secondary">
+                      Learn More
+                    </Link>
+                    <button
+                      onClick={(e) => handleBuyClick(product, e)}
+                      disabled={!isAvailable}
+                      className={`apple-button-primary ${!isAvailable ? styles.disabledBtn : ""}`}
+                    >
+                      {getButtonText(product)}
+                    </button>
+                  </div>
                 </div>
-              </div>
-
-              <div className={styles.cardFooter}>
-                <Link href="/hydra" className="apple-button-secondary">
-                  Explore Hydra
-                </Link>
-                <button onClick={handleBuyClick} className="apple-button-primary">
-                  Buy ($199.99)
-                </button>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </section>
 

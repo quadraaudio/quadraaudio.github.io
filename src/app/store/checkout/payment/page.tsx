@@ -6,6 +6,7 @@ import Link from "next/link";
 import ThemeSwitcher from "@/app/hydra/ThemeSwitcher";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useProducts } from "@/contexts/ProductContext";
 import { products } from "@/data/products";
 import { syncLicenseToSupabase } from "@/lib/supabase";
 import styles from "./page.module.scss";
@@ -17,6 +18,7 @@ declare global {
 }
 
 export default function PaymentPage() {
+  const { productsList } = useProducts();
   const {
     items,
     totalPrice,
@@ -39,8 +41,16 @@ export default function PaymentPage() {
 
   const paypalContainerRef = useRef<HTMLDivElement>(null);
 
-  const defaultHydra = products[0];
+  const activeCatalog = productsList.length > 0 ? productsList : products;
+  const defaultHydra = activeCatalog.find((p) => p.slug === "hydra") || activeCatalog[0];
   const displayItems = items.length > 0 ? items : [{ product: defaultHydra, quantity: 1 }];
+
+  // Check if any product in displayItems is unavailable according to Supabase
+  const unavailableItem = displayItems.find((item) => {
+    const fresh = activeCatalog.find((p) => p.slug === item.product.slug);
+    const status = fresh?.availabilityStatus ?? item.product.availabilityStatus ?? (item.product.available ? "available" : "sold_out");
+    return status !== "available";
+  });
   const displayTotalPrice = items.length > 0 ? totalPrice : defaultHydra.price;
 
   let displayDiscount = discountTotal;
@@ -75,6 +85,7 @@ export default function PaymentPage() {
   };
 
   const handleCompleteOrder = async () => {
+    if (unavailableItem) return;
     const email = user?.email || "customer@quadraaudio.com";
     const name = user?.name || "Customer";
     await syncLicenseToSupabase(email, name, "hydra", displayFinalPrice);
@@ -84,7 +95,7 @@ export default function PaymentPage() {
   };
 
   useEffect(() => {
-    if (paymentMethod === "paypal" && !isFreeOrder && window.paypal?.Buttons && paypalContainerRef.current) {
+    if (paymentMethod === "paypal" && !isFreeOrder && !unavailableItem && window.paypal?.Buttons && paypalContainerRef.current) {
       paypalContainerRef.current.innerHTML = "";
       try {
         window.paypal.Buttons({
@@ -106,26 +117,22 @@ export default function PaymentPage() {
             });
           },
           onApprove: async (data: any, actions: any) => {
-            setPaypalProcessing(true);
-            if (actions.order) {
-              await actions.order.capture();
-            }
+            await actions.order.capture();
             await handleCompleteOrder();
-            setPaypalProcessing(false);
           },
           onError: (err: any) => {
-            console.error("PayPal Checkout error:", err);
+            console.error("PayPal checkout error:", err);
           }
         }).render(paypalContainerRef.current);
-        setPaypalLoaded(true);
-      } catch (err) {
-        console.warn("Failed to render PayPal Buttons:", err);
+      } catch (e) {
+        console.warn("PayPal render error:", e);
       }
     }
-  }, [paymentMethod, displayFinalPrice, isFreeOrder, paypalLoaded]);
+  }, [paymentMethod, isFreeOrder, displayFinalPrice, unavailableItem]);
 
   const handleDirectPayPalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (unavailableItem) return;
     setPaypalProcessing(true);
 
     if (window.paypal?.Buttons) {
@@ -147,6 +154,7 @@ export default function PaymentPage() {
 
   const handleCardSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (unavailableItem) return;
     await handleCompleteOrder();
   };
 
@@ -187,6 +195,11 @@ export default function PaymentPage() {
         <header className={styles.header}>
           <h1>Checkout</h1>
           <p>{isFreeOrder ? "Review your complimentary order." : "Review your order and select a payment method."}</p>
+          {unavailableItem && (
+            <div style={{ background: "rgba(229, 57, 53, 0.15)", color: "#ff5252", padding: "14px 20px", borderRadius: "12px", marginTop: "16px", fontWeight: 600 }}>
+              ⚠️ Product Unavailable: &quot;{unavailableItem.product.name}&quot; is currently {unavailableItem.product.availabilityStatus === "coming_soon" ? "Coming Soon" : "Sold Out"}. Purchase is blocked for this item.
+            </div>
+          )}
         </header>
 
         <div className={styles.layoutGrid}>
