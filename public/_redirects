@@ -7,4 +7,4 @@
 # destination to reference :splat, so we pass the slug through as a query
 # param — /p/ reads it directly via useSearchParams (with a pathname-based
 # fallback in case a request ever reaches /p/ without it).
-/pages/*  /p/index.html?slug=:splat  200
+/pages/*  /p/?slug=:splat  200
