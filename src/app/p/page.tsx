@@ -21,12 +21,16 @@ function CustomPageInner() {
   );
 
   useEffect(() => {
+    // Cloudflare's `/pages/* -> /p/index.html?slug=:splat` rule passes the
+    // splat verbatim, e.g. "my-page/" (trailing slash from trailingSlash
+    // routing) — normalize before using it as a lookup key.
     const fromQuery = params.get("slug");
     const fromPath =
       typeof window !== "undefined"
         ? extractSlugFromPath(window.location.pathname)
         : null;
-    setSlug((fromQuery || fromPath || "").trim().toLowerCase() || null);
+    const raw = (fromQuery || fromPath || "").trim().toLowerCase();
+    setSlug(raw.replace(/\/+$/, "") || null);
   }, [params]);
 
   useEffect(() => {
