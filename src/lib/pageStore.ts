@@ -117,28 +117,136 @@ export async function publishPage(options: {
   }
 }
 
-export async function resolvePublicHomeData(): Promise<Data> {
-  const remote = await fetchPublishedPage("home");
+export function defaultBlankPageData(title: string): Data {
+  return {
+    root: { props: { title } },
+    content: [
+      {
+        type: "ProductHero",
+        props: {
+          id: `ProductHero-${title.toLowerCase().replace(/\s+/g, "-")}`,
+          brand: title,
+          headline: "Nova página",
+          subheadline:
+            "Edite este texto, troque a imagem e adicione mais blocos abaixo.",
+          primaryCtaLabel: "Saiba mais",
+          primaryCtaHref: "/",
+          secondaryCtaLabel: "",
+          secondaryCtaHref: "",
+          mediaSrc: "",
+          mediaAlt: "",
+          mediaGradient:
+            "radial-gradient(ellipse 80% 60% at 50% 40%, #1a1a1e 0%, #050506 55%, #000 100%)",
+          theme: "dark",
+        },
+      },
+    ],
+  };
+}
+
+export async function resolvePublicPageData(slug: string): Promise<Data> {
+  const remote = await fetchPublishedPage(slug);
   if (remote) {
-    saveLocalPublishedCache(remote, "home");
+    saveLocalPublishedCache(remote, slug);
     return remote;
   }
 
-  const cached = loadLocalPublishedCache("home");
+  const cached = loadLocalPublishedCache(slug);
   if (cached) return cached;
 
-  return defaultHomeData;
+  return slug === "home" ? defaultHomeData : defaultBlankPageData(slug);
 }
 
-export async function resolveEditorHomeData(): Promise<Data> {
-  const draft = loadLocalDraft("home");
+export async function resolveEditorPageData(
+  slug: string,
+  title?: string,
+): Promise<Data> {
+  const draft = loadLocalDraft(slug);
   if (draft) return draft;
 
-  const remote = await fetchEditorPage("home");
-  if (remote) return remote;
+  const remote = await fetchEditorPage(slug);
+  if (remote && (remote.content?.length ?? 0) > 0) return remote;
 
-  const published = await fetchPublishedPage("home");
-  if (published) return published;
+  const published = await fetchPublishedPage(slug);
+  if (published && (published.content?.length ?? 0) > 0) return published;
 
-  return defaultHomeData;
+  return slug === "home"
+    ? defaultHomeData
+    : defaultBlankPageData(title || slug);
+}
+
+/** @deprecated use resolvePublicPageData("home") */
+export async function resolvePublicHomeData(): Promise<Data> {
+  return resolvePublicPageData("home");
+}
+
+/** @deprecated use resolveEditorPageData("home", "Home") */
+export async function resolveEditorHomeData(): Promise<Data> {
+  return resolveEditorPageData("home", "Home");
+}
+
+export interface EditorPageSummary {
+  slug: string;
+  title: string;
+  published: boolean;
+  updated_at: string | null;
+}
+
+export async function listEditorPages(): Promise<EditorPageSummary[]> {
+  try {
+    const { data, error } = await supabase.rpc("list_editor_pages", {
+      p_secret: getEditorSecret(),
+    });
+    if (error || !Array.isArray(data)) return [];
+    return data as EditorPageSummary[];
+  } catch {
+    return [];
+  }
+}
+
+const SLUG_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+
+export function isValidPageSlug(slug: string): boolean {
+  return SLUG_PATTERN.test(slug) && slug.length <= 60;
+}
+
+export async function createEditorPage(
+  slug: string,
+  title: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const cleanSlug = slug.trim().toLowerCase();
+
+  if (!isValidPageSlug(cleanSlug)) {
+    return {
+      ok: false,
+      error:
+        "Endereço inválido. Use apenas letras minúsculas, números e hífens (ex: nossa-historia).",
+    };
+  }
+
+  try {
+    const { error } = await supabase.rpc("create_editor_page", {
+      p_slug: cleanSlug,
+      p_title: title.trim() || cleanSlug,
+      p_secret: getEditorSecret(),
+    });
+
+    if (error) {
+      const msg = error.message || "";
+      if (msg.includes("slug_taken")) {
+        return { ok: false, error: "Já existe uma página com esse endereço." };
+      }
+      if (msg.includes("invalid_slug")) {
+        return { ok: false, error: "Endereço inválido." };
+      }
+      return { ok: false, error: msg || "Não foi possível criar a página." };
+    }
+
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : "Erro ao criar página.",
+    };
+  }
 }

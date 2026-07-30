@@ -1,5 +1,8 @@
 # Cloudflare Pages _redirects
-# When using edit.quadraaudio.com, send bare root to the editor canvas.
-# Main domain paths are unaffected (host-specific rules need CF Bulk Redirects / Access).
-
+# When using edit.quadraaudio.com or admin.quadraaudio.com, send /editor to /editor/
 /editor /editor/ 308
+
+# SPA-style rewrite: pages created in the visual editor live at /pages/<slug>/
+# without needing a rebuild. Served by the static /p/ bundle, which reads the
+# slug from the URL at runtime and fetches published Puck content.
+/pages/*  /p/index.html  200

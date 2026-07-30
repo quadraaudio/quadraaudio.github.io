@@ -239,4 +239,77 @@ VALUES
   ('samuelbacaro@gmail.com', 'Owner Google account')
 ON CONFLICT (email) DO UPDATE SET active = true;
 
+-- ─────────────────────────────────────────────────────────
+-- 9. Editor: create/list arbitrary content pages (Puck)
+-- Rendered at /pages/<slug>/ via Cloudflare Pages SPA rewrite
+-- (see public/_redirects) so new pages don't require a rebuild.
+-- ─────────────────────────────────────────────────────────
+CREATE OR REPLACE FUNCTION public.create_editor_page(
+  p_slug TEXT,
+  p_title TEXT,
+  p_secret TEXT
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  result public.site_pages;
+  clean_slug TEXT;
+BEGIN
+  IF p_secret IS NULL OR p_secret <> (
+    SELECT publish_secret FROM public.site_editor_settings WHERE id = 1
+  ) THEN
+    RAISE EXCEPTION 'unauthorized';
+  END IF;
+
+  clean_slug := lower(trim(p_slug));
+
+  IF clean_slug IS NULL OR clean_slug = '' OR clean_slug !~ '^[a-z0-9]+(-[a-z0-9]+)*$' OR length(clean_slug) > 60 THEN
+    RAISE EXCEPTION 'invalid_slug';
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM public.site_pages WHERE slug = clean_slug) THEN
+    RAISE EXCEPTION 'slug_taken';
+  END IF;
+
+  INSERT INTO public.site_pages (slug, title, puck_data, published)
+  VALUES (
+    clean_slug,
+    COALESCE(NULLIF(trim(p_title), ''), initcap(replace(clean_slug, '-', ' '))),
+    '{"root":{"props":{}},"content":[]}'::jsonb,
+    false
+  )
+  RETURNING * INTO result;
+
+  RETURN to_jsonb(result);
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.create_editor_page(TEXT, TEXT, TEXT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.create_editor_page(TEXT, TEXT, TEXT) TO anon, authenticated;
+
+CREATE OR REPLACE FUNCTION public.list_editor_pages(p_secret TEXT)
+RETURNS SETOF public.site_pages
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  IF p_secret IS NULL OR p_secret <> (
+    SELECT publish_secret FROM public.site_editor_settings WHERE id = 1
+  ) THEN
+    RAISE EXCEPTION 'unauthorized';
+  END IF;
+
+  RETURN QUERY
+    SELECT * FROM public.site_pages
+    ORDER BY updated_at DESC NULLS LAST, created_at DESC;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.list_editor_pages(TEXT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.list_editor_pages(TEXT) TO anon, authenticated;
+
 
