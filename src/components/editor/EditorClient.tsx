@@ -2,26 +2,25 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { useAuth0 } from "@auth0/auth0-react";
 import { Puck, type Data } from "@puckeditor/core";
 import "@puckeditor/core/puck.css";
-import { useAuth } from "@/contexts/AuthContext";
 import { puckConfig, defaultHomeData } from "@/editor/puckConfig";
 import {
   publishPage,
   resolveEditorHomeData,
   saveLocalDraft,
 } from "@/lib/pageStore";
+import { getEditorHomeUrl } from "@/lib/auth0Config";
 import styles from "./EditorClient.module.scss";
 
 type Status = "idle" | "saving" | "saved" | "error";
 
 export default function EditorClient() {
-  const { user, isLoggedIn } = useAuth();
+  const { user, logout } = useAuth0();
   const [data, setData] = useState<Data | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
-
-  const isAdmin = isLoggedIn && user?.role === "admin";
 
   useEffect(() => {
     let cancelled = false;
@@ -55,33 +54,6 @@ export default function EditorClient() {
     [user?.email],
   );
 
-  if (!isLoggedIn) {
-    return (
-      <div className={styles.gate}>
-        <h1>Visual Editor</h1>
-        <p>Sign in with an admin Quadra ID to edit the site visually.</p>
-        <Link href="/login/" className={styles.button}>
-          Sign in
-        </Link>
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className={styles.gate}>
-        <h1>Admin only</h1>
-        <p>
-          Your account ({user?.email}) does not have editor access. Use an admin
-          Quadra ID.
-        </p>
-        <Link href="/" className={styles.button}>
-          Back to site
-        </Link>
-      </div>
-    );
-  }
-
   if (!data) {
     return (
       <div className={styles.gate}>
@@ -94,8 +66,8 @@ export default function EditorClient() {
     <div className={styles.shell}>
       <div className={styles.banner} role="status">
         <span>
-          Quadra Visual Editor · click text on the canvas to edit · drag blocks
-          from the left
+          Quadra Visual Editor · {user?.email} · Google / Auth0 · clique no
+          texto para editar
         </span>
         {message ? (
           <span
@@ -110,8 +82,17 @@ export default function EditorClient() {
             {message}
           </span>
         ) : null}
+        <button
+          type="button"
+          className={styles.exit}
+          onClick={() =>
+            logout({ logoutParams: { returnTo: getEditorHomeUrl() } })
+          }
+        >
+          Sair
+        </button>
         <Link href="/" className={styles.exit}>
-          Exit
+          Site
         </Link>
       </div>
 

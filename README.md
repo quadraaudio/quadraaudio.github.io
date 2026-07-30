@@ -2,31 +2,39 @@
 
 Next.js site for Quadra / Hydra.
 
-## Visual Editor (Wix-like)
+## Visual Editor (self-hosted Puck)
 
-Self-hosted open-source editor powered by [Puck](https://puckeditor.com) (`@puckeditor/core`).
+Open-source canvas editor ([Puck](https://puckeditor.com)). **Sanity is not used.**
 
-### Use it
+### Access control (Auth0 + Google only)
 
-1. Sign in at `/login/` with an **admin** account (e.g. `samuel@quadraaudio.com` or any email containing `admin`).
-2. Open `/editor/` — fullscreen visual canvas.
-3. **Click text on the page** to edit inline (not only sidebar forms).
-4. Drag blocks (Product Hero, Story Chapter, Feature Strip) from the left.
-5. Hit **Publish** — saves to Supabase `site_pages` and updates the live home page.
-
-Drafts also auto-save to `localStorage` on this device.
-
-### Subdomain (recommended)
-
-Point `edit.quadraaudio.com` → same static host, path `/editor/`, and put **Cloudflare Access** (or similar) in front of that hostname for an extra lock.
-
-Optional env:
+1. Auth0 Application (SPA) with **only** the `google-oauth2` connection enabled.
+2. Allowed Callback URLs (trailing slash):
+   - `https://quadraaudio.com/editor/callback/`
+   - `https://edit.quadraaudio.com/editor/callback/`
+   - `http://localhost:3000/editor/callback/`
+3. Allowed Logout URLs / Web Origins: same origins.
+4. Env vars:
 
 ```bash
+NEXT_PUBLIC_AUTH0_DOMAIN=your-tenant.auth0.com
+NEXT_PUBLIC_AUTH0_CLIENT_ID=your_spa_client_id
 NEXT_PUBLIC_EDITOR_PUBLISH_SECRET=your-long-secret
 ```
 
-Must match `site_editor_settings.publish_secret` in Supabase (default seed: `quadra-editor-change-me` — change it).
+5. Allowlist in Supabase table `editor_allowlist` — only those emails can open the editor after Google login. Manage rows in the Supabase SQL editor:
+
+```sql
+INSERT INTO editor_allowlist (email, note) VALUES ('pessoa@empresa.com', 'Editor')
+ON CONFLICT (email) DO UPDATE SET active = true;
+```
+
+### Use it
+
+1. Open `/editor/` (or subdomain `edit.quadraaudio.com` pointing at the same static host).
+2. **Continuar com Google** → Auth0 forces Google.
+3. If the Google email is in `editor_allowlist`, the Puck canvas loads.
+4. Edit inline → **Publish** (Supabase `site_pages`).
 
 ### Getting Started
 

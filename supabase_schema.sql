@@ -180,4 +180,63 @@ $$;
 GRANT EXECUTE ON FUNCTION public.publish_site_page(TEXT, TEXT, JSONB, TEXT, TEXT) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.get_editor_site_page(TEXT, TEXT) TO anon, authenticated;
 
+-- ─────────────────────────────────────────────────────────
+-- 8. Editor allowlist (Auth0 Google → email must be listed)
+-- ─────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.editor_allowlist (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  email TEXT NOT NULL,
+  active BOOLEAN NOT NULL DEFAULT true,
+  note TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  CONSTRAINT editor_allowlist_email_unique UNIQUE (email)
+);
+
+CREATE OR REPLACE FUNCTION public.normalize_editor_allowlist_email()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  NEW.email := lower(trim(NEW.email));
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_normalize_editor_allowlist_email ON public.editor_allowlist;
+CREATE TRIGGER trg_normalize_editor_allowlist_email
+  BEFORE INSERT OR UPDATE OF email ON public.editor_allowlist
+  FOR EACH ROW
+  EXECUTE FUNCTION public.normalize_editor_allowlist_email();
+
+ALTER TABLE public.editor_allowlist ENABLE ROW LEVEL SECURITY;
+
+CREATE OR REPLACE FUNCTION public.is_editor_email_allowed(p_email TEXT)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  IF p_email IS NULL OR length(trim(p_email)) = 0 THEN
+    RETURN false;
+  END IF;
+
+  RETURN EXISTS (
+    SELECT 1
+    FROM public.editor_allowlist
+    WHERE email = lower(trim(p_email))
+      AND active = true
+  );
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.is_editor_email_allowed(TEXT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.is_editor_email_allowed(TEXT) TO anon, authenticated;
+
+INSERT INTO public.editor_allowlist (email, note)
+VALUES
+  ('samuel@quadraaudio.com', 'Primary Quadra admin'),
+  ('samuelbacaro@gmail.com', 'Owner Google account')
+ON CONFLICT (email) DO UPDATE SET active = true;
+
 

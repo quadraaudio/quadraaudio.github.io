@@ -38,10 +38,19 @@
   margin-left: auto;
   color: #2997ff;
   text-decoration: none;
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
 }
 
 .exit:hover {
   text-decoration: underline;
+}
+
+.exit + .exit {
+  margin-left: 0;
 }
 
 .puckHost {
@@ -95,6 +104,16 @@
   max-width: 36ch;
   color: #a1a1a6;
   line-height: 1.5;
+}
+
+.gate code {
+  font-size: 0.85em;
+  color: #d2d2d7;
+}
+
+.gate .msgError {
+  color: #ff6b6b;
+  max-width: 40ch;
 }
 
 .button {

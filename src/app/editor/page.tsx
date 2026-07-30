@@ -1,6 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import EditorAuthProvider from "@/components/editor/EditorAuthProvider";
+import EditorAuthGate from "@/components/editor/EditorAuthGate";
 
 const EditorClient = dynamic(() => import("@/components/editor/EditorClient"), {
   ssr: false,
@@ -22,5 +24,11 @@ const EditorClient = dynamic(() => import("@/components/editor/EditorClient"), {
 });
 
 export default function EditorPage() {
-  return <EditorClient />;
+  return (
+    <EditorAuthProvider>
+      <EditorAuthGate>
+        <EditorClient />
+      </EditorAuthGate>
+    </EditorAuthProvider>
+  );
 }
