@@ -26,23 +26,14 @@ CREATE TABLE IF NOT EXISTS public.products (
 );
 
 -- ─────────────────────────────────────────────────────────
--- MIGRATION: ensure availability_status enum column exists
--- (safe if already migrated)
+-- MIGRATION SCRIPT FOR EXISTING SUPABASE TABLES
+-- Run this in SQL Editor to remove legacy 'available' column 
+-- and transform 'availability_status' into a native Dropdown!
 -- ─────────────────────────────────────────────────────────
 ALTER TABLE public.products DROP COLUMN IF EXISTS available;
+ALTER TABLE public.products DROP COLUMN IF EXISTS availability_status;
 
-DO $$ BEGIN
-  IF NOT EXISTS (
-    SELECT 1
-    FROM information_schema.columns
-    WHERE table_schema = 'public'
-      AND table_name = 'products'
-      AND column_name = 'availability_status'
-  ) THEN
-    ALTER TABLE public.products
-      ADD COLUMN availability_status public.product_availability NOT NULL DEFAULT 'available';
-  END IF;
-END $$;
+ALTER TABLE public.products ADD COLUMN availability_status public.product_availability NOT NULL DEFAULT 'available';
 
 -- 3. Create Licenses Table
 CREATE TABLE IF NOT EXISTS public.licenses (
@@ -71,11 +62,10 @@ ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.licenses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 
--- Idempotent policies (safe to re-run)
-DROP POLICY IF EXISTS "Public products read" ON public.products;
-DROP POLICY IF EXISTS "Users read own licenses" ON public.licenses;
-
+-- Allow public read access to products
 CREATE POLICY "Public products read" ON public.products FOR SELECT USING (true);
+
+-- Allow authenticated users to view their own licenses
 CREATE POLICY "Users read own licenses" ON public.licenses FOR SELECT USING (true);
 
 -- 6. Insert / Update Initial Quadra Audio Products
@@ -93,71 +83,233 @@ ON CONFLICT (slug) DO UPDATE SET
   badge = EXCLUDED.badge,
   availability_status = EXCLUDED.availability_status;
 
--- 7. Create Pages Table for Puck Visual Editor
-CREATE TABLE IF NOT EXISTS public.pages (
+-- ─────────────────────────────────────────────────────────
+-- 7. Visual Editor (Puck) — site page JSON storage
+-- ─────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.site_pages (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   slug TEXT UNIQUE NOT NULL,
-  title TEXT NOT NULL,
-  data JSONB NOT NULL DEFAULT '{}'::jsonb,
-  status TEXT NOT NULL DEFAULT 'published',
+  title TEXT NOT NULL DEFAULT 'Untitled',
+  puck_data JSONB NOT NULL DEFAULT '{}'::jsonb,
+  published BOOLEAN NOT NULL DEFAULT false,
+  updated_by TEXT,
   updated_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_by TEXT
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-ALTER TABLE public.pages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.site_pages ENABLE ROW LEVEL SECURITY;
 
--- Replace legacy open policies if they exist
-DROP POLICY IF EXISTS "Public pages read" ON public.pages;
-DROP POLICY IF EXISTS "Authenticated pages edit" ON public.pages;
-DROP POLICY IF EXISTS "pages_public_read" ON public.pages;
-DROP POLICY IF EXISTS "pages_auth_write" ON public.pages;
-DROP POLICY IF EXISTS "pages_auth_select" ON public.pages;
-DROP POLICY IF EXISTS "pages_auth_insert" ON public.pages;
-DROP POLICY IF EXISTS "pages_auth_update" ON public.pages;
-DROP POLICY IF EXISTS "pages_auth_delete" ON public.pages;
-
--- Anyone can read published pages (public site + static export)
-CREATE POLICY "pages_public_read"
-  ON public.pages
+DROP POLICY IF EXISTS "Public read published site pages" ON public.site_pages;
+CREATE POLICY "Public read published site pages"
+  ON public.site_pages
   FOR SELECT
-  USING (status = 'published');
+  USING (published = true);
 
--- Signed-in editors can read all rows (drafts + published)
-CREATE POLICY "pages_auth_select"
-  ON public.pages
-  FOR SELECT
-  TO authenticated
-  USING (true);
+CREATE TABLE IF NOT EXISTS public.site_editor_settings (
+  id INT PRIMARY KEY DEFAULT 1 CHECK (id = 1),
+  publish_secret TEXT NOT NULL
+);
 
-CREATE POLICY "pages_auth_insert"
-  ON public.pages
-  FOR INSERT
-  TO authenticated
-  WITH CHECK (true);
+ALTER TABLE public.site_editor_settings ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "pages_auth_update"
-  ON public.pages
-  FOR UPDATE
-  TO authenticated
-  USING (true)
-  WITH CHECK (true);
+INSERT INTO public.site_editor_settings (id, publish_secret)
+VALUES (1, 'quadra-editor-change-me')
+ON CONFLICT (id) DO NOTHING;
 
-CREATE POLICY "pages_auth_delete"
-  ON public.pages
-  FOR DELETE
-  TO authenticated
-  USING (true);
+CREATE OR REPLACE FUNCTION public.publish_site_page(
+  p_slug TEXT,
+  p_title TEXT,
+  p_data JSONB,
+  p_secret TEXT,
+  p_updated_by TEXT DEFAULT NULL
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  result public.site_pages;
+BEGIN
+  IF p_secret IS NULL OR p_secret <> (
+    SELECT publish_secret FROM public.site_editor_settings WHERE id = 1
+  ) THEN
+    RAISE EXCEPTION 'unauthorized';
+  END IF;
 
--- Editor setup (Google OAuth — same Client ID already used on the site):
--- 1. Google Cloud Console → OAuth client → add Authorized redirect URI:
---    https://<YOUR_PROJECT_REF>.supabase.co/auth/v1/callback
--- 2. Supabase → Authentication → Providers → Google → Enable
---    paste Client ID + Client Secret from Google Cloud
--- 3. Supabase → Authentication → URL Configuration:
---    Site URL: http://localhost:3000  (and later https://quadraaudio.com)
---    Redirect URLs: http://localhost:3000/edit/ , https://quadraaudio.com/edit/
--- 4. Optional: set NEXT_PUBLIC_EDITOR_EMAILS=you@gmail.com in .env to lock the canvas
--- 5. Open /edit/ → Sign in with Google → Publish
+  INSERT INTO public.site_pages AS sp (slug, title, puck_data, published, updated_by, updated_at)
+  VALUES (p_slug, COALESCE(p_title, 'Untitled'), COALESCE(p_data, '{}'::jsonb), true, p_updated_by, NOW())
+  ON CONFLICT (slug) DO UPDATE SET
+    title = EXCLUDED.title,
+    puck_data = EXCLUDED.puck_data,
+    published = true,
+    updated_by = EXCLUDED.updated_by,
+    updated_at = NOW()
+  RETURNING * INTO result;
 
+  RETURN to_jsonb(result);
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.get_editor_site_page(
+  p_slug TEXT,
+  p_secret TEXT
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  result public.site_pages;
+BEGIN
+  IF p_secret IS NULL OR p_secret <> (
+    SELECT publish_secret FROM public.site_editor_settings WHERE id = 1
+  ) THEN
+    RAISE EXCEPTION 'unauthorized';
+  END IF;
+
+  SELECT * INTO result FROM public.site_pages WHERE slug = p_slug;
+  IF NOT FOUND THEN
+    RETURN NULL;
+  END IF;
+  RETURN to_jsonb(result);
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION public.publish_site_page(TEXT, TEXT, JSONB, TEXT, TEXT) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.get_editor_site_page(TEXT, TEXT) TO anon, authenticated;
+
+-- ─────────────────────────────────────────────────────────
+-- 8. Editor allowlist (Auth0 Google → email must be listed)
+-- ─────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.editor_allowlist (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  email TEXT NOT NULL,
+  active BOOLEAN NOT NULL DEFAULT true,
+  note TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  CONSTRAINT editor_allowlist_email_unique UNIQUE (email)
+);
+
+CREATE OR REPLACE FUNCTION public.normalize_editor_allowlist_email()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  NEW.email := lower(trim(NEW.email));
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_normalize_editor_allowlist_email ON public.editor_allowlist;
+CREATE TRIGGER trg_normalize_editor_allowlist_email
+  BEFORE INSERT OR UPDATE OF email ON public.editor_allowlist
+  FOR EACH ROW
+  EXECUTE FUNCTION public.normalize_editor_allowlist_email();
+
+ALTER TABLE public.editor_allowlist ENABLE ROW LEVEL SECURITY;
+
+CREATE OR REPLACE FUNCTION public.is_editor_email_allowed(p_email TEXT)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  IF p_email IS NULL OR length(trim(p_email)) = 0 THEN
+    RETURN false;
+  END IF;
+
+  RETURN EXISTS (
+    SELECT 1
+    FROM public.editor_allowlist
+    WHERE email = lower(trim(p_email))
+      AND active = true
+  );
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.is_editor_email_allowed(TEXT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.is_editor_email_allowed(TEXT) TO anon, authenticated;
+
+INSERT INTO public.editor_allowlist (email, note)
+VALUES
+  ('samuel@quadraaudio.com', 'Primary Quadra admin'),
+  ('samuelbacaro@gmail.com', 'Owner Google account')
+ON CONFLICT (email) DO UPDATE SET active = true;
+
+-- ─────────────────────────────────────────────────────────
+-- 9. Editor: create/list arbitrary content pages (Puck)
+-- Rendered at /pages/<slug>/ via Cloudflare Pages SPA rewrite
+-- (see public/_redirects) so new pages don't require a rebuild.
+-- ─────────────────────────────────────────────────────────
+CREATE OR REPLACE FUNCTION public.create_editor_page(
+  p_slug TEXT,
+  p_title TEXT,
+  p_secret TEXT
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  result public.site_pages;
+  clean_slug TEXT;
+BEGIN
+  IF p_secret IS NULL OR p_secret <> (
+    SELECT publish_secret FROM public.site_editor_settings WHERE id = 1
+  ) THEN
+    RAISE EXCEPTION 'unauthorized';
+  END IF;
+
+  clean_slug := lower(trim(p_slug));
+
+  IF clean_slug IS NULL OR clean_slug = '' OR clean_slug !~ '^[a-z0-9]+(-[a-z0-9]+)*$' OR length(clean_slug) > 60 THEN
+    RAISE EXCEPTION 'invalid_slug';
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM public.site_pages WHERE slug = clean_slug) THEN
+    RAISE EXCEPTION 'slug_taken';
+  END IF;
+
+  INSERT INTO public.site_pages (slug, title, puck_data, published)
+  VALUES (
+    clean_slug,
+    COALESCE(NULLIF(trim(p_title), ''), initcap(replace(clean_slug, '-', ' '))),
+    '{"root":{"props":{}},"content":[]}'::jsonb,
+    false
+  )
+  RETURNING * INTO result;
+
+  RETURN to_jsonb(result);
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.create_editor_page(TEXT, TEXT, TEXT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.create_editor_page(TEXT, TEXT, TEXT) TO anon, authenticated;
+
+CREATE OR REPLACE FUNCTION public.list_editor_pages(p_secret TEXT)
+RETURNS SETOF public.site_pages
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  IF p_secret IS NULL OR p_secret <> (
+    SELECT publish_secret FROM public.site_editor_settings WHERE id = 1
+  ) THEN
+    RAISE EXCEPTION 'unauthorized';
+  END IF;
+
+  RETURN QUERY
+    SELECT * FROM public.site_pages
+    ORDER BY updated_at DESC NULLS LAST, created_at DESC;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.list_editor_pages(TEXT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.list_editor_pages(TEXT) TO anon, authenticated;
 
 

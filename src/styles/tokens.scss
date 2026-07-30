@@ -1,22 +1,17 @@
-/* ─── Quadra Design System ─────────────────────────────────────────
-   HIG-aligned tokens: Clarity · Deference · Depth
-   Consumed via CSS custom properties; components stay token-driven.
-─────────────────────────────────────────────────────────────────── */
+/* Quadra Design System — HIG-aligned tokens */
 
 :root {
-  /* Typography — Instrument Sans loaded in layout; SF Pro on Apple */
-  --font-display: var(--font-quadra), "SF Pro Display", "Helvetica Neue", sans-serif;
-  --font-text: var(--font-quadra), "SF Pro Text", "Helvetica Neue", sans-serif;
+  --font-display: var(--font-quadra, "SF Pro Display"), "Helvetica Neue", sans-serif;
+  --font-text: var(--font-quadra, "SF Pro Text"), "Helvetica Neue", sans-serif;
 
-  /* Type scale (px) — Apple-adjacent, web-tuned */
-  --text-eyebrow: 0.75rem;      /* 12 */
-  --text-caption: 0.875rem;     /* 14 */
-  --text-body: 1.0625rem;       /* 17 */
-  --text-body-lg: 1.3125rem;    /* 21 */
-  --text-title: 1.75rem;        /* 28 */
-  --text-headline: 2.5rem;      /* 40 */
-  --text-display: clamp(2.75rem, 6vw, 4.5rem); /* 44–72 */
-  --text-brand: clamp(3.5rem, 8vw, 5.5rem);    /* hero brand */
+  --text-eyebrow: 0.75rem;
+  --text-caption: 0.875rem;
+  --text-body: 1.0625rem;
+  --text-body-lg: 1.3125rem;
+  --text-title: 1.75rem;
+  --text-headline: 2.5rem;
+  --text-display: clamp(2.75rem, 6vw, 4.5rem);
+  --text-brand: clamp(3.5rem, 8vw, 5.5rem);
 
   --leading-tight: 1.05;
   --leading-snug: 1.15;
@@ -24,7 +19,6 @@
   --tracking-display: -0.022em;
   --tracking-eyebrow: 0.06em;
 
-  /* Spacing scale (4px base) */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -37,7 +31,6 @@
   --space-10: 7.5rem;
   --space-section: clamp(4rem, 12vh, 8rem);
 
-  /* Layout */
   --width-content: 980px;
   --width-wide: 1200px;
   --width-hero-copy: 720px;
@@ -45,18 +38,15 @@
   --radius-control: 980px;
   --radius-media: 1.25rem;
 
-  /* Motion */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1);
   --duration-fast: 150ms;
   --duration-base: 400ms;
   --duration-slow: 800ms;
 
-  /* Depth / glass */
   --blur-glass: blur(20px) saturate(180%);
   --shadow-soft: 0 8px 40px rgba(0, 0, 0, 0.35);
 
-  /* Light surface (default) */
   --bg-primary: #ffffff;
   --bg-secondary: #f5f5f7;
   --bg-tertiary: #fbfbfd;
@@ -70,6 +60,16 @@
   --border-subtle: rgba(0, 0, 0, 0.08);
   --nav-bg: rgba(255, 255, 255, 0.72);
   --nav-border: rgba(0, 0, 0, 0.12);
+
+  --button-bg: #0071e3;
+  --button-hover: #0077ed;
+  --button-text: #ffffff;
+  --link-color: var(--accent);
+  --link-hover: var(--accent-hover);
+  --card-bg: var(--bg-tertiary);
+  --card-border: var(--border-subtle);
+  --nav-blur: var(--blur-glass);
+  --font-sans: var(--font-text);
 }
 
 [data-theme="dark"] {
@@ -87,18 +87,6 @@
   --nav-bg: rgba(22, 22, 23, 0.72);
   --nav-border: rgba(255, 255, 255, 0.14);
   --shadow-soft: 0 12px 48px rgba(0, 0, 0, 0.55);
-}
-
-/* Legacy aliases — keep existing SCSS modules working during migration */
-:root,
-[data-theme="dark"] {
-  --button-bg: #0071e3;
-  --button-hover: #0077ed;
-  --button-text: #ffffff;
   --link-color: var(--accent);
   --link-hover: var(--accent-hover);
-  --card-bg: var(--bg-tertiary);
-  --card-border: var(--border-subtle);
-  --nav-blur: var(--blur-glass);
-  --font-sans: var(--font-text);
 }

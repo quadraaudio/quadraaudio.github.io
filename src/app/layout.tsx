@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Instrument_Sans } from "next/font/google";
 import "./globals.scss";
-import GlobalNav from "@/components/GlobalNav";
-import GlobalFooter from "@/components/GlobalFooter";
+import EditHostRedirect from "@/components/EditHostRedirect";
+import SiteChrome from "@/components/SiteChrome";
 import { ThemeProvider } from "@/components/ThemeContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { ProductProvider } from "@/contexts/ProductContext";
@@ -58,9 +58,8 @@ export default function RootLayout({
             <ProductProvider>
               <CartProvider>
                 <ThemeProvider>
-                  <GlobalNav />
-                  <main style={{ paddingTop: "44px" }}>{children}</main>
-                  <GlobalFooter />
+                  <EditHostRedirect />
+                  <SiteChrome>{children}</SiteChrome>
                 </ThemeProvider>
               </CartProvider>
             </ProductProvider>

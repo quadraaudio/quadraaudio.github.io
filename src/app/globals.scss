@@ -1,4 +1,4 @@
-@import "../styles/tokens.scss";
+@use "../styles/tokens.scss";
 
 * {
   box-sizing: border-box;
@@ -143,7 +143,6 @@ button {
   letter-spacing: -0.022em;
 }
 
-/* Apple CTA Pill Buttons */
 .apple-button-primary {
   display: inline-flex;
   align-items: center;
@@ -199,7 +198,6 @@ button {
   line-height: 1;
 }
 
-/* Responsive Scaling */
 @media (max-width: 734px) {
   .typography-welcome-headline {
     font-size: 40px;
