@@ -1,6 +1,0 @@
-;; Cloudflare DNS for Quadra Audio
-quadraaudio.com.	1	IN	AAAA	100:: ; cf_tags=cf-proxied:true
-www.quadraaudio.com.	1	IN	CNAME	quadra-audio.pages.dev. ; cf_tags=cf-proxied:true
-
-;; Admin visual editor subdomain → same Pages project
-admin.quadraaudio.com.	1	IN	CNAME	quadra-audio.pages.dev. ; cf_tags=cf-proxied:true
