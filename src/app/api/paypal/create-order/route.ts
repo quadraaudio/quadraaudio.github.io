@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth0, auth0Configured } from "@/lib/auth0";
+import { auth, googleAuthConfigured } from "@/auth";
 import {
   buildPayPalUnits,
   priceCart,
@@ -7,8 +7,11 @@ import {
 import { createPayPalOrder, paypalConfigured } from "@/lib/paypal";
 
 export async function POST(request: Request) {
-  if (!auth0Configured || !auth0) {
-    return NextResponse.json({ error: "Auth0 is not configured" }, { status: 503 });
+  if (!googleAuthConfigured) {
+    return NextResponse.json(
+      { error: "Google sign-in is not configured" },
+      { status: 503 }
+    );
   }
   if (!paypalConfigured()) {
     return NextResponse.json({ error: "PayPal is not configured" }, { status: 503 });
@@ -23,8 +26,8 @@ export async function POST(request: Request) {
     );
   }
 
-  const session = await auth0.getSession();
-  if (!session?.user) {
+  const session = await auth();
+  if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -55,7 +58,7 @@ export async function POST(request: Request) {
     const order = await createPayPalOrder({
       amount: priced.order.total.toFixed(2),
       currency: priced.order.currency,
-      customId: session.user.sub,
+      customId: session.user.id,
       items: buildPayPalUnits(priced.order),
     });
 

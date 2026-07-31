@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { auth0, auth0Configured } from "@/lib/auth0";
+import { auth, googleAuthConfigured } from "@/auth";
 import { CheckoutClient } from "./CheckoutClient";
 import styles from "./checkout.module.scss";
 
@@ -10,27 +10,27 @@ export const metadata = {
 };
 
 export default async function CheckoutPage() {
-  const session = auth0Configured && auth0 ? await auth0.getSession() : null;
+  const session = googleAuthConfigured ? await auth() : null;
 
-  if (!session?.user) {
+  if (!session?.user?.id) {
     return (
       <main className={styles.page}>
         <div className="page-shell">
           <p className="eyebrow">Checkout</p>
           <h1 className="display display-lg">Sign in to continue.</h1>
           <p className="lede">
-            Checkout uses Auth0 with Google. Sign in with your Quadra account to
-            complete purchase and receive licenses.
+            Sign in with Google to complete purchase and receive licenses in
+            your account.
           </p>
-          {!auth0Configured ? (
+          {!googleAuthConfigured ? (
             <p className={styles.notice}>
-              Auth0 is not configured yet. Add `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`,
-              `AUTH0_CLIENT_SECRET`, and `AUTH0_SECRET` to enable Google sign-in.
+              Google sign-in is not connected yet. Add `AUTH_GOOGLE_ID`,
+              `AUTH_GOOGLE_SECRET`, and `AUTH_SECRET` to enable it.
             </p>
           ) : null}
           <div className={styles.actions}>
             <a
-              href="/auth/login?returnTo=/store/checkout"
+              href="/login?returnTo=/store/checkout"
               className="btn btn-primary"
             >
               Sign in with Google

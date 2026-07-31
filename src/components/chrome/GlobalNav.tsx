@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import { signOut, useSession } from "next-auth/react";
 import { useCart } from "@/components/providers/CartProvider";
 import { LogoMark } from "@/components/chrome/LogoMark";
 import styles from "./GlobalNav.module.scss";
@@ -22,18 +22,15 @@ const RESOURCE_LINKS = [
   { href: "/legal/terms", label: "Legal" },
 ];
 
-function authHref(path: "/auth/login" | "/auth/logout", returnTo: string) {
-  const params = new URLSearchParams({ returnTo });
-  return `${path}?${params.toString()}`;
-}
-
 export function GlobalNav() {
-  const { user, isLoading } = useUser();
+  const { data: session, status } = useSession();
   const { itemCount } = useCart();
   const pathname = usePathname() || "/";
   const [open, setOpen] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const isLoading = status === "loading";
+  const user = session?.user;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -49,8 +46,7 @@ export function GlobalNav() {
     };
   }, [mobileOpen]);
 
-  const loginHref = authHref("/auth/login", pathname);
-  const logoutHref = authHref("/auth/logout", "/");
+  const loginHref = `/login?returnTo=${encodeURIComponent(pathname)}`;
 
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
@@ -122,14 +118,18 @@ export function GlobalNav() {
               <Link href="/account" className={styles.linkQuiet}>
                 Account
               </Link>
-              <a href={logoutHref} className="btn btn-secondary">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => signOut({ callbackUrl: "/" })}
+              >
                 Log out
-              </a>
+              </button>
             </>
           ) : (
-            <a href={loginHref} className="btn btn-primary">
+            <Link href={loginHref} className="btn btn-primary">
               Sign in with Google
-            </a>
+            </Link>
           )}
           <button
             type="button"
@@ -169,10 +169,14 @@ export function GlobalNav() {
               <Link href="/account" onClick={() => setMobileOpen(false)}>
                 Account
               </Link>
-              <a href={logoutHref}>Log out</a>
+              <button type="button" onClick={() => signOut({ callbackUrl: "/" })}>
+                Log out
+              </button>
             </>
           ) : (
-            <a href={loginHref}>Sign in with Google</a>
+            <Link href={loginHref} onClick={() => setMobileOpen(false)}>
+              Sign in with Google
+            </Link>
           )}
         </div>
       )}

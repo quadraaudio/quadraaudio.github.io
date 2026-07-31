@@ -1,12 +1,9 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { auth0, auth0Configured } from "@/lib/auth0";
 
-export async function proxy(request: NextRequest) {
-  if (!auth0Configured || !auth0) {
-    return NextResponse.next();
-  }
-  return auth0.middleware(request);
+/** Pass-through — Google session is cookie-based via Auth.js (no Auth0 middleware). */
+export async function proxy(_request: NextRequest) {
+  return NextResponse.next();
 }
 
 export const config = {

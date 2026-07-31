@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { auth0, auth0Configured } from "@/lib/auth0";
+import { auth, googleAuthConfigured } from "@/auth";
 import { getSeedProduct } from "@/data/products.seed";
 import { loadAccountForAuth0 } from "@/lib/checkout";
 import { formatPrice } from "@/lib/products";
@@ -16,28 +16,16 @@ function productName(slug: string) {
 }
 
 export default async function AccountPage() {
-  if (!auth0Configured || !auth0) {
+  if (!googleAuthConfigured) {
     return (
       <main className={styles.page}>
         <div className="page-shell">
           <h1 className="display display-lg">Account</h1>
           <p className="lede">
-            Auth0 is not configured. Add Auth0 environment variables to enable
-            Google sign-in for Quadra ID.
+            Google sign-in is not connected yet. Add Google Cloud OAuth keys to
+            enable your Quadra account.
           </p>
-        </div>
-      </main>
-    );
-  }
-
-  const session = await auth0.getSession();
-  if (!session?.user) {
-    return (
-      <main className={styles.page}>
-        <div className="page-shell">
-          <p className="eyebrow">Account</p>
-          <h1 className="display display-lg">Sign in to manage licenses.</h1>
-          <a href="/auth/login?returnTo=/account" className="btn btn-primary">
+          <a href="/login?returnTo=/account" className="btn btn-primary">
             Sign in with Google
           </a>
         </div>
@@ -45,7 +33,22 @@ export default async function AccountPage() {
     );
   }
 
-  const account = await loadAccountForAuth0(session.user.sub);
+  const session = await auth();
+  if (!session?.user?.id) {
+    return (
+      <main className={styles.page}>
+        <div className="page-shell">
+          <p className="eyebrow">Account</p>
+          <h1 className="display display-lg">Sign in to manage licenses.</h1>
+          <a href="/login?returnTo=/account" className="btn btn-primary">
+            Sign in with Google
+          </a>
+        </div>
+      </main>
+    );
+  }
+
+  const account = await loadAccountForAuth0(session.user.id);
   const loadError = !account.ok;
   const orders = account.ok ? account.orders : [];
   const licenses = account.ok ? account.licenses : [];
@@ -107,10 +110,6 @@ export default async function AccountPage() {
             </ul>
           )}
         </section>
-
-        <a href="/auth/logout?returnTo=/" className="btn btn-secondary">
-          Log out
-        </a>
       </div>
     </main>
   );

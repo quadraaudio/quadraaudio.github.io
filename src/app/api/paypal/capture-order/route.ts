@@ -1,18 +1,21 @@
 import { NextResponse } from "next/server";
-import { auth0, auth0Configured } from "@/lib/auth0";
+import { auth, googleAuthConfigured } from "@/auth";
 import { capturePayPalOrder, paypalConfigured } from "@/lib/paypal";
 import { persistCompletedOrder, priceCart } from "@/lib/checkout";
 
 export async function POST(request: Request) {
-  if (!auth0Configured || !auth0) {
-    return NextResponse.json({ error: "Auth0 is not configured" }, { status: 503 });
+  if (!googleAuthConfigured) {
+    return NextResponse.json(
+      { error: "Google sign-in is not configured" },
+      { status: 503 }
+    );
   }
   if (!paypalConfigured()) {
     return NextResponse.json({ error: "PayPal is not configured" }, { status: 503 });
   }
 
-  const session = await auth0.getSession();
-  if (!session?.user) {
+  const session = await auth();
+  if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -79,7 +82,7 @@ export async function POST(request: Request) {
     "customer@quadraaudio.com";
 
   const persisted = await persistCompletedOrder({
-    auth0Sub: session.user.sub,
+    auth0Sub: session.user.id,
     email,
     name: session.user.name,
     priced: priced.order,
