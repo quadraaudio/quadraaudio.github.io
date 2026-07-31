@@ -7,32 +7,29 @@ import ProductRibbon from "@/components/ProductRibbon";
 import Link from "next/link";
 import styles from "./page.module.scss";
 
-// Real high-resolution Apple media & video assets from Apple's CDN
-const APPLE_ASSETS = {
-  videos: {
-    hero: "https://www.apple.com/105/media/us/logic-pro/2025/794dd86c-0741-407e-9c0f-3debae4027e9/anim/hero/large.mp4",
-    beatMaking: "https://www.apple.com/105/media/us/logic-pro/2025/794dd86c-0741-407e-9c0f-3debae4027e9/anim/beat-making-hero/large.mp4",
-    mixing: "https://www.apple.com/105/media/us/logic-pro/2025/794dd86c-0741-407e-9c0f-3debae4027e9/anim/mixing/large.mp4",
-  },
+// 100% Quadra-owned media. Structure follows Apple product-page conventions,
+// but every asset served here is our own (no Apple CDN, no Apple assets).
+const QUADRA_ASSETS = {
   images: {
-    heroFallback: "https://www.apple.com/v/logic-pro/n/images/overview/welcome/hero_endframe__dc7irycb3gia_large.jpg",
-    banner: "https://www.apple.com/v/logic-pro/n/images/overview/welcome/welcome_banner__ehgiu77lsru6_large.png",
+    hero: "/images/home_hero_quadra.jpg",
+    banner: "/images/hydra_app_icon.jpg",
     highlights: {
-      playground: "https://www.apple.com/v/logic-pro/n/images/overview/highlights/playground__d9sjwzqicsqe_large.jpg",
-      partner: "https://www.apple.com/v/logic-pro/n/images/overview/highlights/partner__exi088xbzt26_large.jpg",
-      beatMaking: "https://www.apple.com/v/logic-pro/n/images/overview/highlights/beat_making__io5w14fjrl6q_large.jpg",
-      sounds: "https://www.apple.com/v/logic-pro/n/images/overview/highlights/sounds_instruments__fpsglohz2jee_large.jpg",
-      mixed: "https://www.apple.com/v/logic-pro/n/images/overview/highlights/mixed_mastered__gfhgq7ngylim_large.jpg",
-      devices: "https://www.apple.com/v/logic-pro/n/images/overview/highlights/devices__d9ntdk3mic2u_large.jpg",
+      playground: "/images/home_hero_quadra.jpg",
+      partner: "/images/store_hydra_card.jpg",
+      beatMaking: "/images/home_store_grid.jpg",
+      sounds: "/images/home_support_grid.jpg",
+      mixed: "/images/hydra_app_icon.jpg",
+      devices: "/images/home_hero_quadra.jpg",
     },
-    soundsHero: "https://www.apple.com/v/logic-pro/n/images/overview/sounds/hero__ebfnroijwc6e_large.jpg",
-    ipadHero: "https://www.apple.com/v/logic-pro/n/images/overview/ipad/hero__d7n1vwlh7u standard_large.jpg",
+    soundsHero: "/images/home_support_grid.jpg",
+    beatMaking: "/images/home_store_grid.jpg",
+    mixing: "/images/home_support_grid.jpg",
     tiles: {
-      drumKit: "https://www.apple.com/v/logic-pro/n/images/overview/beat_making/drum_kit__cioqfuz0ic2u_large.jpg",
-      sampler: "https://www.apple.com/v/logic-pro/n/images/overview/beat_making/sampler__d2etbz4szeoi_large.jpg",
-      sequencer: "https://www.apple.com/v/logic-pro/n/images/overview/beat_making/sequencer__f1h9xqirvxqq_large.jpg",
-    }
-  }
+      drumKit: "/images/store_hydra_card.jpg",
+      sampler: "/images/home_store_grid.jpg",
+      sequencer: "/images/hydra_app_icon.jpg",
+    },
+  },
 };
 
 const FAQ_ITEMS = [
@@ -127,18 +124,13 @@ export default function Hydra() {
            ========================================= */}
         <section className={styles.sectionWelcome} id="overview">
           
-          {/* Full Viewport Background Video Canvas */}
+          {/* Full Viewport Background Media Canvas */}
           <div className={styles.welcomeHeroMediaContainer}>
-            <video 
-              autoPlay 
-              loop 
-              muted 
-              playsInline 
-              poster={APPLE_ASSETS.images.heroFallback}
+            <img
+              src={QUADRA_ASSETS.images.hero}
+              alt="Hydra virtual audio matrix running on macOS"
               className={styles.heroVideo}
-            >
-              <source src={APPLE_ASSETS.videos.hero} type="video/mp4" />
-            </video>
+            />
             <div className={styles.shadowOverlay} />
           </div>
 
@@ -187,7 +179,7 @@ export default function Hydra() {
               </div>
             </div>
             <div className={styles.bannerAsset}>
-              <img src={APPLE_ASSETS.images.banner} alt="Quadra Creator Studio software icons" />
+              <img src={QUADRA_ASSETS.images.banner} alt="Quadra Creator Studio software icons" />
             </div>
           </div>
         </section>
@@ -225,42 +217,42 @@ export default function Hydra() {
             <div className={styles.highlightsRow}>
               
               <div className={styles.highlightMediaCard}>
-                <img src={APPLE_ASSETS.images.highlights.playground} alt="Producer operating Hydra audio routing matrix" />
+                <img src={QUADRA_ASSETS.images.highlights.playground} alt="Producer operating Hydra audio routing matrix" />
                 <div className={styles.highlightCaptionOverlay}>
                   <h3>256-Channel Configurable Virtual Patchbay for DAWs and system apps.</h3>
                 </div>
               </div>
 
               <div className={styles.highlightMediaCard}>
-                <img src={APPLE_ASSETS.images.highlights.partner} alt="Hydra DSP routing channel strips" />
+                <img src={QUADRA_ASSETS.images.highlights.partner} alt="Hydra DSP routing channel strips" />
                 <div className={styles.highlightCaptionOverlay}>
                   <h3>GroundControl Fusion combines up to 8 physical interfaces into one driver.</h3>
                 </div>
               </div>
 
               <div className={styles.highlightMediaCard}>
-                <img src={APPLE_ASSETS.images.highlights.beatMaking} alt="Hydra high-resolution waveform matrix" />
+                <img src={QUADRA_ASSETS.images.highlights.beatMaking} alt="Hydra high-resolution waveform matrix" />
                 <div className={styles.highlightCaptionOverlay}>
                   <h3>32-Bit Float C++ processing engine with sub-millisecond buffer speeds.</h3>
                 </div>
               </div>
 
               <div className={styles.highlightMediaCard}>
-                <img src={APPLE_ASSETS.images.highlights.sounds} alt="Hydra network audio matrix" />
+                <img src={QUADRA_ASSETS.images.highlights.sounds} alt="Hydra network audio matrix" />
                 <div className={styles.highlightCaptionOverlay}>
                   <h3>Stream 128 NDI® and 256 AVB channels over Ethernet with zero latency.</h3>
                 </div>
               </div>
 
               <div className={styles.highlightMediaCard}>
-                <img src={APPLE_ASSETS.images.highlights.mixed} alt="Hydra 9.4.6 Dolby Atmos spatial monitoring console" />
+                <img src={QUADRA_ASSETS.images.highlights.mixed} alt="Hydra 9.4.6 Dolby Atmos spatial monitoring console" />
                 <div className={styles.highlightCaptionOverlay}>
                   <h3>Dolby Atmos 9.4.6 monitoring with Apple Spatial Audio HRTF head tracking.</h3>
                 </div>
               </div>
 
               <div className={styles.highlightMediaCard}>
-                <img src={APPLE_ASSETS.images.highlights.devices} alt="Apple Silicon Mac ecosystem running Hydra" />
+                <img src={QUADRA_ASSETS.images.highlights.devices} alt="Apple Silicon Mac ecosystem running Hydra" />
                 <div className={styles.highlightCaptionOverlay}>
                   <h3>Stream Deck, EUCON, MIDI CC, and OSC automation for instant snapshot recall.</h3>
                 </div>
@@ -304,15 +296,11 @@ export default function Hydra() {
           </div>
 
           <div className={styles.fullBleedMediaFrame}>
-            <video 
-              autoPlay 
-              loop 
-              muted 
-              playsInline 
+            <img
+              src={QUADRA_ASSETS.images.beatMaking}
+              alt="Hydra virtual routing tools interface"
               className={styles.heroVideo}
-            >
-              <source src={APPLE_ASSETS.videos.beatMaking} type="video/mp4" />
-            </video>
+            />
           </div>
 
           <div 
@@ -328,7 +316,7 @@ export default function Hydra() {
                   <p>Create and customize 4 independent virtual audio soundcards with 2 to 256 channels per driver. Seamlessly patch audio between Logic Pro, Pro Tools, and OBS Studio.</p>
                 </div>
                 <div className={styles.tileMediaFrame}>
-                  <img src={APPLE_ASSETS.images.tiles.drumKit} alt="Virtual Soundcard matrix" />
+                  <img src={QUADRA_ASSETS.images.tiles.drumKit} alt="Virtual Soundcard matrix" />
                 </div>
               </div>
 
@@ -338,7 +326,7 @@ export default function Hydra() {
                   <p>Isolate and capture high-fidelity audio streams directly from running applications like Zoom, Chrome, Discord, or Spotify with zero added driver latency.</p>
                 </div>
                 <div className={styles.tileMediaFrame}>
-                  <img src={APPLE_ASSETS.images.tiles.sampler} alt="Application Audio Capture" />
+                  <img src={QUADRA_ASSETS.images.tiles.sampler} alt="Application Audio Capture" />
                 </div>
               </div>
 
@@ -348,7 +336,7 @@ export default function Hydra() {
                   <p>Sub-millisecond DAW routing plugin (AU / VST3 / AAX) for direct signal insertion straight from DAW channel strips into Hydra’s virtual patchbay.</p>
                 </div>
                 <div className={styles.tileMediaFrame}>
-                  <img src={APPLE_ASSETS.images.tiles.sequencer} alt="GroundControl LINK plugin" />
+                  <img src={QUADRA_ASSETS.images.tiles.sequencer} alt="GroundControl LINK plugin" />
                 </div>
               </div>
 
@@ -358,7 +346,7 @@ export default function Hydra() {
                   <p>Combine up to 8 physical hardware audio interfaces into a single unified driver with automatic sample rate conversion (ASRC) and zero clock drift.</p>
                 </div>
                 <div className={styles.tileMediaFrame}>
-                  <img src={APPLE_ASSETS.images.highlights.partner} alt="Interface Fusion Engine" />
+                  <img src={QUADRA_ASSETS.images.highlights.partner} alt="Interface Fusion Engine" />
                 </div>
               </div>
 
@@ -368,7 +356,7 @@ export default function Hydra() {
                   <p>Transmit and receive up to 128 NDI® channels and 256 AVB uncompressed Ethernet audio channels across local studio machines with zero packet loss.</p>
                 </div>
                 <div className={styles.tileMediaFrame}>
-                  <img src={APPLE_ASSETS.images.highlights.sounds} alt="AoIP Network Streaming" />
+                  <img src={QUADRA_ASSETS.images.highlights.sounds} alt="AoIP Network Streaming" />
                 </div>
               </div>
 
@@ -378,7 +366,7 @@ export default function Hydra() {
                   <p>Comprehensive monitor controller supporting 9.4.6 Dolby Atmos layouts, binaural renderers, Apple Spatial Audio HRTF, quad-subwoofer bass crossovers, and AU plugin slots.</p>
                 </div>
                 <div className={styles.tileMediaFrame}>
-                  <img src={APPLE_ASSETS.images.highlights.mixed} alt="Spatial Audio Monitoring" />
+                  <img src={QUADRA_ASSETS.images.highlights.mixed} alt="Spatial Audio Monitoring" />
                 </div>
               </div>
 
@@ -400,7 +388,7 @@ export default function Hydra() {
           </div>
 
           <div className={styles.fullBleedMediaFrame}>
-            <img src={APPLE_ASSETS.images.soundsHero} alt="Studio Display displaying Hydra Network Audio Matrix" />
+            <img src={QUADRA_ASSETS.images.soundsHero} alt="Quadra display showing the Hydra network audio matrix" />
           </div>
         </section>
 
@@ -418,15 +406,11 @@ export default function Hydra() {
           </div>
 
           <div className={styles.fullBleedMediaFrame}>
-            <video 
-              autoPlay 
-              loop 
-              muted 
-              playsInline 
+            <img
+              src={QUADRA_ASSETS.images.mixing}
+              alt="Hydra spatial audio and monitor control interface"
               className={styles.heroVideo}
-            >
-              <source src={APPLE_ASSETS.videos.mixing} type="video/mp4" />
-            </video>
+            />
           </div>
         </section>
 
