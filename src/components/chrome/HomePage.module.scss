@@ -13,7 +13,8 @@
 
 .heroVisual {
   position: absolute;
-  inset: 0;
+  inset: -4% -12vw 0;
+  pointer-events: none;
 }
 
 .heroGlow {

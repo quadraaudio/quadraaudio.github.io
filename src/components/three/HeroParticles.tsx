@@ -5,9 +5,7 @@ import * as THREE from "three";
 import styles from "./HeroParticles.module.scss";
 
 /**
- * Quadra Signal Field — a live audio membrane / oscilloscope plane.
- * Unique to Quadra: waveform ripples + cursor as a pressure/excitation point.
- * Not a logo morph.
+ * Quadra Signal Field — wide, slow audio membrane that reads as infinite laterally.
  */
 export function HeroParticles() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -18,18 +16,24 @@ export function HeroParticles() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    const cols = isMobile ? 48 : 72;
-    const rows = isMobile ? 28 : 40;
+    // Dense enough, but very wide so edges never sit in-frame.
+    const cols = isMobile ? 96 : 140;
+    const rows = isMobile ? 26 : 36;
     const count = cols * rows;
+    const fieldWidth = isMobile ? 28 : 42;
+    const fieldDepth = isMobile ? 7 : 8.5;
 
     const scene = new THREE.Scene();
+    const fog = new THREE.FogExp2(0xfbfcfd, 0.045);
+    scene.fog = fog;
+
     const camera = new THREE.PerspectiveCamera(
-      42,
+      38,
       mount.clientWidth / mount.clientHeight,
       0.1,
-      100
+      120
     );
-    camera.position.set(0, 1.2, 7.2);
+    camera.position.set(0, 1.35, 7.8);
 
     const renderer = new THREE.WebGLRenderer({
       antialias: !isMobile,
@@ -43,28 +47,33 @@ export function HeroParticles() {
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const base = new Float32Array(count * 3);
-    const teal = new THREE.Color("#00a3a0");
-    const ink = new THREE.Color("#1a222d");
-    const warm = new THREE.Color("#e8a54b");
+
+    // Precomputed palette endpoints (avoid Color.clone per particle/frame).
+    const ink = { r: 0.102, g: 0.133, b: 0.176 }; // #1a222d
+    const teal = { r: 0.0, g: 0.639, b: 0.627 }; // #00a3a0
+    const warm = { r: 0.91, g: 0.647, b: 0.294 }; // #e8a54b
 
     let i = 0;
     for (let r = 0; r < rows; r += 1) {
       for (let c = 0; c < cols; c += 1) {
-        const x = (c / (cols - 1) - 0.5) * 11;
-        const z = (r / (rows - 1) - 0.5) * 6.5;
-        const y = 0;
+        const u = c / (cols - 1);
+        const v = r / (rows - 1);
+        const x = (u - 0.5) * fieldWidth;
+        const z = (v - 0.5) * fieldDepth;
         const ix = i * 3;
         base[ix] = x;
-        base[ix + 1] = y;
+        base[ix + 1] = 0;
         base[ix + 2] = z;
         positions[ix] = x;
-        positions[ix + 1] = y;
+        positions[ix + 1] = 0;
         positions[ix + 2] = z;
-        const mix = c / (cols - 1);
-        const col = ink.clone().lerp(teal, 0.35 + mix * 0.65);
-        colors[ix] = col.r;
-        colors[ix + 1] = col.g;
-        colors[ix + 2] = col.b;
+
+        // Soft center emphasis; sides fade into fog/infinite.
+        const edgeFade = 1 - Math.pow(Math.abs(u - 0.5) * 2, 1.6) * 0.35;
+        const mix = 0.28 + v * 0.45;
+        colors[ix] = (ink.r + (teal.r - ink.r) * mix) * edgeFade;
+        colors[ix + 1] = (ink.g + (teal.g - ink.g) * mix) * edgeFade;
+        colors[ix + 2] = (ink.b + (teal.b - ink.b) * mix) * edgeFade;
         i += 1;
       }
     }
@@ -73,31 +82,30 @@ export function HeroParticles() {
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
     const material = new THREE.PointsMaterial({
-      size: isMobile ? 0.055 : 0.045,
+      size: isMobile ? 0.05 : 0.042,
       vertexColors: true,
       transparent: true,
-      opacity: 0.9,
+      opacity: 0.88,
       depthWrite: false,
       sizeAttenuation: true,
     });
     const points = new THREE.Points(geometry, material);
-    points.rotation.x = -0.42;
+    points.rotation.x = -0.4;
     scene.add(points);
 
-    // Secondary “scope beam” — a bright traveling readout line.
     const beamCount = cols;
     const beamPos = new Float32Array(beamCount * 3);
     const beamGeo = new THREE.BufferGeometry();
     beamGeo.setAttribute("position", new THREE.BufferAttribute(beamPos, 3));
     const beamMat = new THREE.PointsMaterial({
-      color: warm,
-      size: isMobile ? 0.08 : 0.07,
+      color: warm.r * 0x10000 + warm.g * 0x100 + warm.b > 0 ? "#e8a54b" : "#e8a54b",
+      size: isMobile ? 0.07 : 0.06,
       transparent: true,
-      opacity: 0.95,
+      opacity: 0.7,
       depthWrite: false,
     });
     const beam = new THREE.Points(beamGeo, beamMat);
-    beam.rotation.x = -0.42;
+    beam.rotation.x = -0.4;
     scene.add(beam);
 
     const pointer = { x: 0, y: 0, tx: 0, ty: 0, active: false };
@@ -125,15 +133,16 @@ export function HeroParticles() {
       raf = requestAnimationFrame(animate);
       if (!visible) return;
       frame += 1;
-      const t = frame * 0.016;
+      // Slow, cinematic timebase.
+      const t = frame * 0.0065;
 
-      // Snappy cursor follow (Antigravity-like responsiveness).
-      const ease = pointer.active ? 0.22 : 0.1;
+      const ease = pointer.active ? 0.12 : 0.06;
       pointer.x += (pointer.tx - pointer.x) * ease;
       pointer.y += (pointer.ty - pointer.y) * ease;
 
-      const exciteX = pointer.x * 5.2;
-      const exciteZ = -pointer.y * 2.8;
+      // Map cursor across the wide field.
+      const exciteX = pointer.x * (fieldWidth * 0.38);
+      const exciteZ = -pointer.y * (fieldDepth * 0.35);
       const pos = geometry.attributes.position as THREE.BufferAttribute;
       const colAttr = geometry.attributes.color as THREE.BufferAttribute;
       const arr = pos.array as Float32Array;
@@ -143,51 +152,56 @@ export function HeroParticles() {
         const ix = p * 3;
         const x = base[ix];
         const z = base[ix + 2];
+
+        // Long, slow traveling waves — not jittery.
         const wave =
-          Math.sin(x * 1.15 + t * 2.4) * 0.22 +
-          Math.sin(z * 1.8 - t * 1.7) * 0.16 +
-          Math.sin((x + z) * 0.65 + t * 1.1) * 0.1;
+          Math.sin(x * 0.35 + t * 0.85) * 0.18 +
+          Math.sin(z * 0.7 - t * 0.55) * 0.12 +
+          Math.sin((x * 0.15 + z) * 0.45 + t * 0.4) * 0.08;
 
         const dx = x - exciteX;
         const dz = z - exciteZ;
         const dist = Math.sqrt(dx * dx + dz * dz);
-        const ripple =
-          pointer.active
-            ? Math.sin(Math.max(0, 3.2 - dist) * 2.4 - t * 6) *
-              Math.exp(-dist * 0.55) *
-              1.15
-            : 0;
+        const ripple = pointer.active
+          ? Math.sin(Math.max(0, 4.5 - dist) * 1.15 - t * 2.2) *
+            Math.exp(-dist * 0.32) *
+            0.7
+          : 0;
 
         const y = wave + ripple;
         arr[ix] = x;
         arr[ix + 1] = y;
         arr[ix + 2] = z;
 
-        const energy = Math.min(1, Math.abs(y) * 1.4);
-        const c = ink.clone().lerp(teal, 0.4).lerp(warm, energy * 0.85);
-        colsArr[ix] = c.r;
-        colsArr[ix + 1] = c.g;
-        colsArr[ix + 2] = c.b;
+        const energy = Math.min(1, Math.abs(y) * 1.15);
+        const edge = Math.min(1, Math.abs(x) / (fieldWidth * 0.5));
+        const fade = 1 - edge * edge * 0.45;
+        const tr = ink.r + (teal.r - ink.r) * 0.45 + (warm.r - teal.r) * energy;
+        const tg = ink.g + (teal.g - ink.g) * 0.45 + (warm.g - teal.g) * energy;
+        const tb = ink.b + (teal.b - ink.b) * 0.45 + (warm.b - teal.b) * energy;
+        colsArr[ix] = tr * fade;
+        colsArr[ix + 1] = tg * fade;
+        colsArr[ix + 2] = tb * fade;
       }
       pos.needsUpdate = true;
       colAttr.needsUpdate = true;
 
-      // Traveling scope beam across the membrane.
-      const beamPhase = ((t * 0.35) % 1) * (rows - 1);
+      // Slow scope sweep.
+      const beamPhase = ((t * 0.12) % 1) * (rows - 1);
       const row = Math.floor(beamPhase);
       const bArr = beamGeo.attributes.position.array as Float32Array;
       for (let c = 0; c < cols; c += 1) {
         const src = (row * cols + c) * 3;
         const dest = c * 3;
         bArr[dest] = arr[src];
-        bArr[dest + 1] = arr[src + 1] + 0.05;
+        bArr[dest + 1] = arr[src + 1] + 0.04;
         bArr[dest + 2] = arr[src + 2];
       }
       (beamGeo.attributes.position as THREE.BufferAttribute).needsUpdate = true;
 
-      camera.position.x += (pointer.x * 0.9 - camera.position.x) * 0.12;
-      camera.position.y += (1.2 + pointer.y * 0.45 - camera.position.y) * 0.12;
-      camera.lookAt(pointer.x * 0.4, 0.2, 0);
+      camera.position.x += (pointer.x * 0.55 - camera.position.x) * 0.06;
+      camera.position.y += (1.35 + pointer.y * 0.28 - camera.position.y) * 0.06;
+      camera.lookAt(pointer.x * 0.25, 0.15, 0);
       renderer.render(scene, camera);
     };
     animate();
