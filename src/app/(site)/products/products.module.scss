@@ -1,0 +1,100 @@
+.page {
+  padding-block: var(--space-4xl) var(--space-5xl);
+}
+
+.page :global(.lede) {
+  margin-top: var(--space-md);
+  margin-bottom: var(--space-3xl);
+}
+
+.hydraFeature {
+  display: grid;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-3xl);
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: #06080c;
+  color: #f4f6f8;
+  transition: transform 0.35s var(--ease-out);
+}
+
+.hydraFeature:hover {
+  transform: translateY(-2px);
+}
+
+.hydraMedia {
+  position: relative;
+  min-height: clamp(200px, 38vw, 320px);
+}
+
+.hydraImage {
+  object-fit: cover;
+  object-position: center;
+}
+
+.hydraCopy {
+  padding: 0 var(--space-xl) var(--space-xl);
+
+  h2 {
+    margin: 0 0 var(--space-sm);
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    letter-spacing: -0.04em;
+  }
+
+  p:last-of-type {
+    margin: 0 0 var(--space-lg);
+    color: rgba(244, 246, 248, 0.7);
+    line-height: 1.5;
+    max-width: 36ch;
+  }
+}
+
+.hydraEyebrow {
+  margin: 0 0 var(--space-xs);
+  color: #7eb6c9;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.hydraLink {
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  border-bottom: 1px solid rgba(244, 246, 248, 0.35);
+  padding-bottom: 2px;
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+@media (min-width: 860px) {
+  .hydraFeature {
+    grid-template-columns: 1.35fr 1fr;
+    align-items: stretch;
+  }
+
+  .hydraMedia {
+    min-height: 100%;
+  }
+
+  .hydraCopy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--space-2xl);
+  }
+}
+
+.cta {
+  margin-top: var(--space-3xl);
+}
+
+@media (min-width: 860px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

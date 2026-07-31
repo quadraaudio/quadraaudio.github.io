@@ -140,6 +140,28 @@ export function HomePage({ products }: { products: Product[] }) {
         </div>
       </section>
 
+      <section className={styles.hydraTeaser}>
+        <Link href="/products/hydra" className={styles.hydraTeaserLink}>
+          <div className={styles.hydraTeaserMedia} aria-hidden>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/hydra/hero-studio.png" alt="" />
+            <div className={styles.hydraTeaserShade} />
+          </div>
+          <div className={`page-shell ${styles.hydraTeaserCopy}`}>
+            <Reveal>
+              <p className={styles.hydraTeaserBrand}>Hydra</p>
+              <h2 className="display display-lg">
+                The routing matrix for the modern Mac studio.
+              </h2>
+              <p className={styles.hydraTeaserLede}>
+                Leave Quadra for a moment — Hydra has its own world.
+              </p>
+              <span className={styles.hydraTeaserCta}>Explore Hydra</span>
+            </Reveal>
+          </div>
+        </Link>
+      </section>
+
       <section className={styles.features}>
         <div className="page-shell">
           <Reveal>

@@ -10,6 +10,7 @@ import styles from "./GlobalNav.module.scss";
 
 const PRODUCT_LINKS = [
   { href: "/products", label: "Overview" },
+  { href: "/products/hydra", label: "Hydra" },
   { href: "/store/quadra-channel", label: "Quadra Channel" },
   { href: "/store/quadra-dynamics", label: "Quadra Dynamics" },
   { href: "/store/quadra-studio-bundle", label: "Studio Bundle" },

@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Syne, Manrope, IBM_Plex_Mono } from "next/font/google";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { CartProvider } from "@/components/providers/CartProvider";
-import { GlobalNav } from "@/components/chrome/GlobalNav";
-import { GlobalFooter } from "@/components/chrome/GlobalFooter";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import "./globals.scss";
 
@@ -66,11 +64,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           <CartProvider>
-            <SmoothScroll>
-              <GlobalNav />
-              <div className="site-main">{children}</div>
-              <GlobalFooter />
-            </SmoothScroll>
+            <SmoothScroll>{children}</SmoothScroll>
           </CartProvider>
         </AuthProvider>
       </body>
