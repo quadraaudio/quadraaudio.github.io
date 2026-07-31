@@ -16,21 +16,27 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (prefersReducedMotion()) return;
 
+    // Snappier than the first pass — still smooth, not “heavy syrup”.
     const lenis = new Lenis({
-      duration: 1.1,
+      duration: 0.55,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      wheelMultiplier: 1.2,
+      touchMultiplier: 1.35,
+      syncTouch: false,
     });
 
     lenis.on("scroll", ScrollTrigger.update);
 
-    const ticker = (time: number) => {
-      lenis.raf(time * 1000);
+    let rafId = 0;
+    const raf = (time: number) => {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
     };
-    gsap.ticker.add(ticker);
-    gsap.ticker.lagSmoothing(0);
+    rafId = requestAnimationFrame(raf);
 
     return () => {
-      gsap.ticker.remove(ticker);
+      cancelAnimationFrame(rafId);
       lenis.destroy();
     };
   }, []);
