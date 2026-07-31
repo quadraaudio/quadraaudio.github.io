@@ -1,17 +1,63 @@
 .hero {
+  position: relative;
   min-height: calc(100svh - var(--nav-height) - 48px);
   display: grid;
-  align-content: end;
-  padding: clamp(40px, 7vh, 72px) 0 clamp(28px, 4vh, 48px);
+  align-items: end;
+  padding: clamp(48px, 8vh, 96px) 0 clamp(56px, 9vh, 104px);
   text-align: center;
   overflow: hidden;
+  background:
+    radial-gradient(70% 55% at 50% 35%, rgba(41, 151, 255, 0.14), transparent 60%),
+    #000;
+}
+
+/* Full-bleed atmosphere — mirrors home .heroVisual */
+.heroVisual {
+  position: absolute;
+  inset: -6% -14vw -8%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.heroGlow {
+  position: absolute;
+  inset: 8% 12% auto;
+  margin-inline: auto;
+  width: min(70vw, 720px);
+  height: min(50vw, 480px);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(41, 151, 255, 0.28),
+    transparent 68%
+  );
+  filter: blur(28px);
+  animation: glowPulse 7s ease-in-out infinite;
+}
+
+.heroShade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.35) 0%,
+      rgba(0, 0, 0, 0.12) 28%,
+      rgba(0, 0, 0, 0.2) 55%,
+      rgba(0, 0, 0, 0.88) 100%
+    ),
+    radial-gradient(
+      55% 50% at 50% 42%,
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.55) 100%
+    );
 }
 
 .copy {
-  width: min(100% - 40px, 820px);
-  margin: 0 auto clamp(28px, 5vh, 48px);
   position: relative;
-  z-index: 2;
+  z-index: 1;
+  width: min(100% - 40px, 820px);
+  margin-inline: auto;
 }
 
 .productName {
@@ -21,6 +67,7 @@
   font-size: clamp(1.15rem, 2vw, 1.45rem);
   letter-spacing: -0.03em;
   color: #f5f5f7;
+  text-shadow: 0 1px 24px rgba(0, 0, 0, 0.45);
 }
 
 .headline {
@@ -30,15 +77,17 @@
   font-size: clamp(2.75rem, 8vw, 5.5rem);
   letter-spacing: -0.055em;
   line-height: 1.02;
+  text-shadow: 0 2px 40px rgba(0, 0, 0, 0.5);
 }
 
 .lede {
   margin: 0 auto 28px;
   max-width: 34ch;
-  color: rgba(245, 245, 247, 0.68);
+  color: rgba(245, 245, 247, 0.78);
   font-size: clamp(1.05rem, 1.6vw, 1.25rem);
   line-height: 1.45;
   font-weight: 500;
+  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.55);
 }
 
 .ctaRow {
@@ -76,7 +125,8 @@
 
 .btnGhost {
   border: 1px solid rgba(255, 255, 255, 0.28);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
   color: #f5f5f7;
 }
 
@@ -85,58 +135,10 @@
   border-color: rgba(255, 255, 255, 0.5);
 }
 
-.stageWrap {
-  width: min(100% - 40px, 1120px);
-  margin-inline: auto;
-  position: relative;
-  z-index: 1;
-}
-
-.stage {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border-radius: 36px;
-  background:
-    radial-gradient(70% 60% at 50% 40%, rgba(41, 151, 255, 0.18), transparent 58%),
-    #06080c;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow:
-    0 40px 100px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  animation: stageFloat 7s ease-in-out infinite;
-}
-
-.stageGlow {
-  position: absolute;
-  inset: -20%;
-  background: radial-gradient(
-    circle at 50% 40%,
-    rgba(41, 151, 255, 0.22),
-    transparent 55%
-  );
-  pointer-events: none;
-  animation: glowPulse 5.5s ease-in-out infinite;
-}
-
-.stageShade {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.05) 0%,
-    transparent 35%,
-    rgba(0, 0, 0, 0.25) 100%
-  );
-}
-
-/* Transform-only entrance — copy stays readable if motion is interrupted */
 .in1,
 .in2,
 .in3,
-.in4,
-.in5 {
+.in4 {
   animation: riseIn 0.9s var(--ease-out) both;
 }
 
@@ -152,11 +154,6 @@
 .in4 {
   animation-delay: 0.3s;
 }
-.in5 {
-  animation-delay: 0.38s;
-  animation-name: stageIn;
-  animation-duration: 1.15s;
-}
 
 @keyframes riseIn {
   from {
@@ -164,25 +161,6 @@
   }
   to {
     transform: none;
-  }
-}
-
-@keyframes stageIn {
-  from {
-    transform: translateY(36px) scale(1.04);
-  }
-  to {
-    transform: none;
-  }
-}
-
-@keyframes stageFloat {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
   }
 }
 
@@ -194,13 +172,7 @@
   }
   50% {
     opacity: 1;
-    transform: scale(1.06);
-  }
-}
-
-@media (max-width: 700px) {
-  .stage {
-    border-radius: 24px;
+    transform: scale(1.08);
   }
 }
 
@@ -209,11 +181,8 @@
   .in2,
   .in3,
   .in4,
-  .in5,
-  .stage,
-  .stageGlow {
+  .heroGlow {
     animation: none !important;
-    opacity: 1 !important;
     transform: none !important;
   }
 }

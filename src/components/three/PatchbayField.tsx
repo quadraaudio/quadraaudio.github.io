@@ -45,15 +45,16 @@ export function PatchbayField({
       }
 
       const isMobile = window.matchMedia("(max-width: 767px)").matches;
-      const cols = isMobile ? 10 : 14;
-      const rows = isMobile ? 7 : 9;
-      const cableCount = isMobile ? 7 : 11;
+      /* Dense ambient field for full-bleed hero (not a framed panel) */
+      const cols = isMobile ? 14 : 22;
+      const rows = isMobile ? 10 : 14;
+      const cableCount = isMobile ? 9 : 16;
 
       const scene = new THREE.Scene();
       const w = Math.max(1, mount.clientWidth);
       const h = Math.max(1, mount.clientHeight);
-      const camera = new THREE.PerspectiveCamera(36, w / h, 0.1, 80);
-      camera.position.set(0, 0.15, 11.2);
+      const camera = new THREE.PerspectiveCamera(42, w / h, 0.1, 80);
+      camera.position.set(0, 0.1, 13.6);
 
       renderer = new THREE.WebGLRenderer({
         antialias: !isMobile,
@@ -71,8 +72,8 @@ export function PatchbayField({
       const hot = new THREE.Color("#7eb6ff");
       const accent = new THREE.Color("#2997ff");
 
-      const spanX = 11.2;
-      const spanY = 6.2;
+      const spanX = 16.5;
+      const spanY = 9.4;
       const nodeCount = cols * rows;
       const nodePos = new Float32Array(nodeCount * 3);
       const nodeCol = new Float32Array(nodeCount * 3);
@@ -99,10 +100,10 @@ export function PatchbayField({
       nodeGeo.setAttribute("position", new THREE.BufferAttribute(nodePos, 3));
       nodeGeo.setAttribute("color", new THREE.BufferAttribute(nodeCol, 3));
       const nodeMat = new THREE.PointsMaterial({
-        size: isMobile ? 0.11 : 0.09,
+        size: isMobile ? 0.1 : 0.08,
         vertexColors: true,
         transparent: true,
-        opacity: 0.95,
+        opacity: 0.85,
         depthWrite: false,
         sizeAttenuation: true,
       });
