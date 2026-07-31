@@ -1,0 +1,47 @@
+.hero {
+  text-align: center;
+  padding: 90px 22px 60px;
+}
+
+.ctas {
+  margin-top: 24px;
+}
+
+.comingSoon {
+  display: inline-block;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--sk-glyph-gray-secondary);
+}
+
+.features {
+  padding: 20px 0 90px;
+}
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+
+  @media only screen and (min-width: 735px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.featureCard {
+  background: var(--sk-fill-tertiary);
+  border-radius: 18px;
+  padding: 28px;
+
+  h3 {
+    font-size: 19px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--sk-glyph-gray-secondary);
+  }
+}

@@ -1,0 +1,57 @@
+.hero {
+  text-align: center;
+  padding: 80px 22px 40px;
+  background: var(--sk-fill-tertiary);
+
+  h1 {
+    margin-bottom: 16px;
+  }
+}
+
+.searchBox {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  gap: 8px;
+
+  input {
+    flex: 1;
+    padding: 14px 20px;
+    border-radius: 980px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    font-size: 17px;
+  }
+}
+
+.topics {
+  padding: 60px 0 90px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  @media only screen and (min-width: 735px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.card {
+  background: var(--sk-fill-tertiary);
+  border-radius: 18px;
+  padding: 28px;
+
+  h3 {
+    font-size: 19px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-size: 15px;
+    color: var(--sk-glyph-gray-secondary);
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+}

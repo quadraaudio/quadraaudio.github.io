@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import GlobalNav from "@/components/GlobalNav";
 import GlobalFooter from "@/components/GlobalFooter";
 import { ThemeProvider } from "@/components/ThemeContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import "./globals.scss";
 
 export const metadata: Metadata = {
@@ -23,9 +24,11 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <ThemeProvider>
-          <GlobalNav />
-          {children}
-          <GlobalFooter />
+          <AuthProvider>
+            <GlobalNav />
+            {children}
+            <GlobalFooter />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
