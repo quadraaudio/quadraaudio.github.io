@@ -1,35 +1,77 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { getSeedProduct } from "@/data/products.seed";
-import { loadAccountForAuth0 } from "@/lib/checkout";
-import { getSessionUser, googleAuthConfigured } from "@/lib/googleAuth";
+import { useAuth } from "@/components/providers/AuthProvider";
+import { callEdgeFunction } from "@/lib/edgeApi";
 import { formatPrice } from "@/lib/products";
 import styles from "./account.module.scss";
-
-export const dynamic = "force-dynamic";
-
-export const metadata = {
-  title: "Account",
-};
 
 function productName(slug: string) {
   return getSeedProduct(slug)?.name || slug;
 }
 
-export default async function AccountPage() {
-  if (!googleAuthConfigured()) {
+export default function AccountPage() {
+  const { user, isLoading } = useAuth();
+  const [orders, setOrders] = useState<
+    Array<{
+      order_number: string;
+      total_amount: number;
+      currency: string;
+      status: string;
+      created_at: string;
+    }>
+  >([]);
+  const [licenses, setLicenses] = useState<
+    Array<{ product_slug: string; status: string; issued_at: string }>
+  >([]);
+  const [loadError, setLoadError] = useState(false);
+  const [loadingAccount, setLoadingAccount] = useState(false);
+
+  useEffect(() => {
+    if (!user?.accessToken) {
+      setOrders([]);
+      setLicenses([]);
+      return;
+    }
+    let cancelled = false;
+    setLoadingAccount(true);
+    setLoadError(false);
+    callEdgeFunction<{
+      orders?: typeof orders;
+      licenses?: typeof licenses;
+    }>(
+      "store-account",
+      { googleAccessToken: user.accessToken },
+      user.accessToken
+    )
+      .then((data) => {
+        if (cancelled) return;
+        setOrders(data.orders || []);
+        setLicenses(data.licenses || []);
+      })
+      .catch(() => {
+        if (!cancelled) setLoadError(true);
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingAccount(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  if (isLoading) {
     return (
       <main className={styles.page}>
         <div className="page-shell">
-          <h1 className="display display-lg">Account</h1>
-          <p className="lede">
-            Google sign-in needs <code>AUTH_SECRET</code> on the server.
-          </p>
+          <p>Loading account…</p>
         </div>
       </main>
     );
   }
 
-  const user = await getSessionUser();
   if (!user) {
     return (
       <main className={styles.page}>
@@ -44,11 +86,6 @@ export default async function AccountPage() {
     );
   }
 
-  const account = await loadAccountForAuth0(user.id);
-  const loadError = !account.ok;
-  const orders = account.ok ? account.orders : [];
-  const licenses = account.ok ? account.licenses : [];
-
   return (
     <main className={styles.page}>
       <div className="page-shell">
@@ -60,14 +97,16 @@ export default async function AccountPage() {
 
         {loadError ? (
           <div className={styles.banner} role="status">
-            Order history is temporarily unavailable. Try again shortly or
+            Order history is temporarily unavailable. Try signing in again or
             contact support if a payment just completed.
           </div>
         ) : null}
 
         <section className={styles.section}>
           <h2>Licenses</h2>
-          {loadError ? (
+          {loadingAccount ? (
+            <p className={styles.empty}>Loading…</p>
+          ) : loadError ? (
             <p className={styles.empty}>Could not load licenses right now.</p>
           ) : !licenses.length ? (
             <p className={styles.empty}>
@@ -88,7 +127,9 @@ export default async function AccountPage() {
 
         <section className={styles.section}>
           <h2>Orders</h2>
-          {loadError ? (
+          {loadingAccount ? (
+            <p className={styles.empty}>Loading…</p>
+          ) : loadError ? (
             <p className={styles.empty}>Could not load orders right now.</p>
           ) : !orders.length ? (
             <p className={styles.empty}>No purchases yet.</p>

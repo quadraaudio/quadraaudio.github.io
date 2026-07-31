@@ -1,24 +1,16 @@
+"use client";
+
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import styles from "./success.module.scss";
 
-export const metadata = {
-  title: "Order status",
-};
-
-export default async function SuccessPage({
-  searchParams,
-}: {
-  searchParams: Promise<{
-    order?: string;
-    status?: string;
-    paypal?: string;
-  }>;
-}) {
-  const params = await searchParams;
+function SuccessInner() {
+  const params = useSearchParams();
   const status =
-    params.status === "pending_fulfillment" ? "pending_fulfillment" : "ok";
-  const order = params.order;
-  const paypal = params.paypal;
+    params.get("status") === "pending_fulfillment" ? "pending_fulfillment" : "ok";
+  const order = params.get("order");
+  const paypal = params.get("paypal");
 
   if (status === "pending_fulfillment") {
     return (
@@ -77,5 +69,21 @@ export default async function SuccessPage({
         </div>
       </div>
     </main>
+  );
+}
+
+export default function SuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className={styles.page}>
+          <div className="page-shell">
+            <p>Loading…</p>
+          </div>
+        </main>
+      }
+    >
+      <SuccessInner />
+    </Suspense>
   );
 }

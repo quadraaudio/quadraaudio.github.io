@@ -1,16 +1,22 @@
+"use client";
+
 import Link from "next/link";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { CheckoutClient } from "./CheckoutClient";
-import { getSessionUser, googleAuthConfigured } from "@/lib/googleAuth";
 import styles from "./checkout.module.scss";
 
-export const dynamic = "force-dynamic";
+export default function CheckoutPage() {
+  const { user, isLoading } = useAuth();
 
-export const metadata = {
-  title: "Checkout",
-};
-
-export default async function CheckoutPage() {
-  const user = googleAuthConfigured() ? await getSessionUser() : null;
+  if (isLoading) {
+    return (
+      <main className={styles.page}>
+        <div className="page-shell">
+          <p>Loading checkout…</p>
+        </div>
+      </main>
+    );
+  }
 
   if (!user) {
     return (
@@ -22,11 +28,6 @@ export default async function CheckoutPage() {
             Sign in with Google to complete purchase and receive licenses in
             your account.
           </p>
-          {!googleAuthConfigured() ? (
-            <p className={styles.notice}>
-              Google sign-in needs <code>AUTH_SECRET</code> on the server.
-            </p>
-          ) : null}
           <div className={styles.actions}>
             <a
               href="/login?returnTo=/store/checkout"

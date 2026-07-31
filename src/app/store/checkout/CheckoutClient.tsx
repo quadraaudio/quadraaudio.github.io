@@ -2,13 +2,23 @@
 
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { useCart } from "@/components/providers/CartProvider";
 import { PayPalCheckout } from "@/components/store/PayPalCheckout";
 import { getSeedProduct } from "@/data/products.seed";
+import { callEdgeFunction } from "@/lib/edgeApi";
 import { formatPrice } from "@/lib/products";
 import styles from "./checkout.module.scss";
 
+const PRESETS: Record<string, { percent: number; amount: number }> = {
+  QUADRA10: { percent: 10, amount: 0 },
+  LAUNCH20: { percent: 20, amount: 0 },
+  STUDIO50: { percent: 50, amount: 0 },
+  FREE100: { percent: 100, amount: 0 },
+};
+
 export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
+  const { user } = useAuth();
   const { items, clear, hydrated } = useCart();
   const router = useRouter();
   const [coupon, setCoupon] = useState("");
@@ -68,21 +78,17 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
     setBusy(true);
     setCouponError(null);
     try {
-      const res = await fetch("/api/coupons/validate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: coupon }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.valid) {
+      const upper = coupon.trim().toUpperCase();
+      const preset = PRESETS[upper];
+      if (!preset) {
         setApplied(null);
-        setCouponError(data.error || "Invalid coupon");
+        setCouponError("Invalid or expired promo code");
         return;
       }
       setApplied({
-        code: data.code,
-        discountPercent: data.discountPercent || 0,
-        discountAmount: data.discountAmount || 0,
+        code: upper,
+        discountPercent: preset.percent,
+        discountAmount: preset.amount,
       });
     } finally {
       setBusy(false);
@@ -90,24 +96,32 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
   }
 
   async function claimFree() {
+    if (!user?.accessToken) {
+      setClaimError("Sign in with Google again, then claim.");
+      return;
+    }
     setClaiming(true);
     setClaimError(null);
     try {
-      const res = await fetch("/api/checkout/free", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const data = await callEdgeFunction<{
+        persisted?: boolean;
+        orderNumber?: string;
+        error?: string;
+      }>(
+        "store-checkout-free",
+        {
+          googleAccessToken: user.accessToken,
           items: items.map((i) => ({ slug: i.slug, quantity: i.quantity })),
           couponCode: applied?.code || undefined,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.persisted) {
-        throw new Error(data.error || data.message || "Could not claim license");
+        },
+        user.accessToken
+      );
+      if (!data.persisted) {
+        throw new Error(data.error || "Could not claim license");
       }
       clear();
       router.push(
-        `/store/success?status=ok&order=${encodeURIComponent(data.orderNumber || "")}`
+        `/store/success/?status=ok&order=${encodeURIComponent(data.orderNumber || "")}`
       );
     } catch (err) {
       setClaimError(err instanceof Error ? err.message : "Claim failed");

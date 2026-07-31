@@ -27,7 +27,7 @@ declare global {
 export default function LoginClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { refresh, configured } = useAuth();
+  const { login } = useAuth();
   const returnTo = useMemo(() => {
     const raw = searchParams.get("returnTo") || "/account";
     return raw.startsWith("/") ? raw : "/account";
@@ -36,13 +36,9 @@ export default function LoginClient() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function continueWithGoogle() {
-    if (!GOOGLE_CLIENT_ID) {
-      setError("Google Client ID is missing.");
-      return;
-    }
-    if (!window.google?.accounts?.oauth2) {
-      setError("Google script is still loading. Try again in a moment.");
+  function continueWithGoogle() {
+    if (!GOOGLE_CLIENT_ID || !window.google?.accounts?.oauth2) {
+      setError("Google is still loading. Try again in a moment.");
       return;
     }
 
@@ -59,16 +55,27 @@ export default function LoginClient() {
           return;
         }
         try {
-          const res = await fetch("/api/auth/google", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ accessToken: response.access_token }),
+          const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+            headers: { Authorization: `Bearer ${response.access_token}` },
           });
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error || "Sign-in failed");
-          await refresh();
+          if (!res.ok) throw new Error("Could not read Google profile");
+          const profile = (await res.json()) as {
+            sub?: string;
+            email?: string;
+            name?: string;
+            picture?: string;
+          };
+          if (!profile.sub || !profile.email) {
+            throw new Error("Google profile incomplete");
+          }
+          login({
+            id: profile.sub,
+            email: profile.email,
+            name: profile.name || null,
+            picture: profile.picture || null,
+            accessToken: response.access_token,
+          });
           router.replace(returnTo);
-          router.refresh();
         } catch (err) {
           setError(err instanceof Error ? err.message : "Sign-in failed");
           setBusy(false);
@@ -89,17 +96,11 @@ export default function LoginClient() {
           Use the same Google login already set up for quadraaudio.com.
         </p>
 
-        {!configured ? (
-          <p className={styles.notice}>
-            Session secret is missing on the server. Set <code>AUTH_SECRET</code>.
-          </p>
-        ) : null}
-
         <button
           type="button"
           className={`btn btn-primary ${styles.googleBtn}`}
           onClick={continueWithGoogle}
-          disabled={busy || !configured}
+          disabled={busy}
         >
           {busy ? "Connecting to Google…" : "Continue with Google"}
         </button>

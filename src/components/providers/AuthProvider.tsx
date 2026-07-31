@@ -15,48 +15,67 @@ export type AuthUser = {
   email: string;
   name?: string | null;
   picture?: string | null;
+  accessToken?: string;
 };
 
 type AuthContextValue = {
   user: AuthUser | null;
   isLoading: boolean;
   configured: boolean;
+  login: (user: AuthUser) => void;
+  logout: () => void;
   refresh: () => Promise<void>;
-  logout: () => Promise<void>;
 };
 
+const STORAGE_KEY = "quadra_google_session_v1";
 const AuthContext = createContext<AuthContextValue | null>(null);
+
+function loadUser(): AuthUser | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as AuthUser;
+    if (!parsed?.id || !parsed?.email) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [configured, setConfigured] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
-  const refresh = useCallback(async () => {
-    try {
-      const res = await fetch("/api/auth/session", { cache: "no-store" });
-      const data = await res.json();
-      setConfigured(Boolean(data.configured));
-      setUser(data.user || null);
-    } catch {
-      setUser(null);
-    } finally {
-      setIsLoading(false);
-    }
+  useEffect(() => {
+    setUser(loadUser());
+    setIsLoading(false);
   }, []);
 
-  useEffect(() => {
-    void refresh();
-  }, [refresh]);
+  const login = useCallback((next: AuthUser) => {
+    setUser(next);
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  }, []);
 
-  const logout = useCallback(async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+  const logout = useCallback(() => {
     setUser(null);
+    window.localStorage.removeItem(STORAGE_KEY);
+  }, []);
+
+  const refresh = useCallback(async () => {
+    setUser(loadUser());
   }, []);
 
   const value = useMemo(
-    () => ({ user, isLoading, configured, refresh, logout }),
-    [user, isLoading, configured, refresh, logout]
+    () => ({
+      user,
+      isLoading,
+      configured: true,
+      login,
+      logout,
+      refresh,
+    }),
+    [user, isLoading, login, logout, refresh]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

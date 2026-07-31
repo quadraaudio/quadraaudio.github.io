@@ -3,7 +3,9 @@
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { useCart } from "@/components/providers/CartProvider";
+import { callEdgeFunction } from "@/lib/edgeApi";
 import styles from "./PayPalCheckout.module.scss";
 
 type Props = {
@@ -12,6 +14,7 @@ type Props = {
 };
 
 export function PayPalCheckout({ couponCode, disabled }: Props) {
+  const { user } = useAuth();
   const { items, clear } = useCart();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -50,72 +53,63 @@ export function PayPalCheckout({ couponCode, disabled }: Props) {
       >
         <PayPalButtons
           style={{ layout: "vertical", color: "black", shape: "rect", label: "pay" }}
-          disabled={capturing}
+          disabled={capturing || !user?.accessToken}
           onCancel={() => {
             setCapturing(false);
             setError("PayPal checkout was cancelled. Your bag is unchanged.");
           }}
           createOrder={async () => {
+            if (!user?.accessToken) throw new Error("Sign in with Google first");
             setError(null);
-            const res = await fetch("/api/paypal/create-order", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
+            const data = await callEdgeFunction<{ id?: string; error?: string }>(
+              "store-paypal-create",
+              {
+                googleAccessToken: user.accessToken,
                 items: items.map((i) => ({
                   slug: i.slug,
                   quantity: i.quantity,
                 })),
                 couponCode: couponCode || undefined,
-              }),
-            });
-            const data = await res.json();
-            if (!res.ok) {
-              if (data?.code === "ZERO_TOTAL" || data?.error === "ZERO_TOTAL") {
-                throw new Error("Order is free — use Claim license.");
-              }
-              throw new Error(data?.error || "Could not create PayPal order");
-            }
-            return data.id as string;
+              },
+              user.accessToken
+            );
+            if (!data.id) throw new Error(data.error || "Could not create PayPal order");
+            return data.id;
           }}
           onApprove={async (data) => {
+            if (!user?.accessToken) throw new Error("Sign in with Google first");
             setCapturing(true);
             setError(null);
             try {
-              const res = await fetch("/api/paypal/capture-order", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
+              const json = await callEdgeFunction<{
+                persisted?: boolean;
+                code?: string;
+                orderNumber?: string;
+                error?: string;
+              }>(
+                "store-paypal-capture",
+                {
+                  googleAccessToken: user.accessToken,
                   orderId: data.orderID,
                   items: items.map((i) => ({
                     slug: i.slug,
                     quantity: i.quantity,
                   })),
                   couponCode: couponCode || undefined,
-                }),
-              });
-              const json = await res.json();
-              if (!res.ok) {
-                if (json?.code === "paid_but_unfulfilled") {
-                  router.push(
-                    `/store/success?status=pending_fulfillment&paypal=${encodeURIComponent(
-                      data.orderID,
-                    )}&order=${encodeURIComponent(json.orderNumber || "")}`,
-                  );
-                  return;
-                }
-                throw new Error(json?.error || "Capture failed");
-              }
-              if (!json.persisted) {
+                },
+                user.accessToken
+              );
+              if (json.code === "paid_but_unfulfilled" || !json.persisted) {
                 router.push(
-                  `/store/success?status=pending_fulfillment&paypal=${encodeURIComponent(
-                    data.orderID,
-                  )}&order=${encodeURIComponent(json.orderNumber || "")}`,
+                  `/store/success/?status=pending_fulfillment&paypal=${encodeURIComponent(
+                    data.orderID
+                  )}&order=${encodeURIComponent(json.orderNumber || "")}`
                 );
                 return;
               }
               clear();
               router.push(
-                `/store/success?status=ok&order=${encodeURIComponent(json.orderNumber || "")}`,
+                `/store/success/?status=ok&order=${encodeURIComponent(json.orderNumber || "")}`
               );
             } catch (err) {
               setError(err instanceof Error ? err.message : "Payment failed");
