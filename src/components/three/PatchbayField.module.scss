@@ -8,3 +8,16 @@
   width: 100% !important;
   height: 100% !important;
 }
+
+.fallback {
+  position: absolute;
+  inset: 0;
+}
+
+.fallbackImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}

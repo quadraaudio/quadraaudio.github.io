@@ -104,7 +104,7 @@
   box-shadow:
     0 40px 100px rgba(0, 0, 0, 0.55),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  will-change: transform;
+  animation: stageFloat 7s ease-in-out infinite;
 }
 
 .stageGlow {
@@ -131,6 +131,61 @@
   );
 }
 
+/* Transform-only entrance — copy stays readable if motion is interrupted */
+.in1,
+.in2,
+.in3,
+.in4,
+.in5 {
+  animation: riseIn 0.9s var(--ease-out) both;
+}
+
+.in1 {
+  animation-delay: 0.05s;
+}
+.in2 {
+  animation-delay: 0.14s;
+}
+.in3 {
+  animation-delay: 0.22s;
+}
+.in4 {
+  animation-delay: 0.3s;
+}
+.in5 {
+  animation-delay: 0.38s;
+  animation-name: stageIn;
+  animation-duration: 1.15s;
+}
+
+@keyframes riseIn {
+  from {
+    transform: translateY(22px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes stageIn {
+  from {
+    transform: translateY(36px) scale(1.04);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes stageFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
 @keyframes glowPulse {
   0%,
   100% {
@@ -150,7 +205,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .in1,
+  .in2,
+  .in3,
+  .in4,
+  .in5,
+  .stage,
   .stageGlow {
-    animation: none;
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

@@ -44,6 +44,9 @@ export function GlobalNav() {
     ? "/account"
     : `/login?returnTo=${encodeURIComponent(pathname)}`;
 
+  // isLoading kept for mobile account gate consistency
+  void isLoading;
+
   function isActive(href: string) {
     if (href === "/store") {
       return (
@@ -80,14 +83,12 @@ export function GlobalNav() {
         </nav>
 
         <div className={styles.actions}>
-          {!isLoading && (
-            <Link
-              href={accountHref}
-              className={`${styles.link} ${pathname.startsWith("/account") || pathname.startsWith("/login") ? styles.linkActive : ""}`}
-            >
-              Account
-            </Link>
-          )}
+          <Link
+            href={accountHref}
+            className={`${styles.link} ${pathname.startsWith("/account") || pathname.startsWith("/login") ? styles.linkActive : ""}`}
+          >
+            Account
+          </Link>
           <Link
             href="/store/bag"
             className={styles.bag}
