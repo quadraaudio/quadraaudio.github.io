@@ -46,7 +46,7 @@ export function HomePage({ products }: { products: Product[] }) {
   const [audience, setAudience] = useState(0);
 
   return (
-    <main>
+    <main className={styles.pageEnter}>
       <section className={styles.hero}>
         <div className={styles.heroVisual} aria-hidden>
           <div className={styles.heroGlow} />
