@@ -27,7 +27,7 @@ export default function ContactSupportPage() {
           <span className={styles.contactEyebrow}>Quadra Support Desk</span>
           <h1 className={styles.contactTitle}>Engineering Support</h1>
           <p className={styles.contactSub}>
-            Direct technical assistance for Core Audio drivers, NDI® AoIP routing, GroundControl fusion, and spatial monitoring.
+            Direct technical assistance for Core Audio drivers, AES67/NDI® AoIP routing, hardware ASRC, and Control Room monitoring.
           </p>
         </header>
 
@@ -82,9 +82,9 @@ export default function ContactSupportPage() {
                   onChange={(e) => setCategory(e.target.value)}
                   className={styles.selectInput}
                 >
-                  <option value="Technical Support">Core Audio &amp; Virtual Soundcard Setup</option>
-                  <option value="Network AoIP">Network Audio (NDI® &amp; AVB Streaming)</option>
-                  <option value="Spatial Monitoring">Spatial Audio (Dolby Atmos 9.4.6)</option>
+                  <option value="Technical Support">Core Audio &amp; Audio Bridge Setup</option>
+                  <option value="Network AoIP">Network Audio (AES67 &amp; NDI®)</option>
+                  <option value="Spatial Monitoring">Control Room Monitor</option>
                   <option value="Licensing">Quadra ID &amp; License Transfer</option>
                   <option value="Enterprise">Volume Licensing &amp; Broadcast</option>
                 </select>

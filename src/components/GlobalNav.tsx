@@ -36,9 +36,9 @@ const menuData = {
         title: "Explore Hydra",
         links: [
           { label: "Overview", href: "/hydra#overview", large: true },
-          { label: "Audio Patchbay", href: "/hydra#tools", large: true },
-          { label: "NDI & Network Audio", href: "/hydra#network", large: true },
-          { label: "Spatial Audio 9.1.6", href: "/hydra#spatial", large: true },
+          { label: "The Matrix Grid", href: "/hydra#tools", large: true },
+          { label: "AES67 & NDI Network Audio", href: "/hydra#network", large: true },
+          { label: "Control Room Monitor", href: "/hydra#control-room", large: true },
         ]
       },
       {

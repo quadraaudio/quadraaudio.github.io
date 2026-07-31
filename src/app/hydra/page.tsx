@@ -11,47 +11,49 @@ import styles from "./page.module.scss";
 // but every asset served here is our own (no Apple CDN, no Apple assets).
 const QUADRA_ASSETS = {
   images: {
-    hero: "/images/home_hero_quadra.jpg",
+    hero: "/images/hydra_hero_engineer.jpg",
     banner: "/images/hydra_app_icon.jpg",
     highlights: {
-      playground: "/images/home_hero_quadra.jpg",
-      partner: "/images/store_hydra_card.jpg",
-      beatMaking: "/images/home_store_grid.jpg",
-      sounds: "/images/home_support_grid.jpg",
-      mixed: "/images/hydra_app_icon.jpg",
-      devices: "/images/home_hero_quadra.jpg",
+      matrixGrid: "/images/hydra_mixing_hands.jpg",
+      asrc: "/images/hydra_headphones_closeup.jpg",
+      vst3: "/images/hydra_producer_laptop.jpg",
+      network: "/images/hydra_patch_cables.jpg",
+      controlRoom: "/images/hydra_talkback_mic.jpg",
+      bridges: "/images/hydra_guitarist.jpg",
     },
-    soundsHero: "/images/home_support_grid.jpg",
-    beatMaking: "/images/home_store_grid.jpg",
-    mixing: "/images/home_support_grid.jpg",
+    networkHero: "/images/hydra_patch_cables.jpg",
+    matrixDemo: "/images/hydra_control_room_wide.jpg",
+    controlRoomDemo: "/images/hydra_talkback_mic.jpg",
     tiles: {
-      drumKit: "/images/store_hydra_card.jpg",
-      sampler: "/images/home_store_grid.jpg",
-      sequencer: "/images/hydra_app_icon.jpg",
+      bridges: "/images/hydra_guitarist.jpg",
+      processTap: "/images/hydra_producer_laptop.jpg",
+      vst3Host: "/images/hydra_mixing_hands.jpg",
     },
   },
 };
 
+// FAQ content matches Hydra's real DOCUMENTATION.md / README.md — no invented
+// features (no AVB, no Dolby Atmos, no "GroundControl" branding).
 const FAQ_ITEMS = [
   {
     question: "What is Hydra and how does it work on macOS?",
-    answer: "Hydra is a professional virtual soundcard, AoIP network matrix, and spatial audio monitor controller for macOS. It uses native Core Audio driver extensions to create up to 4 configurable virtual audio devices (2 to 256 channels per device), allowing you to route, record, and monitor audio between any DAW, system application, physical hardware interface, or network stream without physical cables."
+    answer: "Hydra is a high-performance virtual audio patchbay for macOS. It exposes eight independent Hydra Audio Bridges (2 to 128 channels each, native Core Audio AudioServerPlugIn HAL devices) that any app can select as input or output. A visual Matrix Grid lets you route audio freely between applications, physical hardware, out-of-process VST3 plugins, and network endpoints — no physical cabling required."
   },
   {
-    question: "How does GroundControl Interface Fusion work?",
-    answer: "GroundControl Interface Fusion combines up to 8 physical hardware audio interfaces (such as Apogee, Universal Audio, Focusrite, or RME) into a single aggregate driver. It features Automatic Sample Rate Conversion (ASRC) to eliminate clock drift, buffer xruns, and sample rate mismatches between hardware interfaces."
+    question: "How does ASRC drift correction work with physical hardware?",
+    answer: "When you add a physical audio interface to the grid, Hydra applies built-in Asynchronous Sample Rate Conversion (ASRC) with real-time jitter correction. This keeps devices running on independent hardware clocks — a USB microphone and a Thunderbolt interface, for example — in sync without pops, clicks, or drift."
   },
   {
-    question: "Can I stream uncompressed audio over local Ethernet networks?",
-    answer: "Yes. Hydra natively supports NDI® Audio (up to 128 uncompressed channels), AVB Audio (up to 256 channels), and AES67 RTP multicast streaming via SAP/SDP parsing. This lets you stream uncompressed low-latency audio between computers, broadcast setups, and mixing consoles on local Ethernet networks."
+    question: "Can I stream audio over the network with AES67 or NDI?",
+    answer: "Yes. Hydra subscribes to AES67 AoIP streams (PTPv2-synced, SAP/SDP discovery) and NDI audio sources directly into the Matrix Grid. Any bridge can also be marked to broadcast as an AES67 or NDI transmitter for other machines on the network to pick up."
   },
   {
-    question: "What spatial audio monitoring and Dolby Atmos features are included?",
-    answer: "Hydra includes a complete monitor controller for setups up to 9.4.6 Dolby Atmos. It features integrated binaural renderers with Apple Spatial Audio HRTF head-tracking integration, quad-subwoofer crossover bass management, individual speaker mute/solo, and per-channel AU plugin slots for room correction EQ."
+    question: "What is the Control Room Monitor?",
+    answer: "The Control Room card gives you studio monitor-controller functions right from the sidebar: DIM, MONO sum (for phase checks), SWAP L/R, master MUTE, and a dedicated TALKBACK MIC that ducks background audio. A floating, always-on-top Studio HUD keeps these controls one click away while you work in your DAW."
   },
   {
     question: "Is there a free trial and how does licensing work?",
-    answer: "Hydra comes with a 90-day fully functional free trial with no channel limits or watermarks. A full perpetual license costs $199.99, includes lifetime minor and major v1.x updates, and permits activation on up to 2 Macs simultaneously using your Quadra ID."
+    answer: "Hydra comes with a 90-day fully functional free trial. A full perpetual license is a single purchase with lifetime updates, protected by Quadra Guard 2.0 — hardware-bound (HWID) Ed25519 activation that works fully offline once activated, permitting up to 2 Macs per license via your Quadra ID."
   }
 ];
 
@@ -106,9 +108,9 @@ export default function Hydra() {
         buyUrl="/store"
         links={[
           { label: "Overview", href: "#overview", active: true },
-          { label: "Virtual Patchbay", href: "#tools" },
+          { label: "Matrix Grid", href: "#tools" },
           { label: "Network Audio", href: "#network" },
-          { label: "Spatial Monitoring", href: "#spatial" },
+          { label: "Control Room", href: "#control-room" },
           { label: "Tech Specs", href: "#specs" },
           { label: "FAQ", href: "#faq" },
         ]}
@@ -118,17 +120,17 @@ export default function Hydra() {
       <ProductRibbon />
 
       <div className={styles.hydraContent}>
-        
+
         {/* =========================================
-           1. SECTION WELCOME (Full Viewport Video + Text Overlay & Shadow Fade)
+           1. SECTION WELCOME (Full Viewport Media + Text Overlay & Shadow Fade)
            ========================================= */}
         <section className={styles.sectionWelcome} id="overview">
-          
+
           {/* Full Viewport Background Media Canvas */}
           <div className={styles.welcomeHeroMediaContainer}>
             <img
               src={QUADRA_ASSETS.images.hero}
-              alt="Hydra virtual audio matrix running on macOS"
+              alt="Hydra Matrix Grid routing audio on macOS"
               className={styles.heroVideo}
             />
             <div className={styles.shadowOverlay} />
@@ -141,12 +143,11 @@ export default function Hydra() {
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
-            
+
             <h1 className={styles.welcomeEyebrow}>Hydra</h1>
-            <h2 className={styles.welcomeHeadline}>Sound thinking.</h2>
+            <h2 className={styles.welcomeHeadline}>The complete virtual audio patchbay.</h2>
             <p className={styles.welcomeBody}>
-              Hydra is the ultimate virtual soundcard, AoIP network matrix, and spatial audio monitor controller for macOS.
-              Engineered directly around native Core Audio driver extensions, Hydra features 4 configurable virtual audio soundcards with up to 256 I/O channels per driver, GroundControl hardware interface fusion, zero-latency application process capture, and high-density NDI® and AVB network streaming — giving producers, mix engineers, and broadcasters <strong>unrestricted freedom to route, process, and monitor sound without physical patchbays or limits.</strong>
+              Hydra is a high-performance virtual audio patchbay for macOS: eight selectable Hydra Audio Bridges (2 to 128 channels each) that any app can pick as its input or output, routed freely between apps, hardware interfaces, out-of-process VST3 plugins, and network audio — <strong>all in one visual Matrix Grid.</strong>
             </p>
           </div>
 
@@ -154,7 +155,7 @@ export default function Hydra() {
 
 
         {/* =========================================
-           2. SECTION BANNER (Apple Creator Studio)
+           2. SECTION BANNER
            ========================================= */}
         <section className={styles.sectionBanner}>
           <div className={styles.bannerCard}>
@@ -163,11 +164,11 @@ export default function Hydra() {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                   <circle cx="12" cy="12" r="10"/>
                 </svg>
-                Quadra Creator Studio
+                Quadra Guard 2.0
               </span>
-              <h2 className={styles.bannerHeadline}>A suite deal for any creator.</h2>
+              <h2 className={styles.bannerHeadline}>Eight bridges. One matrix.</h2>
               <p className={styles.bannerDescription}>
-                Hydra unifies physical hardware interfaces, virtual drivers, DAWs, and local networks into one cohesive 32-bit float matrix — eliminating routing bottlenecks and hardware cabling.
+                Hydra Audio Bridges — 2‑A, 2‑B, 4, 8, 16, 32, 64 and 128 channels — give you up to 256 channels of routing headroom, unifying apps, hardware, plugins and the network into one cross-point Matrix Grid.
               </p>
               <div className={styles.bannerCtas}>
                 <Link href="/store" className="apple-button-primary">
@@ -179,28 +180,28 @@ export default function Hydra() {
               </div>
             </div>
             <div className={styles.bannerAsset}>
-              <img src={QUADRA_ASSETS.images.banner} alt="Quadra Creator Studio software icons" />
+              <img src={QUADRA_ASSETS.images.banner} alt="Hydra app icon" />
             </div>
           </div>
         </section>
 
 
         {/* =========================================
-           3. SECTION HIGHLIGHTS (Apple Media Card Gallery with Fluid Drag + Navigation)
+           3. SECTION HIGHLIGHTS (Media Card Gallery with Fluid Drag + Navigation)
            ========================================= */}
         <section className={styles.sectionHighlights}>
           <div className={styles.highlightsHeaderCopy}>
             <h2 className={styles.sectionHeaderHeadline}>Get to know Hydra.</h2>
             <div className={styles.carouselNavControls}>
-              <button 
-                onClick={() => scrollCarousel(highlightsContainerRef, "left")} 
+              <button
+                onClick={() => scrollCarousel(highlightsContainerRef, "left")}
                 aria-label="Previous card"
                 className={styles.carouselNavBtn}
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
               </button>
-              <button 
-                onClick={() => scrollCarousel(highlightsContainerRef, "right")} 
+              <button
+                onClick={() => scrollCarousel(highlightsContainerRef, "right")}
                 aria-label="Next card"
                 className={styles.carouselNavBtn}
               >
@@ -208,53 +209,53 @@ export default function Hydra() {
               </button>
             </div>
           </div>
-          
-          <div 
-            className={styles.highlightsGalleryContainer} 
+
+          <div
+            className={styles.highlightsGalleryContainer}
             ref={highlightsContainerRef}
             {...highlightsDragProps}
           >
             <div className={styles.highlightsRow}>
-              
+
               <div className={styles.highlightMediaCard}>
-                <img src={QUADRA_ASSETS.images.highlights.playground} alt="Producer operating Hydra audio routing matrix" />
+                <img src={QUADRA_ASSETS.images.highlights.matrixGrid} alt="Hydra Matrix Grid cross-point routing" />
                 <div className={styles.highlightCaptionOverlay}>
-                  <h3>256-Channel Configurable Virtual Patchbay for DAWs and system apps.</h3>
+                  <h3>The Matrix Grid: click a cross-point to patch a transmitter to a receiver.</h3>
                 </div>
               </div>
 
               <div className={styles.highlightMediaCard}>
-                <img src={QUADRA_ASSETS.images.highlights.partner} alt="Hydra DSP routing channel strips" />
+                <img src={QUADRA_ASSETS.images.highlights.bridges} alt="Eight Hydra Audio Bridges" />
                 <div className={styles.highlightCaptionOverlay}>
-                  <h3>GroundControl Fusion combines up to 8 physical interfaces into one driver.</h3>
+                  <h3>Eight Hydra Audio Bridges from 2 to 128 channels — any app can select one.</h3>
                 </div>
               </div>
 
               <div className={styles.highlightMediaCard}>
-                <img src={QUADRA_ASSETS.images.highlights.beatMaking} alt="Hydra high-resolution waveform matrix" />
+                <img src={QUADRA_ASSETS.images.highlights.vst3} alt="Out-of-process VST3 hosting" />
                 <div className={styles.highlightCaptionOverlay}>
-                  <h3>32-Bit Float C++ processing engine with sub-millisecond buffer speeds.</h3>
+                  <h3>Out-of-process VST3 hosting keeps a crashing plugin from taking down your DAW.</h3>
                 </div>
               </div>
 
               <div className={styles.highlightMediaCard}>
-                <img src={QUADRA_ASSETS.images.highlights.sounds} alt="Hydra network audio matrix" />
+                <img src={QUADRA_ASSETS.images.highlights.network} alt="AES67 and NDI network audio" />
                 <div className={styles.highlightCaptionOverlay}>
-                  <h3>Stream 128 NDI® and 256 AVB channels over Ethernet with zero latency.</h3>
+                  <h3>Subscribe to AES67 and NDI network audio streams straight into the grid.</h3>
                 </div>
               </div>
 
               <div className={styles.highlightMediaCard}>
-                <img src={QUADRA_ASSETS.images.highlights.mixed} alt="Hydra 9.4.6 Dolby Atmos spatial monitoring console" />
+                <img src={QUADRA_ASSETS.images.highlights.controlRoom} alt="Hydra Control Room monitor controller" />
                 <div className={styles.highlightCaptionOverlay}>
-                  <h3>Dolby Atmos 9.4.6 monitoring with Apple Spatial Audio HRTF head tracking.</h3>
+                  <h3>Control Room: DIM, MONO, SWAP L/R, MUTE and TALKBACK from one card.</h3>
                 </div>
               </div>
 
               <div className={styles.highlightMediaCard}>
-                <img src={QUADRA_ASSETS.images.highlights.devices} alt="Apple Silicon Mac ecosystem running Hydra" />
+                <img src={QUADRA_ASSETS.images.highlights.asrc} alt="ASRC drift correction for physical devices" />
                 <div className={styles.highlightCaptionOverlay}>
-                  <h3>Stream Deck, EUCON, MIDI CC, and OSC automation for instant snapshot recall.</h3>
+                  <h3>Built-in ASRC keeps independent hardware clocks locked, drift-free.</h3>
                 </div>
               </div>
 
@@ -264,25 +265,25 @@ export default function Hydra() {
 
 
         {/* =========================================
-           4. VIRTUAL ROUTING TOOLS (Caption Tile Gallery + Autoplay Video)
+           4. THE MATRIX GRID (Caption Tile Gallery + Full-bleed demo)
            ========================================= */}
         <section className={styles.sectionApp} id="tools">
           <div className={styles.appHeaderCopy}>
             <div className={styles.appHeaderTopRow}>
               <div>
-                <span className={styles.appEyebrow}>Virtual Routing Tools</span>
-                <h2 className={styles.appHeadline}>Unleash the beats.</h2>
+                <span className={styles.appEyebrow}>The Matrix Grid</span>
+                <h2 className={styles.appHeadline}>Route anything, to anything.</h2>
               </div>
               <div className={styles.carouselNavControls}>
-                <button 
-                  onClick={() => scrollCarousel(toolsContainerRef, "left")} 
+                <button
+                  onClick={() => scrollCarousel(toolsContainerRef, "left")}
                   aria-label="Previous tool"
                   className={styles.carouselNavBtn}
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
                 </button>
-                <button 
-                  onClick={() => scrollCarousel(toolsContainerRef, "right")} 
+                <button
+                  onClick={() => scrollCarousel(toolsContainerRef, "right")}
                   aria-label="Next tool"
                   className={styles.carouselNavBtn}
                 >
@@ -291,82 +292,82 @@ export default function Hydra() {
               </div>
             </div>
             <p className={styles.appCopy}>
-              Build custom virtual soundcards, <strong>route audio directly between software applications</strong>, and capture system audio with zero latency. It’s everything you need to route, split, and monitor sound cleanly.
+              Transmitters run down one axis, receivers across the other. <strong>Click any intersection to patch them together</strong> — a glowing indicator confirms the connection is live.
             </p>
           </div>
 
           <div className={styles.fullBleedMediaFrame}>
             <img
-              src={QUADRA_ASSETS.images.beatMaking}
-              alt="Hydra virtual routing tools interface"
+              src={QUADRA_ASSETS.images.matrixDemo}
+              alt="Hydra Matrix Grid demo"
               className={styles.heroVideo}
             />
           </div>
 
-          <div 
-            className={styles.scrollGalleryContainer} 
+          <div
+            className={styles.scrollGalleryContainer}
             ref={toolsContainerRef}
             {...toolsDragProps}
           >
             <div className={styles.captionTileRow}>
-              
+
               <div className={styles.captionTileItem}>
                 <div className={styles.tileCopy}>
-                  <h3>4 Custom Virtual Drivers.</h3>
-                  <p>Create and customize 4 independent virtual audio soundcards with 2 to 256 channels per driver. Seamlessly patch audio between Logic Pro, Pro Tools, and OBS Studio.</p>
+                  <h3>Eight Hydra Audio Bridges.</h3>
+                  <p>2‑A, 2‑B, 4, 8, 16, 32, 64 and 128‑channel virtual soundcards appear in System Settings and every DAW. Pick the size that fits the job — podcasting, stems, or a full orchestral session.</p>
                 </div>
                 <div className={styles.tileMediaFrame}>
-                  <img src={QUADRA_ASSETS.images.tiles.drumKit} alt="Virtual Soundcard matrix" />
+                  <img src={QUADRA_ASSETS.images.tiles.bridges} alt="Hydra Audio Bridges" />
                 </div>
               </div>
 
               <div className={styles.captionTileItem}>
                 <div className={styles.tileCopy}>
-                  <h3>Core Audio Process Tap.</h3>
-                  <p>Isolate and capture high-fidelity audio streams directly from running applications like Zoom, Chrome, Discord, or Spotify with zero added driver latency.</p>
+                  <h3>Flux Capture & Process Taps.</h3>
+                  <p>Tap an individual app's audio — Zoom, Chrome, Spotify, Discord — via the macOS 14.4+ Core Audio Process Tap API. The app keeps playing normally; Hydra gets a continuous copy of the stream.</p>
                 </div>
                 <div className={styles.tileMediaFrame}>
-                  <img src={QUADRA_ASSETS.images.tiles.sampler} alt="Application Audio Capture" />
+                  <img src={QUADRA_ASSETS.images.tiles.processTap} alt="Per-app process tap capture" />
                 </div>
               </div>
 
               <div className={styles.captionTileItem}>
                 <div className={styles.tileCopy}>
-                  <h3>GroundControl LINK Plugin.</h3>
-                  <p>Sub-millisecond DAW routing plugin (AU / VST3 / AAX) for direct signal insertion straight from DAW channel strips into Hydra’s virtual patchbay.</p>
+                  <h3>Out-of-Process VST3 Hosting.</h3>
+                  <p>Third-party VST3 plugins run in dedicated, sandboxed worker processes. If a plugin crashes, the worker restarts automatically — your DAW and the Hydra engine keep running.</p>
                 </div>
                 <div className={styles.tileMediaFrame}>
-                  <img src={QUADRA_ASSETS.images.tiles.sequencer} alt="GroundControl LINK plugin" />
+                  <img src={QUADRA_ASSETS.images.tiles.vst3Host} alt="Out-of-process VST3 worker hosting" />
                 </div>
               </div>
 
               <div className={styles.captionTileItem}>
                 <div className={styles.tileCopy}>
-                  <h3>GroundControl Interface Fusion.</h3>
-                  <p>Combine up to 8 physical hardware audio interfaces into a single unified driver with automatic sample rate conversion (ASRC) and zero clock drift.</p>
+                  <h3>Hardware ASRC.</h3>
+                  <p>Add a physical interface to the grid and Hydra applies drift-corrected Asynchronous Sample Rate Conversion automatically — no pops, clicks or buffer xruns between independent clocks.</p>
                 </div>
                 <div className={styles.tileMediaFrame}>
-                  <img src={QUADRA_ASSETS.images.highlights.partner} alt="Interface Fusion Engine" />
+                  <img src={QUADRA_ASSETS.images.highlights.asrc} alt="ASRC hardware clock correction" />
                 </div>
               </div>
 
               <div className={styles.captionTileItem}>
                 <div className={styles.tileCopy}>
-                  <h3>AoIP Network Audio (NDI® & AVB).</h3>
-                  <p>Transmit and receive up to 128 NDI® channels and 256 AVB uncompressed Ethernet audio channels across local studio machines with zero packet loss.</p>
+                  <h3>AES67 & NDI Network Audio.</h3>
+                  <p>Hydra slaves to PTPv2 and subscribes to SAP-announced AES67 multicast streams, plus NDI sources on the network — both land directly as channels in the grid.</p>
                 </div>
                 <div className={styles.tileMediaFrame}>
-                  <img src={QUADRA_ASSETS.images.highlights.sounds} alt="AoIP Network Streaming" />
+                  <img src={QUADRA_ASSETS.images.highlights.network} alt="AES67 and NDI network streaming" />
                 </div>
               </div>
 
               <div className={styles.captionTileItem}>
                 <div className={styles.tileCopy}>
-                  <h3>9.4.6 Spatial Audio Monitoring.</h3>
-                  <p>Comprehensive monitor controller supporting 9.4.6 Dolby Atmos layouts, binaural renderers, Apple Spatial Audio HRTF, quad-subwoofer bass crossovers, and AU plugin slots.</p>
+                  <h3>OSC & Control-Surface MIDI.</h3>
+                  <p>Drive Hydra from Stream Deck (via Companion), TouchOSC, or a console over OSC — or connect a Pro Tools / Logic Pro control surface over HUI-compatible MIDI.</p>
                 </div>
                 <div className={styles.tileMediaFrame}>
-                  <img src={QUADRA_ASSETS.images.highlights.mixed} alt="Spatial Audio Monitoring" />
+                  <img src={QUADRA_ASSETS.images.highlights.controlRoom} alt="OSC and control surface support" />
                 </div>
               </div>
 
@@ -376,39 +377,39 @@ export default function Hydra() {
 
 
         {/* =========================================
-           5. NETWORKED AUDIO & BROADCAST
+           5. NETWORKED AUDIO (AES67 + NDI)
            ========================================= */}
         <section className={styles.sectionApp} id="network">
           <div className={styles.appHeaderCopy}>
-            <span className={styles.appEyebrow}>Networked Audio & Broadcast</span>
-            <h2 className={styles.appHeadline}>Sounds by the trackload.</h2>
+            <span className={styles.appEyebrow}>Network Audio</span>
+            <h2 className={styles.appHeadline}>The studio is the network.</h2>
             <p className={styles.appCopy}>
-              Turn your Mac into a high-capacity network audio hub. Send and receive <strong>multichannel uncompressed audio over local Ethernet</strong> using NDI®, AVB, and AES67 RTP protocols.
+              Turn your Mac into a network audio endpoint. Hydra receives <strong>PTP-synced AES67 AoIP streams</strong> and <strong>NDI audio sources</strong>, and can broadcast any bridge back out to the network — no proprietary hardware required.
             </p>
           </div>
 
           <div className={styles.fullBleedMediaFrame}>
-            <img src={QUADRA_ASSETS.images.soundsHero} alt="Quadra display showing the Hydra network audio matrix" />
+            <img src={QUADRA_ASSETS.images.networkHero} alt="Hydra AES67 and NDI network audio matrix" />
           </div>
         </section>
 
 
         {/* =========================================
-           6. SPATIAL AUDIO & MONITOR CONTROL (Autoplay Video)
+           6. CONTROL ROOM MONITOR
            ========================================= */}
-        <section className={styles.sectionApp} id="spatial">
+        <section className={styles.sectionApp} id="control-room">
           <div className={styles.appHeaderCopy}>
-            <span className={styles.appEyebrow}>Spatial Audio & Monitor Control</span>
-            <h2 className={styles.appHeadline}>Surround yourself in sound.</h2>
+            <span className={styles.appEyebrow}>Control Room Monitor</span>
+            <h2 className={styles.appHeadline}>Monitor control, always in reach.</h2>
             <p className={styles.appCopy}>
-              Monitor <strong>9.4.6 Dolby Atmos mixes</strong> with built-in binaural renderers, Apple Spatial Audio HRTF head-tracking integration, quad-subwoofer crossover bass management, and per-channel AU plugin slots for room correction.
+              <strong>DIM, MONO, SWAP L/R and MUTE</strong> your master output, plus a dedicated <strong>TALKBACK MIC</strong> that ducks background audio — right from the sidebar, or from a floating, always-on-top Studio HUD while you work in your DAW.
             </p>
           </div>
 
           <div className={styles.fullBleedMediaFrame}>
             <img
-              src={QUADRA_ASSETS.images.mixing}
-              alt="Hydra spatial audio and monitor control interface"
+              src={QUADRA_ASSETS.images.controlRoomDemo}
+              alt="Hydra Control Room monitor controller interface"
               className={styles.heroVideo}
             />
           </div>
@@ -416,14 +417,14 @@ export default function Hydra() {
 
 
         {/* =========================================
-           7. HYDRA REMOTE & MOBILITY
+           7. SECURITY & LICENSING
            ========================================= */}
         <section className={styles.sectionApp}>
           <div className={styles.appHeaderCopy}>
-            <span className={styles.appEyebrow}>Hydra Remote & iPadOS</span>
-            <h2 className={styles.appHeadline}>Control your matrix anywhere.</h2>
+            <span className={styles.appEyebrow}>Quadra Guard 2.0</span>
+            <h2 className={styles.appHeadline}>Licensed once, yours for good.</h2>
             <p className={styles.appCopy}>
-              Use the Hydra Remote app for iPadOS to control your matrix routing, recall snapshots, tweak 9.4.6 speaker mute/solo settings, and adjust monitor volumes wirelessly from anywhere in the studio.
+              Hydra activation is hardware-bound (HWID) and verified with Ed25519 asymmetric signatures — checked locally, fully offline, once activated. Every license covers up to two Macs under your Quadra ID.
             </p>
           </div>
         </section>
@@ -441,17 +442,17 @@ export default function Hydra() {
           <div className={styles.techSpecsGrid}>
             <div className={styles.specCard}>
               <h3>Mac Compatibility</h3>
-              <p>macOS Sonoma 14.0 or later. Universal Binary natively optimized for Apple Silicon (M1/M2/M3/M4) and Intel Core processors.</p>
+              <p>macOS 26 (Tahoe) or later. Universal binary for Apple Silicon (M1/M2/M3/M4) and Intel (x86_64).</p>
             </div>
 
             <div className={styles.specCard}>
-              <h3>Driver & DSP Architecture</h3>
-              <p>32-bit Float real-time C++ engine with 0ms added driver latency and sample rates from 44.1 kHz up to 384 kHz.</p>
+              <h3>Driver Architecture</h3>
+              <p>Native Core Audio AudioServerPlugIn (HAL) driver — SIP stays enabled, no kernel extensions required.</p>
             </div>
 
             <div className={styles.specCard}>
-              <h3>Network & Automation</h3>
-              <p>128 NDI® channels, 256 AVB channels, AES67 SAP/SDP, Core Audio Process Tap, Elgato Stream Deck, EUCON, MIDI CC, and OSC automation.</p>
+              <h3>Network & Control</h3>
+              <p>AES67 AoIP (PTPv2, SAP/SDP), NDI audio, out-of-process VST3 hosting, Core Audio Process Taps, OSC remote control, HUI control-surface MIDI.</p>
             </div>
           </div>
         </section>
@@ -467,8 +468,8 @@ export default function Hydra() {
 
           <div className={styles.faqList}>
             {FAQ_ITEMS.map((item, idx) => (
-              <div 
-                key={idx} 
+              <div
+                key={idx}
                 className={`${styles.faqItem} ${openFaq === idx ? styles.faqOpen : ""}`}
                 onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
               >

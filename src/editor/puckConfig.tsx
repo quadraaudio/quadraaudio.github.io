@@ -82,14 +82,14 @@ export const puckConfig: Config<QuadraPuckProps> = {
       },
       defaultProps: {
         brand: "Hydra",
-        headline: "Sound without boundaries.",
+        headline: "The complete virtual audio patchbay.",
         subheadline:
-          "A professional audio matrix for macOS. Virtual devices, network streams, spatial monitoring — one surface.",
+          "Eight virtual audio bridges for macOS. Apps, hardware, plugins, and network audio — one Matrix Grid.",
         primaryCtaLabel: "Learn more",
         primaryCtaHref: "/hydra/",
         secondaryCtaLabel: "Try Free",
         secondaryCtaHref: "/store/",
-        mediaSrc: "/images/home_hero_quadra.jpg",
+        mediaSrc: "/images/hydra_hero_engineer.jpg",
         mediaAlt: "Hydra interface on Mac",
         mediaGradient:
           "radial-gradient(ellipse 80% 60% at 50% 40%, #1a1a1e 0%, #050506 55%, #000 100%)",
@@ -124,10 +124,10 @@ export const puckConfig: Config<QuadraPuckProps> = {
         },
       },
       defaultProps: {
-        eyebrow: "Virtual Patchbay",
+        eyebrow: "The Matrix Grid",
         title: "Route everything. Lose nothing.",
-        body: "Up to 256 channels between DAWs, system audio, and hardware — uncompressed, sub-millisecond.",
-        mediaSrc: "/images/store_hydra_card.jpg",
+        body: "Click a cross-point to patch a transmitter to a receiver — apps, hardware, or network, all in one grid.",
+        mediaSrc: "/images/hydra_mixing_hands.jpg",
         mediaGradient:
           "radial-gradient(circle at 30% 50%, #1c2430 0%, #0a0a0c 70%)",
         align: "left",
@@ -218,14 +218,14 @@ export const defaultHomeData: Data = {
       props: {
         id: "ProductHero-home",
         brand: "Hydra",
-        headline: "Sound without boundaries.",
+        headline: "The complete virtual audio patchbay.",
         subheadline:
-          "A professional audio matrix for macOS. Virtual devices, network streams, spatial monitoring — one surface.",
+          "Eight virtual audio bridges for macOS. Apps, hardware, plugins, and network audio — one Matrix Grid.",
         primaryCtaLabel: "Learn more",
         primaryCtaHref: "/hydra/",
         secondaryCtaLabel: "Try Free",
         secondaryCtaHref: "/store/",
-        mediaSrc: "/images/home_hero_quadra.jpg",
+        mediaSrc: "/images/hydra_hero_engineer.jpg",
         mediaAlt: "Hydra interface on Mac",
         mediaGradient:
           "radial-gradient(ellipse 80% 60% at 50% 40%, #1a1a1e 0%, #050506 55%, #000 100%)",
@@ -236,10 +236,10 @@ export const defaultHomeData: Data = {
       type: "StoryChapter",
       props: {
         id: "StoryChapter-matrix",
-        eyebrow: "Virtual Patchbay",
+        eyebrow: "The Matrix Grid",
         title: "Route everything. Lose nothing.",
-        body: "Up to 256 channels between DAWs, system audio, and hardware — uncompressed, sub-millisecond.",
-        mediaSrc: "/images/store_hydra_card.jpg",
+        body: "Click a cross-point to patch a transmitter to a receiver — apps, hardware, or network, all in one grid.",
+        mediaSrc: "/images/hydra_mixing_hands.jpg",
         mediaGradient:
           "radial-gradient(circle at 30% 50%, #1c2430 0%, #0a0a0c 70%)",
         align: "left",
@@ -249,11 +249,11 @@ export const defaultHomeData: Data = {
     {
       type: "StoryChapter",
       props: {
-        id: "StoryChapter-groundcontrol",
-        eyebrow: "GroundControl",
-        title: "Many interfaces. One clock.",
-        body: "Fuse up to eight hardware devices into a single driver. ASRC keeps every stream locked.",
-        mediaSrc: "/images/hydra_app_icon.jpg",
+        id: "StoryChapter-asrc",
+        eyebrow: "Hardware ASRC",
+        title: "Independent clocks. Perfectly in sync.",
+        body: "Add a physical interface to the grid and drift-corrected sample rate conversion keeps it locked automatically.",
+        mediaSrc: "/images/hydra_headphones_closeup.jpg",
         mediaGradient:
           "radial-gradient(circle at 70% 40%, #1a2228 0%, #050506 65%)",
         align: "left",
@@ -266,8 +266,8 @@ export const defaultHomeData: Data = {
         id: "StoryChapter-network",
         eyebrow: "Network Audio",
         title: "The studio is the network.",
-        body: "NDI®, AVB, and AES67 — multichannel streams over Ethernet with broadcast-grade timing.",
-        mediaSrc: "",
+        body: "AES67 AoIP and NDI® — PTP-synced multichannel streams over Ethernet, subscribed straight into the grid.",
+        mediaSrc: "/images/hydra_patch_cables.jpg",
         mediaGradient:
           "radial-gradient(ellipse at 50% 60%, #142028 0%, #06080a 50%, #000 100%)",
         align: "left",
@@ -277,11 +277,11 @@ export const defaultHomeData: Data = {
     {
       type: "StoryChapter",
       props: {
-        id: "StoryChapter-spatial",
-        eyebrow: "Spatial Monitoring",
-        title: "Hear the room. Anywhere.",
-        body: "Monitor up to 9.4.6 Atmos with binaural HRTF and head-tracked headphone output.",
-        mediaSrc: "/images/home_store_grid.jpg",
+        id: "StoryChapter-controlroom",
+        eyebrow: "Control Room Monitor",
+        title: "Monitor control, always in reach.",
+        body: "DIM, MONO, SWAP L/R, MUTE and a dedicated TALKBACK MIC — plus a floating always-on-top Studio HUD.",
+        mediaSrc: "/images/hydra_talkback_mic.jpg",
         mediaGradient:
           "radial-gradient(circle at 40% 70%, #181820 0%, #000 70%)",
         align: "left",

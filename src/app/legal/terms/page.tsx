@@ -75,7 +75,7 @@ export default function TermsOfUsePage() {
           <section className={styles.legalSection}>
             <h2>5. Intellectual Property</h2>
             <p>
-              The software, user interface design, logos, driver technology, GroundControl Interface Fusion technology, and documentation are protected by copyright, trademark, and intellectual property laws of the United States and international treaties. NDI® is a registered trademark of Vizrt NDI AB. Dolby, Dolby Atmos, and the double-D symbol are registered trademarks of Dolby Laboratories.
+              The software, user interface design, logos, driver technology, Matrix Grid routing technology, and documentation are protected by copyright, trademark, and intellectual property laws of the United States and international treaties. NDI® is a registered trademark of Vizrt NDI AB.
             </p>
           </section>
 

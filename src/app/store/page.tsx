@@ -150,7 +150,7 @@ export default function StorePage() {
               </div>
               <div>
                 <h3 className={styles.helpTitle}>Audio Specialist Support</h3>
-                <p className={styles.helpDescription}>Get dedicated setup support for Core Audio, NDI®, and Dolby Atmos workflows.</p>
+                <p className={styles.helpDescription}>Get dedicated setup support for Core Audio, AES67/NDI®, and Control Room workflows.</p>
               </div>
             </div>
           </div>

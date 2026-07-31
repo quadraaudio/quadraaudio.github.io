@@ -10,37 +10,37 @@ const supportArticles = [
   {
     id: 1,
     category: "Setup & AoIP",
-    title: "Configuring NDI® Audio Streaming in Hydra",
-    desc: "Route uncompressed multichannel Ethernet audio across local machines using high-density NDI technology.",
+    title: "Configuring AES67 & NDI Network Audio in Hydra",
+    desc: "Subscribe to PTP-synced AES67 streams and NDI sources across local machines directly into the Matrix Grid.",
     link: "/support/article/configuring-ndi"
   },
   {
     id: 2,
     category: "Licensing",
     title: "Managing Quadra ID License Activations",
-    desc: "Activate your Hydra license across 2 Mac machines simultaneously or manage offline .qkey licenses.",
+    desc: "Activate your Hydra license across 2 Mac machines simultaneously with Quadra Guard 2.0 offline activation.",
     link: "/support/article/license-activation"
   },
   {
     id: 3,
     category: "Performance",
     title: "Optimizing Buffer Size & Preventing Audio Dropouts",
-    desc: "Configure Core Audio buffer sizes and network switch QoS settings for heavy 256-channel workloads.",
+    desc: "Configure Core Audio buffer sizes for heavy multichannel workloads across bridges and hardware.",
     link: "/support/article/optimizing-buffer"
   },
   {
     id: 4,
     category: "Virtual Soundcard",
-    title: "Setting Up GroundControl Fusion Audio Drivers",
-    desc: "Combine multiple physical hardware audio interfaces into a single unified driver without clock drift.",
-    link: "/support/article/groundcontrol-fusion"
+    title: "Setting Up Physical Devices with ASRC",
+    desc: "Add hardware interfaces to the grid with drift-corrected sample rate conversion, zero manual clocking.",
+    link: "/support/article/hardware-asrc-setup"
   },
   {
     id: 5,
-    category: "Spatial Audio",
-    title: "Dolby Atmos 9.4.6 Matrix & HRTF Binaural Monitoring",
-    desc: "Configure Hydra's matrix for spatial audio rendering, binaural monitoring, and head tracking.",
-    link: "/support/article/dolby-atmos-916"
+    category: "Monitor Control",
+    title: "Using the Control Room Monitor",
+    desc: "Set up DIM, MONO, SWAP L/R, MUTE, TALKBACK MIC and the floating Studio HUD.",
+    link: "/support/article/control-room-monitor"
   },
   {
     id: 6,
@@ -86,7 +86,7 @@ export default function SupportPage() {
             <input 
               type="text" 
               className={styles.searchInput} 
-              placeholder="Search topics, Core Audio drivers, NDI® or Atmos..."
+              placeholder="Search topics, Core Audio drivers, NDI® or AES67..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -103,8 +103,8 @@ export default function SupportPage() {
             <button className={styles.filterPill} onClick={() => setSearchQuery("Buffer")}>
               <span>Buffer &amp; Xruns</span>
             </button>
-            <button className={styles.filterPill} onClick={() => setSearchQuery("Atmos")}>
-              <span>Spatial 9.4.6</span>
+            <button className={styles.filterPill} onClick={() => setSearchQuery("Control Room")}>
+              <span>Control Room</span>
             </button>
           </div>
         </div>

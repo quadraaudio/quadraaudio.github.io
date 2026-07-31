@@ -62,7 +62,7 @@ export default function PrivacyPolicyPage() {
             <ul className={styles.legalList}>
               <li>To issue, authenticate, and manage your software licenses and Mac machine activations.</li>
               <li>To process transactions and deliver electronic software licenses.</li>
-              <li>To provide engineering customer support for Core Audio, NDI®, AVB, and spatial audio configurations.</li>
+              <li>To provide engineering customer support for Core Audio, AES67, NDI®, and Matrix Grid configurations.</li>
               <li>To notify you about critical software updates, bug fixes, and security advisories.</li>
             </ul>
           </section>

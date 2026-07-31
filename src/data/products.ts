@@ -44,84 +44,84 @@ export const products: Product[] = [
   {
     slug: "hydra",
     name: "Hydra",
-    tagline: "Sound thinking. Boundless routing.",
+    tagline: "The complete virtual audio patchbay for macOS.",
     description:
-      "The ultimate virtual soundcard, AoIP network matrix, and spatial audio monitor controller for macOS. Combine physical audio interfaces, route multi-app audio with zero latency, stream 128 NDI® / 256 AVB channels, and render 9.4.6 Dolby Atmos mixes with 32-bit float precision.",
+      "Hydra is a high-performance virtual audio patchbay for macOS: eight selectable Hydra Audio Bridges (2 to 128 channels each) that any app can pick as input or output, routed freely between apps, hardware, out-of-process VST3 plugins, and network audio — all in one visual Matrix Grid.",
     price: 199.99,
     priceLabel: "$199.99 (90-Day Free Trial)",
-    badge: "Virtual Audio Matrix",
+    badge: "Virtual Audio Patchbay",
     badgeColor: "orange",
     category: "software",
-    heroImage: "/images/home_hero_quadra.jpg",
+    heroImage: "/images/hydra_hero_engineer.jpg",
     cardImage: "/images/hydra_app_icon.jpg",
     available: true,
     availabilityStatus: "available",
     features: [
       {
-        title: "256-Channel Virtual Patchbay",
+        title: "Eight Hydra Audio Bridges",
         description:
-          "Route uncompressed audio freely between any DAW, system application, hardware interface, or virtual driver with sub-millisecond buffer speeds.",
+          "2‑A, 2‑B, 4, 8, 16, 32, 64 and 128‑channel virtual soundcards — up to 256 channels of routing headroom — any app can select as its input or output.",
       },
       {
-        title: "GroundControl Driver Fusion",
+        title: "The Matrix Grid",
         description:
-          "Combine up to 8 physical audio interfaces into a single unified driver without aggregate clock drift or channel loss.",
+          "A visual cross-point routing matrix. Click a cross-point to connect a transmitter to a receiver; a glowing indicator shows active audio flow.",
       },
       {
-        title: "NDI®, AVB & AES67 Network AoIP",
+        title: "Flux Capture & Process Taps",
         description:
-          "Stream up to 128 NDI® channels, 256 AVB channels, and AES67 RTP streams over local Ethernet networks.",
+          "Tap any application's audio output continuously via macOS Core Audio process taps — the app keeps playing normally while Hydra gets a copy of the stream.",
       },
       {
-        title: "Spatial Audio 9.4.6 & HRTF",
+        title: "Out-of-Process VST3 Hosting",
         description:
-          "Integrated Dolby Atmos rendering with Apple Spatial Audio HRTF binaural headphone monitoring and head tracking.",
+          "Host third-party VST3 plugins in isolated worker processes. If a plugin crashes, your DAW and the Hydra engine keep running.",
       },
       {
-        title: "32-Bit Float C++ Audio Engine",
+        title: "AES67 & NDI Network Audio",
         description:
-          "Pristine signal processing offering infinite dynamic headroom, zero digital clipping, and sample rates up to 384 kHz.",
+          "PTP-synced AES67 AoIP streams and NDI audio sources over the local network, subscribed directly into the Matrix Grid.",
       },
       {
-        title: "Stream Deck, MIDI & OSC Automation",
+        title: "Control Room Monitor",
         description:
-          "Save and recall complex matrix routing snapshots via Elgato Stream Deck, EUCON, MIDI Program Changes, or OSC protocols.",
+          "DIM, MONO, SWAP L/R, MUTE and a dedicated TALKBACK MIC, plus a floating always-on-top Studio HUD for at-a-glance monitor control.",
       },
     ],
     specGroups: [
       {
-        title: "Virtual Driver & Routing Engine",
+        title: "Audio Bridges & Routing Engine",
         specs: [
-          { label: "Processing Precision", value: "32-bit float real-time engine" },
-          { label: "Supported Sample Rates", value: "44.1 / 48 / 88.2 / 96 / 176.4 / 192 / 384 kHz" },
-          { label: "Virtual Devices", value: "4 configurable virtual drivers (2 to 256 I/O channels per device)" },
-          { label: "Added Driver Latency", value: "0ms (Core Audio System Extension)" },
+          { label: "Driver Architecture", value: "Native Core Audio AudioServerPlugIn (HAL), SIP-compliant" },
+          { label: "Hydra Audio Bridges", value: "8 bridges — 2‑A, 2‑B, 4, 8, 16, 32, 64, 128 channels" },
+          { label: "Routing Surface", value: "Cross-point Matrix Grid — apps, hardware, plugins, network" },
+          { label: "Hardware Clock Sync", value: "Built-in ASRC drift correction across independent clocks" },
         ],
       },
       {
         title: "Network & Plugin Protocols",
         specs: [
-          { label: "Network Audio (AoIP)", value: "NDI® Audio (128 Ch), AVB (256 Ch), AES67 / SAP SDP" },
-          { label: "Plugin Formats", value: "AU / VST3 / AAX (GroundControl LINK insert plugin)" },
-          { label: "System Audio Capture", value: "Core Audio Process Tap (isolate Chrome, Zoom, Spotify, Discord)" },
-          { label: "Hardware Control", value: "Elgato Stream Deck, EUCON, MIDI, OSC, iOS/Android Remote" },
+          { label: "Network Audio (AoIP)", value: "AES67 (PTPv2, SAP/SDP) and NDI audio, RX/TX" },
+          { label: "Plugin Hosting", value: "Out-of-process VST3 workers with automatic crash recovery" },
+          { label: "System Audio Capture", value: "Per-app Core Audio Process Taps (macOS 14.4+ API)" },
+          { label: "Remote Control", value: "OSC (Stream Deck via Companion, TouchOSC) and DAW control-surface MIDI (HUI)" },
         ],
       },
       {
         title: "Licensing & Support",
         specs: [
           { label: "License Type", value: "Single Purchase Perpetual License — Lifetime Access" },
+          { label: "Security", value: "Quadra Guard 2.0 — HWID-bound Ed25519 offline activation" },
           { label: "Machine Activations", value: "2 simultaneous Mac activations via Quadra ID" },
-          { label: "Updates", value: "All minor & major v1.x updates included" },
           { label: "Free Trial", value: "90-day fully functional trial" },
         ],
       },
     ],
     systemRequirements: [
-      "macOS Sonoma (14.0) or later",
-      "Apple Silicon (M1/M2/M3/M4) or Intel Core i5/i7/i9",
-      "8 GB RAM minimum (16 GB recommended)",
-      "Gigabit or 10GbE network connection for NDI® / AVB AoIP streaming",
+      "macOS 26 (Tahoe) or later",
+      "Apple Silicon (M1/M2/M3/M4) or Intel (x86_64)",
+      "8 GB RAM minimum (16 GB recommended for high channel counts)",
+      "Administrator privileges for one-time HAL driver installation",
     ],
   },
   {
@@ -145,7 +145,7 @@ export const products: Product[] = [
     slug: "quadra-core-io",
     name: "Quadra Core I/O",
     tagline: "Studio Thunderbolt audio interface.",
-    description: "Hardware companion rack for Hydra Pro with 32-bit float AD/DA converters, Dante/AES67 connectivity, and ultra-quiet preamps.",
+    description: "Hardware companion rack for Hydra Pro with 32-bit float AD/DA converters, AES67 AoIP connectivity, and ultra-quiet preamps.",
     price: 0,
     priceLabel: "Coming Soon",
     badge: "Hardware Rack",

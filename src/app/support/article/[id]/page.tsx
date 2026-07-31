@@ -10,26 +10,26 @@ const ARTICLES_DB: Record<string, {
   steps: { heading: string; text: string; bullets?: string[] }[];
 }> = {
   "configuring-ndi": {
-    title: "Configuring NDI® Audio Streaming in Hydra",
+    title: "Configuring AES67 & NDI Network Audio in Hydra",
     category: "Setup & AoIP",
     date: "July 2026",
-    summary: "Hydra allows sending and receiving up to 128 uncompressed channels of low-latency NDI® Audio over standard Gigabit or 10GbE Ethernet networks.",
+    summary: "Hydra subscribes to PTP-synced AES67 AoIP streams and NDI audio sources (up to 16 channels per source) directly into the Matrix Grid over standard Ethernet.",
     steps: [
       {
-        heading: "1. Enable NDI Audio Server in Hydra",
-        text: "Launch Hydra on your Mac, open Preferences (Cmd + ,), and navigate to the Network & AoIP tab. Toggle 'Enable NDI Audio Streamer'.",
+        heading: "1. Enable Network Audio in Hydra",
+        text: "Launch Hydra, switch the sidebar to the Network tab, and check the AES67 and NDI Sources sections for discovered streams on your local network.",
         bullets: [
-          "Set your preferred sample rate (48 kHz or 96 kHz).",
-          "Specify the channel group count (e.g. 8ch, 16ch, or 128ch matrix).",
-          "Ensure your local firewall permits mDNS discovery on port 5353."
+          "AES67 streams are discovered via SAP/SDP announcement and slave to PTPv2.",
+          "NDI sources appear automatically once the NDI runtime is installed.",
+          "Toggle Subscribe on a stream or source to add its channels to the grid."
         ]
       },
       {
         heading: "2. Assign Application or DAW Inputs",
-        text: "In the Hydra Matrix patchbay grid, connect the application sources (Logic Pro, Pro Tools, OBS Studio) to the designated NDI output buses.",
+        text: "In the Matrix Grid, click a cross-point to connect an application source (Logic Pro, Pro Tools, OBS Studio) to the incoming network channels, or mark a bridge to transmit outward.",
         bullets: [
-          "NDI streams will be broadcast automatically to all machines on the local subnet.",
-          "Use NDI Monitor or NDI Tools to verify incoming stream feeds."
+          "Any bridge can be marked as an AES67 TX or NDI TX source for other machines to pick up.",
+          "Check the sidebar's PTP status footer to confirm clock lock before mixing."
         ]
       }
     ]
@@ -38,23 +38,22 @@ const ARTICLES_DB: Record<string, {
     title: "Managing Quadra ID License Activations",
     category: "Licensing & Account",
     date: "July 2026",
-    summary: "Each perpetual Hydra license permits concurrent activation on 2 Mac computers under a single Quadra ID, as well as air-gapped offline .qkey generation.",
+    summary: "Each perpetual Hydra license is protected by Quadra Guard 2.0 and permits activation on 2 Mac computers under a single Quadra ID, verified offline via hardware-bound Ed25519 signatures.",
     steps: [
       {
         heading: "1. Online Activation via Quadra ID",
-        text: "Open Hydra software, select Hydra > License > Sign In, and log in with your Quadra ID credentials or Google OAuth account.",
+        text: "Open Hydra, select Hydra > License > Sign In, and log in with your Quadra ID credentials or Google OAuth account.",
         bullets: [
-          "Your activation token is instantly verified against the database.",
+          "Your activation token is signed with Ed25519 and verified locally on your Mac.",
           "You can manage active devices from your Account Dashboard."
         ]
       },
       {
-        heading: "2. Offline Studio License (.qkey)",
-        text: "For air-gapped studio machines without internet connectivity, navigate to your Quadra ID Account dashboard on a connected device.",
+        heading: "2. Hardware-Bound Offline Activation",
+        text: "Quadra Guard 2.0 hashes your Mac's hardware identifier (HWID) to bind the license to that specific device, so once activated it keeps working without an internet connection.",
         bullets: [
-          "Copy your Mac's Hardware ID (found in Hydra > License > Offline Activation).",
-          "Paste the Hardware ID in the offline generator on your account page.",
-          "Download the encrypted .qkey file and import it directly into Hydra."
+          "Find your Mac's Hardware ID under Hydra > License > Offline Activation.",
+          "Each license covers up to 2 Macs — deactivate one to free a seat for another."
         ]
       }
     ]
@@ -63,47 +62,51 @@ const ARTICLES_DB: Record<string, {
     title: "Optimizing Buffer Size & Preventing Audio Dropouts",
     category: "Troubleshooting",
     date: "July 2026",
-    summary: "Eliminate buffer xruns, audio dropouts, and CPU overload when routing heavy multichannel audio streams across DAWs and system drivers.",
+    summary: "Eliminate buffer xruns, audio dropouts, and CPU overload when routing high channel-count audio across DAWs, bridges, and physical hardware.",
     steps: [
       {
         heading: "1. Adjust Core Audio Buffer Size",
-        text: "In Hydra Preferences > Driver Settings, set the Core Audio System Extension buffer size to 128 or 256 samples for real-time live performance, or 512 samples for heavy 9.4.6 Atmos mixes.",
+        text: "In Hydra Settings > Audio Engine, set the buffer size anywhere from 32 to 1024 samples — lower for real-time live performance, higher for heavy multichannel sessions.",
         bullets: [
-          "Ensure GroundControl ASRC (Automatic Sample Rate Conversion) is enabled when mixing physical hardware interfaces.",
+          "Ensure ASRC (Automatic Sample Rate Conversion) is enabled for any physical hardware interface in the grid.",
           "Disable macOS App Nap for background DAW processes."
         ]
       }
     ]
   },
-  "groundcontrol-fusion": {
-    title: "Setting Up GroundControl Fusion Audio Drivers",
+  "hardware-asrc-setup": {
+    title: "Setting Up Physical Devices with ASRC",
     category: "Virtual Soundcard",
     date: "July 2026",
-    summary: "GroundControl Interface Fusion combines up to 8 physical hardware audio interfaces into a single aggregate driver without clock drift or buffer desynchronization.",
+    summary: "Hydra's built-in Asynchronous Sample Rate Converters (ASRC) keep physical hardware interfaces running on independent clocks perfectly in sync — no drift, no xruns.",
     steps: [
       {
-        heading: "1. Create a Fusion Aggregation Group",
-        text: "In Hydra > Virtual Soundcards, click 'New GroundControl Fusion Driver'. Select your hardware interfaces (Apogee, UAD, Focusrite, RME).",
+        heading: "1. Add a Device to the Grid",
+        text: "In the sidebar's Devices tab, toggle a detected audio interface's switch to add its channels to the Matrix Grid.",
         bullets: [
-          "Enable Automatic Sample Rate Conversion (ASRC).",
-          "Assign the primary master clock interface."
+          "ASRC drift correction is applied automatically — no manual clock configuration needed.",
+          "Devices that go offline keep their patches; Hydra re-binds them automatically on reconnect."
         ]
       }
     ]
   },
-  "dolby-atmos-916": {
-    title: "Dolby Atmos 9.4.6 Matrix & HRTF Binaural Monitoring",
-    category: "Spatial Audio",
+  "control-room-monitor": {
+    title: "Using the Control Room Monitor",
+    category: "Monitor Control",
     date: "July 2026",
-    summary: "Configure Hydra as a spatial audio monitor controller supporting 9.4.6 Dolby Atmos speaker layouts, quad-subwoofer bass crossovers, and Apple Spatial Audio HRTF head tracking.",
+    summary: "The Control Room card gives you DIM, MONO, SWAP L/R, MUTE and a dedicated TALKBACK MIC, plus a floating always-on-top Studio HUD for at-a-glance monitor control.",
     steps: [
       {
-        heading: "1. Configure Speaker Matrix",
-        text: "Open Hydra Spatial Controller tab and select 9.4.6 Dolby Atmos preset. Assign output physical channels to your multi-speaker monitor rig.",
+        heading: "1. Open the Control Room Card",
+        text: "The Control Room card sits at the bottom of the sidebar. Use DIM to attenuate master output, MONO to sum L/R for phase checks, SWAP L/R, or MUTE to silence the master bus.",
         bullets: [
-          "Apply room correction AU plugins on per-channel insert slots.",
-          "Enable binaural headphone monitoring with Apple Head Tracking."
+          "TALKBACK MIC activates your configured mic and ducks background audio automatically.",
+          "Use the gearshape icon to select your monitor output device and talkback mic."
         ]
+      },
+      {
+        heading: "2. Floating Studio HUD",
+        text: "Click the picture-in-picture icon in the Control Room card header to open a compact, always-on-top HUD — handy for keeping monitor controls visible over a full-screen DAW.",
       }
     ]
   }
@@ -114,8 +117,8 @@ export function generateStaticParams() {
     { id: "configuring-ndi" },
     { id: "license-activation" },
     { id: "optimizing-buffer" },
-    { id: "groundcontrol-fusion" },
-    { id: "dolby-atmos-916" },
+    { id: "hardware-asrc-setup" },
+    { id: "control-room-monitor" },
     { id: "quadra-id-account" },
     { id: "getting-started" },
   ];
@@ -129,19 +132,19 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
     title: id.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
     category: "Support Guide",
     date: "July 2026",
-    summary: "Detailed engineering guide for configuring Hydra software drivers and spatial audio routing on macOS.",
+    summary: "Detailed engineering guide for configuring Hydra's audio bridges, Matrix Grid, and network routing on macOS.",
     steps: [
       {
         heading: "1. Check System Compatibility",
-        text: "Ensure your Mac is running macOS Sonoma 14.0 or later with an Apple Silicon M1/M2/M3/M4 or Intel Core i7/i9 processor.",
+        text: "Ensure your Mac is running macOS 26 (Tahoe) or later with Apple Silicon (M1/M2/M3/M4) or an Intel (x86_64) processor.",
         bullets: [
-          "Verify Core Audio Driver Extensions permissions in System Settings > Privacy & Security.",
-          "Ensure your Quadra ID is signed in for automatic driver authorization."
+          "Verify the HydraAudio.driver HAL plug-in is installed under System Settings > Privacy & Security.",
+          "Ensure your Quadra ID is signed in for license verification."
         ]
       },
       {
         heading: "2. Configure Audio Engine",
-        text: "Open Hydra Preferences (Cmd + ,) to select your primary buffer size and sample rate preferences."
+        text: "Open Hydra Settings > Audio Engine to select your preferred buffer size and review bridge channel counts."
       }
     ]
   };

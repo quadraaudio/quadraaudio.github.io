@@ -12,9 +12,9 @@ const footerDirectory = [
     title: 'Explore Software',
     links: [
       { label: 'Hydra Software', url: '/hydra' },
-      { label: 'Virtual Patchbay', url: '/hydra#tools' },
-      { label: 'NDI Network Audio', url: '/hydra#network' },
-      { label: 'Spatial Audio 9.1.6', url: '/hydra#spatial' },
+      { label: 'The Matrix Grid', url: '/hydra#tools' },
+      { label: 'AES67 & NDI Network Audio', url: '/hydra#network' },
+      { label: 'Control Room Monitor', url: '/hydra#control-room' },
     ]
   },
   {
@@ -57,10 +57,10 @@ const footnotesByPath: Record<string, string[]> = {
     '2. Quadra, Hydra, and the Quadra logo are registered trademarks of Quadra Audio Inc.',
   ],
   '/hydra': [
-    '1. Performance testing conducted by Quadra Audio in 2026 using Mac Studio (M2 Ultra) systems in isolated 10GbE network environments.',
-    '2. Network channel density (up to 256 AVB and 128 NDI® channels) depends on local network bandwidth and switch topology.',
-    '3. An active Hydra license is required for multichannel virtual patchbay routing and 9.1.6 Dolby Atmos monitoring.',
-    'NDI® is a registered trademark of Vizrt NDI AB. Dolby, Dolby Atmos, and the double-D symbol are registered trademarks of Dolby Laboratories.',
+    '1. Performance testing conducted by Quadra Audio in 2026 using Apple Silicon Mac systems on macOS 26 (Tahoe).',
+    '2. Network channel density (AES67 and NDI® streams) depends on local network bandwidth and switch topology.',
+    '3. An active Hydra license is required for multichannel Matrix Grid routing beyond the 90-day trial.',
+    'NDI® is a registered trademark of Vizrt NDI AB.',
   ],
   '/store': [
     '1. Free 90-day trial activates instantly with a Quadra ID. No credit card required.',

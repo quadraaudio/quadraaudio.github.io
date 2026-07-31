@@ -12,10 +12,10 @@ interface RibbonItem {
 }
 
 const defaultItems: RibbonItem[] = [
-  { id: "soundcard", name: "Virtual Soundcard", badge: "256 Ch", icon: "soundcard", href: "#overview" },
-  { id: "patchbay", name: "Virtual Patchbay", badge: "Multi-App", icon: "patchbay", href: "#tools" },
-  { id: "network", name: "NDI® & AVB Network", badge: "Low Latency", icon: "network", href: "#network" },
-  { id: "spatial", name: "Spatial Audio 9.1.6", badge: "Atmos", icon: "spatial", href: "#spatial" },
+  { id: "soundcard", name: "8 Audio Bridges", badge: "256 Ch", icon: "soundcard", href: "#overview" },
+  { id: "patchbay", name: "Matrix Grid", badge: "Multi-App", icon: "patchbay", href: "#tools" },
+  { id: "network", name: "AES67 & NDI Network", badge: "Low Latency", icon: "network", href: "#network" },
+  { id: "spatial", name: "Control Room Monitor", badge: "Talkback", icon: "spatial", href: "#control-room" },
 ];
 
 export default function ProductRibbon({ items = defaultItems }: { items?: RibbonItem[] }) {
