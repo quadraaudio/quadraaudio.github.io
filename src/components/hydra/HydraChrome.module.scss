@@ -16,12 +16,12 @@
 }
 
 .inner {
-  width: min(100% - 40px, 980px);
+  width: min(100% - 40px, 1120px);
   margin-inline: auto;
   height: 100%;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .wordmark {
@@ -37,13 +37,19 @@
   display: none;
   align-items: center;
   justify-content: flex-end;
-  gap: 2px;
+  gap: 0;
   margin-left: auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   a {
-    padding: 6px 11px;
+    padding: 6px 10px;
     color: rgba(245, 245, 247, 0.55);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 500;
     white-space: nowrap;
     transition: color 0.2s var(--ease-out);

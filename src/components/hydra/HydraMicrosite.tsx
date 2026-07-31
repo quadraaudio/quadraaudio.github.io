@@ -1,35 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useState } from "react";
 import { Reveal } from "@/components/motion/Reveal";
-import { PatchbayField } from "@/components/three/PatchbayField";
-import { HydraCarousel } from "@/components/hydra/HydraCarousel";
-import { HydraSheet } from "@/components/hydra/HydraSheet";
+import { HydraMedia } from "@/components/hydra/HydraMedia";
 import {
   HYDRA,
   HYDRA_CHAPTERS,
-  HYDRA_CONTROL,
+  HYDRA_HIGHLIGHTS,
   HYDRA_SPECS,
 } from "@/data/hydra.landing";
 import styles from "./HydraMicrosite.module.scss";
 
-type Chapter = (typeof HYDRA_CHAPTERS)[number];
-
 export function HydraMicrosite() {
-  const [sheet, setSheet] = useState<null | "specs" | Chapter>(null);
-
-  const closeSheet = useCallback(() => setSheet(null), []);
-
   return (
     <main className={styles.main}>
+      {/* Overview — Apple hero: brand, one line, one lede, one media plane */}
       <section id="overview" className={styles.hero}>
-        <div className={styles.heroVisual} aria-hidden>
-          <PatchbayField />
-          <div className={styles.heroShade} />
-        </div>
-        <div className={styles.heroContent}>
-          <p className={styles.brand}>{HYDRA.name}</p>
+        <div className={styles.heroCopy}>
+          <p className={styles.productName}>{HYDRA.name}</p>
           <h1 className={styles.headline}>{HYDRA.headline}</h1>
           <p className={styles.lede}>{HYDRA.lede}</p>
           <div className={styles.ctaRow}>
@@ -41,74 +29,91 @@ export function HydraMicrosite() {
             </Link>
           </div>
         </div>
+        <div className={styles.heroMedia}>
+          <HydraMedia media={HYDRA.heroMedia} priority large />
+        </div>
       </section>
 
-      <section id="capabilities" className={styles.section}>
+      {/* Highlight rail */}
+      <section className={styles.highlights} aria-label="Hydra highlights">
         <div className={styles.shell}>
-          <Reveal>
-            <p className={styles.eyebrow}>Capabilities</p>
-            <h2 className={styles.sectionTitle}>Built around the signal path.</h2>
-            <p className={styles.sectionLede}>
-              One carousel. One idea at a time — matrix, bridges, network, and
-              strips — the way a Logic Pro feature gallery moves.
-            </p>
-          </Reveal>
-          <div className={styles.carouselBlock}>
-            <HydraCarousel
-              items={HYDRA_CHAPTERS}
-              onLearnMore={(item) => setSheet(item)}
-            />
+          <div className={styles.highlightGrid}>
+            {HYDRA_HIGHLIGHTS.map((item) => (
+              <a key={item.href} href={item.href} className={styles.highlightCard}>
+                <h2>{item.title}</h2>
+                <p>{item.body}</p>
+              </a>
+            ))}
           </div>
         </div>
       </section>
 
-      <section id="control" className={styles.sectionAlt}>
-        <div className={styles.shellNarrow}>
-          <Reveal>
-            <p className={styles.eyebrow}>{HYDRA_CONTROL.eyebrow}</p>
-            <h2 className={styles.sectionTitle}>{HYDRA_CONTROL.title}</h2>
-            <p className={styles.sectionLede}>{HYDRA_CONTROL.body}</p>
-          </Reveal>
-          <ul className={styles.pointList}>
-            {HYDRA_CONTROL.points.map((point) => (
-              <Reveal key={point}>
-                <li>{point}</li>
-              </Reveal>
-            ))}
-          </ul>
-        </div>
-      </section>
+      {/* Feature chapters — Apple one-job sections */}
+      {HYDRA_CHAPTERS.map((chapter, index) => (
+        <section
+          key={chapter.id}
+          id={chapter.id}
+          className={`${styles.chapter} ${index % 2 === 1 ? styles.chapterAlt : ""}`}
+        >
+          <div className={styles.shell}>
+            <Reveal>
+              <header className={styles.chapterHeader}>
+                <p className={styles.eyebrow}>{chapter.eyebrow}</p>
+                <h2 className={styles.chapterTitle}>{chapter.title}</h2>
+                <p className={styles.chapterBody}>{chapter.body}</p>
+              </header>
+            </Reveal>
 
-      <section id="specs" className={styles.section}>
+            <Reveal y={48}>
+              <HydraMedia media={chapter.media} large />
+            </Reveal>
+
+            <div className={styles.subGrid}>
+              {chapter.subfeatures.map((sub) => (
+                <Reveal key={sub.title}>
+                  <article className={styles.subCard}>
+                    <h3>{sub.title}</h3>
+                    <p>{sub.body}</p>
+                  </article>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      ))}
+
+      {/* Tech specs — Apple utility block */}
+      <section id="specs" className={styles.specs}>
         <div className={styles.shellNarrow}>
           <Reveal>
             <p className={styles.eyebrow}>Tech Specs</p>
-            <h2 className={styles.sectionTitle}>Built for macOS.</h2>
-            <p className={styles.sectionLede}>
-              Version {HYDRA.version}. Platform gate {HYDRA.platform}. Open the
-              full sheet for hub, bridges, network, and licensing details.
+            <h2 className={styles.chapterTitle}>Built for macOS.</h2>
+            <p className={styles.chapterBody}>
+              Hydra {HYDRA.version}. Requires {HYDRA.platform}.
             </p>
-            <button
-              type="button"
-              className={styles.sheetBtn}
-              onClick={() => setSheet("specs")}
-            >
-              View tech specs
-            </button>
           </Reveal>
+          <dl className={styles.specList}>
+            {HYDRA_SPECS.map((spec) => (
+              <div key={spec.label} className={styles.specRow}>
+                <dt>{spec.label}</dt>
+                <dd>{spec.value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
 
+      {/* Close */}
       <section className={styles.close}>
         <div className={styles.shellNarrow}>
           <Reveal>
-            <p className={styles.brandSm}>{HYDRA.name}</p>
-            <h2 className={styles.closeTitle}>Ready for your room.</h2>
-            <p className={styles.sectionLede}>
-              Talk to Quadra for access and activation. Licenses bind to your
-              machine after you activate.
+            <p className={styles.productNameSm}>{HYDRA.name}</p>
+            <h2 className={styles.closeTitle}>Get Hydra for your room.</h2>
+            <p className={styles.chapterBody}>
+              Contact Quadra for access. Activate on your machine when you are
+              ready.
             </p>
-            <div className={styles.ctaRow}>
+            <div className={styles.ctaRowCenter}>
               <Link href={HYDRA.ctaPrimary.href} className={styles.btnPrimary}>
                 {HYDRA.ctaPrimary.label}
               </Link>
@@ -119,34 +124,6 @@ export function HydraMicrosite() {
           </Reveal>
         </div>
       </section>
-
-      <HydraSheet
-        open={sheet === "specs"}
-        title="Hydra tech specs"
-        onClose={closeSheet}
-      >
-        <dl className={styles.specSheet}>
-          {HYDRA_SPECS.map((spec) => (
-            <div key={spec.label} className={styles.specRow}>
-              <dt>{spec.label}</dt>
-              <dd>{spec.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </HydraSheet>
-
-      <HydraSheet
-        open={typeof sheet === "object" && sheet !== null}
-        title={typeof sheet === "object" && sheet ? sheet.title : ""}
-        onClose={closeSheet}
-      >
-        {typeof sheet === "object" && sheet ? (
-          <div className={styles.detailSheet}>
-            <p className={styles.eyebrow}>{sheet.eyebrow}</p>
-            <p>{sheet.detail}</p>
-          </div>
-        ) : null}
-      </HydraSheet>
     </main>
   );
 }

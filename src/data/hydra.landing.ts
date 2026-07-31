@@ -1,75 +1,193 @@
+/**
+ * Hydra marketing content — Apple product-page rhythm.
+ * Media paths under /public/hydra/ are replaceable slots.
+ * Drop final assets with the same filenames (or update `src` here).
+ */
 export const HYDRA = {
   name: "Hydra",
   version: "2.1.19",
   platform: "macOS 26.0+",
   sourceUrl: "https://github.com/quadraaudio/hydra",
-  headline: "The routing matrix for the modern Mac studio.",
-  lede: "Virtual hub, public bridges, and a gainful patchbay that connects devices, apps, AES67, NDI, and VST strips — in one macOS app.",
+  /** Hero product line — short, like Apple. */
+  headline: "Route everything.",
+  lede: "A virtual hub, public bridges, and a gainful patchbay for the Mac studio.",
   ctaPrimary: { href: "/contact", label: "Get Hydra" },
   ctaSecondary: { href: "/support", label: "License & support" },
+  heroMedia: {
+    src: "/hydra/hero-studio.png",
+    alt: "Hydra hero — replace with product UI or campaign still",
+    slot: "hero",
+  },
 } as const;
 
 export const HYDRA_NAV = [
   { href: "#overview", label: "Overview" },
-  { href: "#capabilities", label: "Capabilities" },
+  { href: "#matrix", label: "Matrix" },
+  { href: "#bridges", label: "Bridges" },
+  { href: "#network", label: "Network" },
+  { href: "#strips", label: "Strips" },
   { href: "#control", label: "Control" },
   { href: "#specs", label: "Tech Specs" },
 ] as const;
 
-export const HYDRA_CHAPTERS = [
+/** Top highlight rail under hero — Apple “feature chips” pattern. */
+export const HYDRA_HIGHLIGHTS = [
+  { href: "#matrix", title: "Patch matrix", body: "Gainful cross-points and scenes." },
+  { href: "#bridges", title: "Engine & bridges", body: "256-ch hub. Public I/O devices." },
+  { href: "#network", title: "Capture & network", body: "Devices, apps, AES67, NDI." },
+  { href: "#strips", title: "Channel strips", body: "VST3 inserts. Isolated host." },
+  { href: "#control", title: "Control room", body: "Dim, mono, mute, talkback." },
+  { href: "#specs", title: "Built for Mac", body: "macOS 26.0+. Version 2.1.19." },
+] as const;
+
+export type HydraMediaSlot = {
+  src: string;
+  alt: string;
+  /** Filename contract for replacement assets. */
+  slot: string;
+};
+
+export type HydraSubfeature = {
+  title: string;
+  body: string;
+};
+
+export type HydraChapter = {
+  id: string;
+  eyebrow: string;
+  title: string;
+  body: string;
+  media: HydraMediaSlot;
+  subfeatures: HydraSubfeature[];
+};
+
+export const HYDRA_CHAPTERS: HydraChapter[] = [
   {
     id: "matrix",
     eyebrow: "Patch matrix",
     title: "Every cross-point. With gain.",
-    body: "Route any source channel to any destination with precise gain. Save scenes, name labels, and recall the room the way you left it.",
-    detail:
-      "The matrix is a gainful connection graph: each cross-point is addressable, metered, and scene-recallable. Labels travel with the graph so complex rooms stay readable across sessions.",
-    image: "/hydra/chapter-matrix.png",
-    imageAlt: "Abstract patch grid glowing on a display surface",
+    body: "Connect any source to any destination. Label channels. Save scenes. Recall the room exactly as you left it.",
+    media: {
+      src: "/hydra/chapter-matrix.png",
+      alt: "Hydra patch matrix — replace with real UI",
+      slot: "chapter-matrix",
+    },
+    subfeatures: [
+      {
+        title: "Gainful routes",
+        body: "Every connection carries precise gain — not just on or off.",
+      },
+      {
+        title: "Scenes",
+        body: "Store and apply whole patch graphs for tracking, mix, or playback.",
+      },
+      {
+        title: "Labels",
+        body: "Name channels so complex rooms stay readable across sessions.",
+      },
+    ],
   },
   {
     id: "bridges",
     eyebrow: "Engine & bridges",
     title: "A hidden hub. Public bridges.",
-    body: "Hydra Engine is a 256-channel CoreAudio hub. Eight Bridge devices — from 2 to 128 channels — appear as ordinary audio interfaces to every DAW and app on the Mac.",
-    detail:
-      "DAWs see standard CoreAudio devices. The hub stays hidden while Bridge 2A through 128 expose the channel counts you need — without rewiring the physical room.",
-    image: "/hydra/chapter-bridges.png",
-    imageAlt: "Mac in a dark studio showing abstract virtual device panels",
+    body: "Hydra Engine is a 256-channel CoreAudio hub. Bridge devices from 2 to 128 channels appear as ordinary interfaces to every DAW.",
+    media: {
+      src: "/hydra/chapter-bridges.png",
+      alt: "Hydra bridges — replace with real UI",
+      slot: "chapter-bridges",
+    },
+    subfeatures: [
+      {
+        title: "Hydra Engine",
+        body: "A hidden 256-channel backplane your DAWs never have to manage.",
+      },
+      {
+        title: "Bridge catalog",
+        body: "2A, 2B, 4, 8, 16, 32, 64, and 128 — pick the width you need.",
+      },
+      {
+        title: "Standard CoreAudio",
+        body: "No custom driver gymnastics in the session. Just devices.",
+      },
+    ],
   },
   {
     id: "network",
     eyebrow: "Capture & network",
-    title: "Local devices. Network streams. App taps.",
-    body: "Bring in CoreAudio hardware, process capture from running apps, subscribe to AES67 via SAP/SDP, and send or receive NDI — all mixed in the same matrix.",
-    detail:
-      "Sources and destinations share one patch surface: hardware I/O, app process taps, AES67 discovery, and NDI send/receive. No parallel routing islands.",
-    image: "/hydra/chapter-network.png",
-    imageAlt: "Wide studio with network hardware and converging signal paths",
+    title: "Local. Apps. Streams.",
+    body: "Hardware, process taps, AES67, and NDI share one matrix — sources and destinations in the same patch surface.",
+    media: {
+      src: "/hydra/chapter-network.png",
+      alt: "Hydra network routing — replace with real UI",
+      slot: "chapter-network",
+    },
+    subfeatures: [
+      {
+        title: "Devices & apps",
+        body: "CoreAudio hardware and running-app capture into the same graph.",
+      },
+      {
+        title: "AES67",
+        body: "Discover and subscribe via SAP/SDP. Send when you need to.",
+      },
+      {
+        title: "NDI",
+        body: "Receive and transmit through a runtime shim — no proprietary link required at build time.",
+      },
+    ],
   },
   {
     id: "strips",
     eyebrow: "Channel strips",
-    title: "VST inserts that stay out of the way.",
-    body: "Build channel strips with VST3 inserts. Run in-process or isolate chains in an out-of-process host so a bad plugin cannot take down the session.",
-    detail:
-      "Strip inserts can run in-process for lowest latency or in hydra-plugin-host over shared memory ABI v2. Plugin scans run in an isolated worker so a crash does not kill the engine.",
-    image: "/hydra/chapter-control.png",
-    imageAlt: "Engineer at dual monitors with abstract strip meters",
+    title: "Inserts that stay out of the way.",
+    body: "Build strips with VST3. Run in-process, or isolate chains so a bad plugin cannot take down the session.",
+    media: {
+      src: "/hydra/chapter-control.png",
+      alt: "Hydra channel strips — replace with real UI",
+      slot: "chapter-strips",
+    },
+    subfeatures: [
+      {
+        title: "VST3 inserts",
+        body: "Put processing on the route, not only in the DAW.",
+      },
+      {
+        title: "Out-of-process host",
+        body: "hydra-plugin-host keeps unstable plugins off the engine thread.",
+      },
+      {
+        title: "Safe scanning",
+        body: "Bundle scans run in an isolated worker before they ever touch the room.",
+      },
+    ],
   },
-] as const;
-
-export const HYDRA_CONTROL = {
-  id: "control",
-  eyebrow: "Control room",
-  title: "Monitor like a console.",
-  body: "Dim, mono, swap, master mute, and talkback — with monitor and talkback device routing built into the engine.",
-  points: [
-    "Dim and talkback ducking in dB",
-    "Mono / swap L-R / master mute",
-    "Monitor and talkback device UIDs",
-  ],
-} as const;
+  {
+    id: "control",
+    eyebrow: "Control room",
+    title: "Monitor like a console.",
+    body: "Dim, mono, swap, master mute, and talkback — with monitor and talkback device routing in the engine.",
+    media: {
+      src: "/hydra/hero-studio.png",
+      alt: "Hydra control room — replace with real UI",
+      slot: "chapter-control",
+    },
+    subfeatures: [
+      {
+        title: "Monitor section",
+        body: "Dim and talkback ducking in dB. Mono and L-R swap when you need them.",
+      },
+      {
+        title: "Talkback",
+        body: "Route talkback to the right device without leaving the matrix.",
+      },
+      {
+        title: "Master mute",
+        body: "One control when the room needs silence — instantly.",
+      },
+    ],
+  },
+];
 
 export const HYDRA_SPECS = [
   { label: "Version", value: "2.1.19" },
@@ -80,4 +198,14 @@ export const HYDRA_SPECS = [
   { label: "Network", value: "AES67 · NDI" },
   { label: "Licensing", value: "Hardware-bound activation" },
   { label: "Control", value: "Local WebSocket on loopback" },
+] as const;
+
+/** Drop final files into public/hydra/ using these names. */
+export const HYDRA_MEDIA_CONTRACT = [
+  "hero-studio.png|mp4 — Overview hero",
+  "chapter-matrix.png|mp4 — Patch matrix",
+  "chapter-bridges.png|mp4 — Engine & bridges",
+  "chapter-network.png|mp4 — Capture & network",
+  "chapter-strips.png|mp4 — Channel strips (currently chapter-control.png)",
+  "chapter-control.png|mp4 — Control room",
 ] as const;

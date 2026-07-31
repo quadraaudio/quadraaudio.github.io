@@ -1,0 +1,27 @@
+.frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 28px;
+  background: #0c0f14;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.large {
+  border-radius: 36px;
+  aspect-ratio: 16 / 9;
+}
+
+.image,
+.video {
+  object-fit: cover;
+  object-position: center;
+}
+
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
