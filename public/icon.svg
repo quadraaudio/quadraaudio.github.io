@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1c1c1e" />
+      <stop offset="100%" stop-color="#000000" />
+    </linearGradient>
+    <linearGradient id="symbolGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#f5f5f7" />
+    </linearGradient>
+  </defs>
+
+  <!-- Apple Dark Squircle Badge -->
+  <rect x="0" y="0" width="512" height="512" rx="115" fill="url(#bgGrad)" />
+
+  <!-- Official Quadra Logo Symbol -->
+  <g transform="translate(106, 106) scale(3.0)" fill="url(#symbolGrad)">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M 0 25 A 25 25 0 0 1 25 0 L 75 0 A 25 25 0 0 1 100 25 L 100 100 L 25 100 A 25 25 0 0 1 0 75 Z M 35 43 A 8 8 0 0 1 43 35 L 57 35 A 8 8 0 0 1 65 43 L 65 65 L 43 65 A 8 8 0 0 1 35 57 Z" />
+  </g>
+</svg>
