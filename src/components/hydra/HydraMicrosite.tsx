@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Reveal } from "@/components/motion/Reveal";
+import { HydraHero } from "@/components/hydra/HydraHero";
 import { HydraMedia } from "@/components/hydra/HydraMedia";
 import {
   HYDRA,
@@ -14,25 +15,7 @@ import styles from "./HydraMicrosite.module.scss";
 export function HydraMicrosite() {
   return (
     <main className={styles.main}>
-      {/* Overview — Apple hero: brand, one line, one lede, one media plane */}
-      <section id="overview" className={styles.hero}>
-        <div className={styles.heroCopy}>
-          <p className={styles.productName}>{HYDRA.name}</p>
-          <h1 className={styles.headline}>{HYDRA.headline}</h1>
-          <p className={styles.lede}>{HYDRA.lede}</p>
-          <div className={styles.ctaRow}>
-            <Link href={HYDRA.ctaPrimary.href} className={styles.btnPrimary}>
-              {HYDRA.ctaPrimary.label}
-            </Link>
-            <Link href={HYDRA.ctaSecondary.href} className={styles.btnGhost}>
-              {HYDRA.ctaSecondary.label}
-            </Link>
-          </div>
-        </div>
-        <div className={styles.heroMedia}>
-          <HydraMedia media={HYDRA.heroMedia} priority large />
-        </div>
-      </section>
+      <HydraHero />
 
       {/* Highlight rail */}
       <section className={styles.highlights} aria-label="Hydra highlights">
