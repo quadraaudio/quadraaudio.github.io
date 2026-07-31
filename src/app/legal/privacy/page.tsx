@@ -14,7 +14,7 @@ export default function PrivacyPage() {
           <p>
             Quadra Audio (&quot;Quadra&quot;) collects account information required to
             provide software licenses, store checkout, and support. When you sign
-            in with your Quadra account, we receive your name and email address.
+            in with Auth0/Google, we receive your name and email address.
           </p>
           <p>
             Payment details are processed by PayPal. Quadra does not store full

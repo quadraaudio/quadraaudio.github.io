@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getSessionUser, supabaseConfigured } from "@/lib/supabase/server";
+import { auth0, auth0Configured } from "@/lib/auth0";
 import { CheckoutClient } from "./CheckoutClient";
 import styles from "./checkout.module.scss";
 
@@ -10,31 +10,30 @@ export const metadata = {
 };
 
 export default async function CheckoutPage() {
-  const user = supabaseConfigured() ? await getSessionUser() : null;
+  const session = auth0Configured && auth0 ? await auth0.getSession() : null;
 
-  if (!user) {
+  if (!session?.user) {
     return (
       <main className={styles.page}>
         <div className="page-shell">
           <p className="eyebrow">Checkout</p>
           <h1 className="display display-lg">Sign in to continue.</h1>
           <p className="lede">
-            Sign in with your Quadra account to complete purchase and receive
-            licenses in your account.
+            Checkout uses Auth0 with Google. Sign in with your Quadra account to
+            complete purchase and receive licenses.
           </p>
-          {!supabaseConfigured() ? (
+          {!auth0Configured ? (
             <p className={styles.notice}>
-              Supabase is not configured yet. Add{" "}
-              <code>NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
-              <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code>.
+              Auth0 is not configured yet. Add `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`,
+              `AUTH0_CLIENT_SECRET`, and `AUTH0_SECRET` to enable Google sign-in.
             </p>
           ) : null}
           <div className={styles.actions}>
             <a
-              href="/login?returnTo=/store/checkout"
+              href="/auth/login?returnTo=/store/checkout"
               className="btn btn-primary"
             >
-              Sign in
+              Sign in with Google
             </a>
             <Link href="/store/bag" className="btn btn-secondary">
               Back to bag
@@ -51,7 +50,7 @@ export default async function CheckoutPage() {
         <p className="eyebrow">Checkout</p>
         <h1 className="display display-lg">Complete your order.</h1>
         <p className={styles.signedIn}>
-          Signed in as {user.email}
+          Signed in as {session.user.email || session.user.name}
         </p>
         <CheckoutClient
           paypalClientId={process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || ""}

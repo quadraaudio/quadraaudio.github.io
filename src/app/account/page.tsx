@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { getSessionUser, supabaseConfigured, createClient } from "@/lib/supabase/server";
+import { auth0, auth0Configured } from "@/lib/auth0";
 import { getSeedProduct } from "@/data/products.seed";
+import { loadAccountForAuth0 } from "@/lib/checkout";
 import { formatPrice } from "@/lib/products";
 import styles from "./account.module.scss";
 
@@ -15,86 +16,48 @@ function productName(slug: string) {
 }
 
 export default async function AccountPage() {
-  if (!supabaseConfigured()) {
+  if (!auth0Configured || !auth0) {
     return (
       <main className={styles.page}>
         <div className="page-shell">
           <h1 className="display display-lg">Account</h1>
           <p className="lede">
-            Store account requires Supabase. Set{" "}
-            <code>NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
-            <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code>.
+            Auth0 is not configured. Add Auth0 environment variables to enable
+            Google sign-in for Quadra ID.
           </p>
         </div>
       </main>
     );
   }
 
-  const user = await getSessionUser();
-  if (!user) {
+  const session = await auth0.getSession();
+  if (!session?.user) {
     return (
       <main className={styles.page}>
         <div className="page-shell">
           <p className="eyebrow">Account</p>
           <h1 className="display display-lg">Sign in to manage licenses.</h1>
-          <a href="/login?returnTo=/account" className="btn btn-primary">
-            Sign in
+          <a href="/auth/login?returnTo=/account" className="btn btn-primary">
+            Sign in with Google
           </a>
         </div>
       </main>
     );
   }
 
-  const supabase = await createClient();
-  let orders: Array<{
-    order_number: string;
-    total_amount: number;
-    currency: string;
-    status: string;
-    created_at: string;
-  }> = [];
-  let licenses: Array<{
-    product_slug: string;
-    status: string;
-    issued_at: string;
-  }> = [];
-  let loadError = false;
-
-  try {
-    const [{ data: orderData, error: orderErr }, { data: licenseData, error: licenseErr }] =
-      await Promise.all([
-        supabase
-          .from("orders")
-          .select("order_number,total_amount,currency,status,created_at")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false }),
-        supabase
-          .from("licenses")
-          .select("product_slug,status,issued_at")
-          .eq("user_id", user.id)
-          .order("issued_at", { ascending: false }),
-      ]);
-    if (orderErr || licenseErr) {
-      loadError = true;
-    } else {
-      orders = orderData || [];
-      licenses = licenseData || [];
-    }
-  } catch {
-    loadError = true;
-  }
-
-  const displayName =
-    user.user_metadata?.full_name || user.user_metadata?.name || null;
+  const account = await loadAccountForAuth0(session.user.sub);
+  const loadError = !account.ok;
+  const orders = account.ok ? account.orders : [];
+  const licenses = account.ok ? account.licenses : [];
 
   return (
     <main className={styles.page}>
       <div className="page-shell">
         <p className="eyebrow">Account</p>
         <h1 className="display display-lg">
-          Hello{displayName ? `, ${displayName}` : ""}.
+          Hello{session.user.name ? `, ${session.user.name}` : ""}.
         </h1>
-        <p className={styles.email}>{user.email}</p>
+        <p className={styles.email}>{session.user.email}</p>
 
         {loadError ? (
           <div className={styles.banner} role="status">
@@ -145,11 +108,9 @@ export default async function AccountPage() {
           )}
         </section>
 
-        <form action="/auth/signout" method="post">
-          <button type="submit" className="btn btn-secondary">
-            Log out
-          </button>
-        </form>
+        <a href="/auth/logout?returnTo=/" className="btn btn-secondary">
+          Log out
+        </a>
       </div>
     </main>
   );

@@ -1,25 +1,30 @@
 import { NextResponse } from "next/server";
-import { createClient, supabaseConfigured } from "@/lib/supabase/server";
+import { auth0, auth0Configured } from "@/lib/auth0";
 import { capturePayPalOrder, paypalConfigured } from "@/lib/paypal";
 import { persistCompletedOrder, priceCart } from "@/lib/checkout";
 
 export async function POST(request: Request) {
-  if (!supabaseConfigured()) {
-    return NextResponse.json(
-      { error: "Supabase is not configured" },
-      { status: 503 }
-    );
+  if (!auth0Configured || !auth0) {
+    return NextResponse.json({ error: "Auth0 is not configured" }, { status: 503 });
   }
   if (!paypalConfigured()) {
     return NextResponse.json({ error: "PayPal is not configured" }, { status: 503 });
   }
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
+  const session = await auth0.getSession();
+  if (!session?.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (!process.env.STORE_FULFILLMENT_SECRET) {
+    return NextResponse.json(
+      {
+        code: "admin_missing",
+        error:
+          "Cannot fulfill licenses without STORE_FULFILLMENT_SECRET. Payment was not captured.",
+      },
+      { status: 503 }
+    );
   }
 
   const body = (await request.json().catch(() => ({}))) as {
@@ -69,15 +74,14 @@ export async function POST(request: Request) {
   }
 
   const email =
-    user.email ||
+    session.user.email ||
     capture.payer?.email_address ||
     "customer@quadraaudio.com";
 
   const persisted = await persistCompletedOrder({
-    supabase,
-    userId: user.id,
+    auth0Sub: session.user.sub,
     email,
-    name: user.user_metadata?.full_name || user.user_metadata?.name || null,
+    name: session.user.name,
     priced: priced.order,
     paypalOrderId: capture.id,
     status: "completed",
