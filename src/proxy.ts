@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-/** Pass-through — Google session is cookie-based via Auth.js (no Auth0 middleware). */
+/** Pass-through — Google session uses httpOnly cookies (no Auth0). */
 export async function proxy(_request: NextRequest) {
   return NextResponse.next();
 }
