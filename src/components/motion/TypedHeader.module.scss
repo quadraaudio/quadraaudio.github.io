@@ -1,0 +1,29 @@
+.wrap {
+  display: inline-block;
+}
+
+.visible {
+  display: inline;
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.08em;
+  height: 0.9em;
+  margin-left: 0.08em;
+  background: var(--theme-accent);
+  vertical-align: -0.05em;
+  animation: blink 0.8s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    display: none;
+  }
+}

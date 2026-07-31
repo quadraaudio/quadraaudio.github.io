@@ -1,52 +1,30 @@
-import Link from "next/link";
-import ThemeSetter from "@/components/ThemeSetter";
-import ProductTile from "@/components/ProductTile";
-import { products } from "@/data/products";
-import styles from "./page.module.scss";
+import { ProductCard } from "@/components/store/ProductCard";
+import { listProducts } from "@/lib/products";
+import styles from "./store.module.scss";
 
 export const metadata = {
-  title: "Store — Quadra Audio",
-  description: "Shop Hydra, Hydra Pro, and Quadra Core I/O.",
+  title: "Store",
+  description: "Buy Quadra professional audio software licenses.",
 };
 
-export default function StorePage() {
+export default async function StorePage() {
+  const products = await listProducts();
+
   return (
-    <div>
-      <ThemeSetter theme="light" />
-
-      <section className={styles.hero}>
-        <h1 className="headline">Store.</h1>
-        <p className="body-text">The best way to buy the products you love.</p>
-      </section>
-
-      <section className={styles.section}>
-        <div className="section-container-wide">
-          <div className={styles.grid}>
-            {products.map((product) => (
-              <ProductTile
-                key={product.slug}
-                eyebrow={product.name}
-                headline={product.tagline}
-                image={product.heroImage || product.cardImage || "/images/hydra_app_icon.jpg"}
-                learnMoreHref={product.slug === "hydra" ? "/hydra" : `/store/${product.slug}`}
-                buyHref={product.available ? `/store/checkout?product=${product.slug}` : undefined}
-              />
-            ))}
-          </div>
+    <main className={styles.page}>
+      <div className="page-shell">
+        <p className="eyebrow">Store</p>
+        <h1 className="display display-lg">Software for working studios.</h1>
+        <p className="lede">
+          Perpetual licenses with account-backed checkout. Placeholder catalog —
+          replace with your final SKUs anytime.
+        </p>
+        <div className={styles.grid}>
+          {products.map((product) => (
+            <ProductCard key={product.slug} product={product} />
+          ))}
         </div>
-      </section>
-
-      <section className={styles.helpBand}>
-        <div className="section-container">
-          <h2 className="callout">Need help choosing?</h2>
-          <p className="body-text" style={{ marginTop: 8, marginBottom: 20 }}>
-            Our team can help you find the right Quadra product for your studio.
-          </p>
-          <Link href="/support/contact" className="apple-button-secondary">
-            Contact us &gt;
-          </Link>
-        </div>
-      </section>
-    </div>
+      </div>
+    </main>
   );
 }

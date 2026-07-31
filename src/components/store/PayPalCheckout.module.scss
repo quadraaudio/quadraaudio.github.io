@@ -1,0 +1,22 @@
+.wrap {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.notice,
+.error {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius-md);
+  line-height: 1.45;
+}
+
+.notice {
+  background: var(--theme-bg-muted);
+  color: var(--theme-text-muted);
+}
+
+.error {
+  background: #fde8e5;
+  color: var(--quadra-danger);
+}

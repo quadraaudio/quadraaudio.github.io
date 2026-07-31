@@ -1,144 +1,96 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import ThemeSetter from "@/components/ThemeSetter";
-import { validateCouponWithSupabase, syncLicenseToSupabase } from "@/lib/supabase";
-import type { Product } from "@/data/products";
-import styles from "./page.module.scss";
+import { useMemo, useState } from "react";
+import { useCart } from "@/components/providers/CartProvider";
+import { PayPalCheckout } from "@/components/store/PayPalCheckout";
+import { formatPrice } from "@/lib/products";
+import styles from "./checkout.module.scss";
 
-export default function CheckoutClient({ product }: { product: Product }) {
+export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
+  const { items, subtotal } = useCart();
   const [coupon, setCoupon] = useState("");
-  const [couponState, setCouponState] = useState<{ status: "idle" | "success" | "error"; message?: string; discount?: number }>({ status: "idle" });
-  const [form, setForm] = useState({ firstName: "", lastName: "", email: "" });
-  const [submitting, setSubmitting] = useState(false);
-  const [done, setDone] = useState(false);
+  const [applied, setApplied] = useState<{
+    code: string;
+    discountPercent: number;
+    discountAmount: number;
+  } | null>(null);
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
-  const discountPercent = couponState.status === "success" ? couponState.discount ?? 0 : 0;
-  const finalPrice = product.price > 0 ? product.price * (1 - discountPercent / 100) : product.price;
+  const total = useMemo(() => {
+    if (!applied) return subtotal;
+    const percentOff = subtotal * ((applied.discountPercent || 0) / 100);
+    const amountOff = applied.discountAmount || 0;
+    return Math.max(0, subtotal - percentOff - amountOff);
+  }, [subtotal, applied]);
 
   async function applyCoupon() {
-    if (!coupon.trim()) return;
-    const result = await validateCouponWithSupabase(coupon);
-    if (result.valid) {
-      setCouponState({ status: "success", message: `Code applied — ${result.discountPercent}% off`, discount: result.discountPercent });
-    } else {
-      setCouponState({ status: "error", message: result.error || "Invalid code" });
+    setBusy(true);
+    setCouponError(null);
+    try {
+      const res = await fetch("/api/coupons/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: coupon }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.valid) {
+        setApplied(null);
+        setCouponError(data.error || "Invalid coupon");
+        return;
+      }
+      setApplied({
+        code: data.code,
+        discountPercent: data.discountPercent || 0,
+        discountAmount: data.discountAmount || 0,
+      });
+    } finally {
+      setBusy(false);
     }
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setSubmitting(true);
-    await syncLicenseToSupabase(form.email, `${form.firstName} ${form.lastName}`.trim(), product.slug, finalPrice);
-    setSubmitting(false);
-    setDone(true);
-  }
-
-  if (done) {
-    return (
-      <div className={styles.checkoutPage}>
-        <ThemeSetter theme="light" />
-        <div className={styles.successBox}>
-          <h1 className="headline">You&apos;re all set.</h1>
-          <p className="body-text">
-            A confirmation and your license details have been sent to {form.email}.
-          </p>
-          <Link href="/account" className="apple-button-primary">
-            Go to My Account
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className={styles.checkoutPage}>
-      <ThemeSetter theme="light" />
-
-      <header className={styles.header}>
-        <h1 className="headline">Review your bag.</h1>
-        <p className="body-text">Free delivery and free returns on all software orders.</p>
-      </header>
-
-      <section className={styles.orderSummary}>
-        <div className={styles.orderItem}>
-          <img
-            src={product.cardImage || "/images/hydra_app_icon.jpg"}
-            alt={product.name}
-            className={styles.itemImage}
-          />
-          <div className={styles.itemDetails}>
-            <div>
-              <h3>{product.name}</h3>
-              <p>{product.category === "software" ? "Digital License (Perpetual)" : "Hardware"}</p>
-            </div>
-            <div className={styles.itemPrice}>
-              {product.price > 0 ? `$${finalPrice.toFixed(2)}` : product.priceLabel}
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.couponRow}>
+    <div className={styles.layout}>
+      <section className={styles.panel}>
+        <h2>Order summary</h2>
+        <ul>
+          {items.map((item) => (
+            <li key={item.slug}>
+              <span>
+                {item.name} × {item.quantity}
+              </span>
+              <strong>{formatPrice(item.price * item.quantity, item.currency)}</strong>
+            </li>
+          ))}
+        </ul>
+        <div className={styles.coupon}>
           <input
-            type="text"
-            placeholder="Promo code"
             value={coupon}
             onChange={(e) => setCoupon(e.target.value)}
+            placeholder="Promo code"
+            aria-label="Promo code"
           />
-          <button type="button" onClick={applyCoupon}>Apply</button>
+          <button type="button" className="btn btn-secondary" onClick={applyCoupon} disabled={busy}>
+            Apply
+          </button>
         </div>
-        {couponState.status !== "idle" && (
-          <p className={`${styles.couponMessage} ${couponState.status === "success" ? styles.success : styles.error}`}>
-            {couponState.message}
-          </p>
-        )}
-
-        <div className={styles.orderTotal}>
+        {couponError ? <p className={styles.error}>{couponError}</p> : null}
+        {applied ? (
+          <p className={styles.ok}>Applied {applied.code}</p>
+        ) : null}
+        <div className={styles.total}>
           <span>Total</span>
-          <span>{product.price > 0 ? `$${finalPrice.toFixed(2)}` : product.priceLabel}</span>
+          <strong>{formatPrice(total)}</strong>
         </div>
       </section>
 
-      <form onSubmit={handleSubmit} className={styles.formSection}>
-        <h2>How would you like to check out?</h2>
-        <div className={styles.formGrid}>
-          <div className={styles.inputGroup}>
-            <label htmlFor="firstName">First Name</label>
-            <input
-              id="firstName"
-              required
-              value={form.firstName}
-              onChange={(e) => setForm({ ...form, firstName: e.target.value })}
-            />
-          </div>
-          <div className={styles.inputGroup}>
-            <label htmlFor="lastName">Last Name</label>
-            <input
-              id="lastName"
-              required
-              value={form.lastName}
-              onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-            />
-          </div>
-          <div className={`${styles.inputGroup} ${styles.fullWidth}`}>
-            <label htmlFor="email">Email Address</label>
-            <input
-              id="email"
-              type="email"
-              required
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-            />
-          </div>
-        </div>
-
-        <button type="submit" className={styles.submitBtn} disabled={submitting}>
-          {submitting ? "Processing…" : `Complete Purchase — ${product.price > 0 ? `$${finalPrice.toFixed(2)}` : product.priceLabel}`}
-        </button>
-
-        <p className={styles.secureNote}>Your payment is securely processed via PayPal.</p>
-      </form>
+      <section className={styles.panel}>
+        <h2>Pay with PayPal</h2>
+        <PayPalCheckout
+          clientId={paypalClientId}
+          couponCode={applied?.code}
+        />
+      </section>
     </div>
   );
 }

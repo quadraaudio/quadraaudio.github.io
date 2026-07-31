@@ -1,0 +1,58 @@
+.card {
+  display: grid;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-bg-elevated);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-soft);
+}
+
+.art {
+  min-height: 170px;
+}
+
+.body {
+  display: grid;
+  gap: 0.45rem;
+  padding: var(--space-lg);
+}
+
+.body h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+
+.body p {
+  margin: 0;
+  color: var(--theme-text-muted);
+  line-height: 1.45;
+}
+
+.badge {
+  color: var(--theme-accent-hover) !important;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.35rem;
+  font-weight: 650;
+}
+
+.status {
+  color: var(--theme-text-faint);
+  text-transform: capitalize;
+  font-weight: 550;
+}

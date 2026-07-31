@@ -1,0 +1,19 @@
+.page {
+  padding-block: var(--space-4xl) var(--space-5xl);
+}
+
+.narrow {
+  max-width: 760px;
+}
+
+.prose {
+  margin-top: var(--space-2xl);
+  display: grid;
+  gap: var(--space-md);
+  color: var(--theme-text-muted);
+  line-height: 1.65;
+}
+
+.prose p {
+  margin: 0;
+}

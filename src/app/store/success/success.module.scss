@@ -1,0 +1,14 @@
+.page {
+  padding-block: var(--space-4xl) var(--space-5xl);
+}
+
+.page :global(.lede) {
+  margin-top: var(--space-md);
+}
+
+.actions {
+  margin-top: var(--space-xl);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
