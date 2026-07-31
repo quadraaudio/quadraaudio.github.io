@@ -8,12 +8,12 @@ import { useCart } from "@/components/providers/CartProvider";
 import { LogoMark } from "@/components/chrome/LogoMark";
 import styles from "./GlobalNav.module.scss";
 
-const PRODUCT_LINKS = [
-  { href: "/products", label: "Overview" },
+/** Top-level product links — Apple-style primary product bar. */
+const PRIMARY_PRODUCTS = [
   { href: "/products/hydra", label: "Hydra" },
-  { href: "/store/quadra-channel", label: "Quadra Channel" },
-  { href: "/store/quadra-dynamics", label: "Quadra Dynamics" },
-  { href: "/store/quadra-studio-bundle", label: "Studio Bundle" },
+  { href: "/store/quadra-channel", label: "Channel" },
+  { href: "/store/quadra-dynamics", label: "Dynamics" },
+  { href: "/store/quadra-studio-bundle", label: "Bundle" },
 ];
 
 const RESOURCE_LINKS = [
@@ -53,6 +53,11 @@ export function GlobalNav() {
     router.refresh();
   }
 
+  function isActive(href: string) {
+    if (href === "/") return pathname === "/";
+    return pathname === href || pathname.startsWith(`${href}/`);
+  }
+
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
       <div className={`page-shell ${styles.inner}`}>
@@ -61,29 +66,19 @@ export function GlobalNav() {
         </Link>
 
         <nav className={styles.nav} aria-label="Primary">
-          <div
-            className={styles.item}
-            onMouseEnter={() => setOpen("products")}
-            onMouseLeave={() => setOpen(null)}
-          >
-            <button
-              type="button"
-              className={styles.trigger}
-              aria-expanded={open === "products"}
+          {PRIMARY_PRODUCTS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`${styles.link} ${isActive(link.href) ? styles.linkActive : ""}`}
             >
-              Products
-            </button>
-            {open === "products" && (
-              <div className={styles.dropdown}>
-                {PRODUCT_LINKS.map((link) => (
-                  <Link key={link.href} href={link.href} className={styles.dropLink}>
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-          <Link href="/store" className={styles.link}>
+              {link.label}
+            </Link>
+          ))}
+          <Link
+            href="/store"
+            className={`${styles.link} ${isActive("/store") && !PRIMARY_PRODUCTS.some((p) => isActive(p.href)) ? styles.linkActive : ""}`}
+          >
             Store
           </Link>
           <div
@@ -147,8 +142,18 @@ export function GlobalNav() {
 
       {mobileOpen && (
         <div className={styles.mobile}>
+          {PRIMARY_PRODUCTS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMobileOpen(false)}
+              className={isActive(link.href) ? styles.mobileActive : undefined}
+            >
+              {link.label}
+            </Link>
+          ))}
           <Link href="/products" onClick={() => setMobileOpen(false)}>
-            Products
+            All products
           </Link>
           <Link href="/store" onClick={() => setMobileOpen(false)}>
             Store

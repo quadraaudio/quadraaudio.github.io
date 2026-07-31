@@ -51,6 +51,20 @@
   cursor: pointer;
 }
 
+.link {
+  opacity: 0.88;
+  transition: opacity 0.2s var(--ease-out), color 0.2s var(--ease-out);
+}
+
+.link:hover {
+  opacity: 1;
+}
+
+.linkActive {
+  opacity: 1;
+  color: var(--theme-accent-hover);
+}
+
 .linkQuiet {
   color: var(--theme-text-muted);
 }
@@ -122,6 +136,10 @@
   font-size: 1.75rem;
   font-weight: 700;
   letter-spacing: -0.03em;
+}
+
+.mobileActive {
+  color: var(--theme-accent-hover);
 }
 
 @media (min-width: 960px) {
