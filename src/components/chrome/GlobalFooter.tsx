@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LogoMark } from "@/components/chrome/LogoMark";
 import styles from "./GlobalFooter.module.scss";
 
 export function GlobalFooter() {
@@ -6,7 +7,7 @@ export function GlobalFooter() {
     <footer className={styles.footer}>
       <div className={`page-shell ${styles.inner}`}>
         <div className={styles.brand}>
-          <p className={styles.logo}>Quadra</p>
+          <LogoMark withWordmark size="lg" />
           <p className={styles.tag}>
             Professional audio software for studios, producers, and engineers.
           </p>

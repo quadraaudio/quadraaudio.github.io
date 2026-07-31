@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useCart } from "@/components/providers/CartProvider";
+import { LogoMark } from "@/components/chrome/LogoMark";
 import styles from "./GlobalNav.module.scss";
 
 const PRODUCT_LINKS = [
@@ -45,8 +46,7 @@ export function GlobalNav() {
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
       <div className={`page-shell ${styles.inner}`}>
         <Link href="/" className={styles.logo} aria-label="Quadra home">
-          <span className={styles.mark} aria-hidden />
-          <span className={styles.word}>Quadra</span>
+          <LogoMark withWordmark size="md" />
         </Link>
 
         <nav className={styles.nav} aria-label="Primary">

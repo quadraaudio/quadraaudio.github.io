@@ -9,6 +9,7 @@ import "./globals.scss";
 
 const syne = Syne({
   subsets: ["latin"],
+  weight: ["700", "800"],
   variable: "--font-syne",
   display: "swap",
 });
@@ -33,6 +34,10 @@ export const metadata: Metadata = {
   },
   description:
     "Quadra builds professional audio software for studios, producers, and engineers.",
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/apple-touch-icon.png" }],
+  },
   openGraph: {
     title: "Quadra — Professional Audio Software",
     description:

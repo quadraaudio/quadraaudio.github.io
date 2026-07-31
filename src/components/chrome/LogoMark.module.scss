@@ -1,0 +1,53 @@
+.logo {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  line-height: 1;
+  color: var(--theme-text);
+}
+
+.q {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 0.85;
+  /* Optical thickening beyond the font’s native black */
+  -webkit-text-stroke: 0.045em currentColor;
+  paint-order: stroke fill;
+}
+
+.word {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.sm .q {
+  font-size: 1.35rem;
+}
+
+.sm .word {
+  font-size: 1.05rem;
+}
+
+.md .q {
+  font-size: 1.7rem;
+}
+
+.md .word {
+  font-size: 1.15rem;
+}
+
+.lg .q {
+  font-size: 2.75rem;
+}
+
+.lg .word {
+  font-size: 1.85rem;
+}
+
+.hero .q {
+  font-size: clamp(3.5rem, 9vw, 6.5rem);
+  -webkit-text-stroke: 0.055em currentColor;
+}
