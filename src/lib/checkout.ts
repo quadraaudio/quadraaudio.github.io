@@ -1,3 +1,4 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { getProductBySlug } from "@/lib/products";
 import type { Product } from "@/data/products.seed";
 import {
@@ -5,7 +6,6 @@ import {
   resolveCoupon,
   type ResolvedCoupon,
 } from "@/lib/coupons";
-import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 export type CartLineInput = { slug: string; quantity: number };
 
@@ -71,7 +71,8 @@ export async function priceCart(params: {
 }
 
 export type PersistOrderInput = {
-  auth0Sub: string;
+  supabase: SupabaseClient;
+  userId: string;
   email: string;
   name?: string | null;
   priced: PricedOrder;
@@ -83,7 +84,7 @@ export type PersistOrderResult =
   | { ok: true; orderNumber: string; orderId: string }
   | {
       ok: false;
-      code: "admin_missing" | "persist_failed";
+      code: "persist_failed";
       error: string;
       orderNumber?: string;
     };
@@ -91,16 +92,6 @@ export type PersistOrderResult =
 export async function persistCompletedOrder(
   input: PersistOrderInput
 ): Promise<PersistOrderResult> {
-  const admin = getSupabaseAdmin();
-  if (!admin) {
-    return {
-      ok: false,
-      code: "admin_missing",
-      error:
-        "Order fulfillment is unavailable (missing SUPABASE_SERVICE_ROLE_KEY).",
-    };
-  }
-
   const orderNumber = makeOrderNumber();
   const itemsPayload = input.priced.lines.map((line) => ({
     slug: line.slug,
@@ -111,62 +102,42 @@ export async function persistCompletedOrder(
   }));
 
   try {
-    await admin.from("profiles").upsert(
-      {
-        auth0_sub: input.auth0Sub,
-        email: input.email,
-        name: input.name || null,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "auth0_sub" }
-    );
+    const { data, error } = await input.supabase.rpc("fulfill_store_order", {
+      p_order_number: orderNumber,
+      p_email: input.email,
+      p_name: input.name || "",
+      p_total: input.priced.total,
+      p_currency: input.priced.currency,
+      p_paypal_order_id: input.paypalOrderId || "",
+      p_coupon_code: input.priced.coupon?.code || "",
+      p_status: input.status || "completed",
+      p_items: itemsPayload,
+    });
 
-    const { data: orderRow, error: orderError } = await admin
-      .from("orders")
-      .insert({
-        order_number: orderNumber,
-        auth0_sub: input.auth0Sub,
-        email: input.email,
-        total_amount: input.priced.total,
-        currency: input.priced.currency,
-        paypal_order_id: input.paypalOrderId || null,
-        status: input.status || "completed",
-        items: itemsPayload,
-        coupon_code: input.priced.coupon?.code || null,
-      })
-      .select("id")
-      .single();
-
-    if (orderError || !orderRow) {
+    if (error) {
       return {
         ok: false,
         code: "persist_failed",
-        error: orderError?.message || "Order insert failed",
+        error: error.message,
         orderNumber,
       };
     }
 
-    const licenses = input.priced.lines.map((line) => ({
-      order_id: orderRow.id,
-      product_slug: line.slug,
-      email: input.email,
-      auth0_sub: input.auth0Sub,
-      status: "active",
-    }));
-
-    if (licenses.length) {
-      const { error: licenseError } = await admin.from("licenses").insert(licenses);
-      if (licenseError) {
-        return {
-          ok: false,
-          code: "persist_failed",
-          error: licenseError.message,
-          orderNumber,
-        };
-      }
+    const payload = data as { ok?: boolean; orderId?: string; orderNumber?: string } | null;
+    if (!payload?.ok || !payload.orderId) {
+      return {
+        ok: false,
+        code: "persist_failed",
+        error: "Fulfillment RPC returned an unexpected response",
+        orderNumber,
+      };
     }
 
-    return { ok: true, orderNumber, orderId: orderRow.id as string };
+    return {
+      ok: true,
+      orderNumber: payload.orderNumber || orderNumber,
+      orderId: payload.orderId,
+    };
   } catch (error) {
     return {
       ok: false,

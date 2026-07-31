@@ -1,28 +1,27 @@
 import { NextResponse } from "next/server";
-import { auth0, auth0Configured } from "@/lib/auth0";
+import { createClient, supabaseConfigured } from "@/lib/supabase/server";
+import {
+  buildPayPalUnits,
+  priceCart,
+} from "@/lib/checkout";
 import { createPayPalOrder, paypalConfigured } from "@/lib/paypal";
-import { buildPayPalUnits, priceCart } from "@/lib/checkout";
-import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 export async function POST(request: Request) {
-  if (!auth0Configured || !auth0) {
-    return NextResponse.json({ error: "Auth0 is not configured" }, { status: 503 });
+  if (!supabaseConfigured()) {
+    return NextResponse.json(
+      { error: "Supabase is not configured" },
+      { status: 503 }
+    );
   }
   if (!paypalConfigured()) {
     return NextResponse.json({ error: "PayPal is not configured" }, { status: 503 });
   }
-  if (!getSupabaseAdmin()) {
-    return NextResponse.json(
-      {
-        error:
-          "Checkout fulfillment is unavailable. SUPABASE_SERVICE_ROLE_KEY is required.",
-      },
-      { status: 503 }
-    );
-  }
 
-  const session = await auth0.getSession();
-  if (!session?.user) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -53,7 +52,7 @@ export async function POST(request: Request) {
     const order = await createPayPalOrder({
       amount: priced.order.total.toFixed(2),
       currency: priced.order.currency,
-      customId: session.user.sub,
+      customId: user.id,
       items: buildPayPalUnits(priced.order),
     });
 

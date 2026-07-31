@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { auth0, auth0Configured } from "@/lib/auth0";
+import { getSessionUser, supabaseConfigured, createClient } from "@/lib/supabase/server";
 import { getSeedProduct } from "@/data/products.seed";
-import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { formatPrice } from "@/lib/products";
 import styles from "./account.module.scss";
 
@@ -16,28 +15,29 @@ function productName(slug: string) {
 }
 
 export default async function AccountPage() {
-  if (!auth0Configured || !auth0) {
+  if (!supabaseConfigured()) {
     return (
       <main className={styles.page}>
         <div className="page-shell">
           <h1 className="display display-lg">Account</h1>
           <p className="lede">
-            Auth0 is not configured. Add Auth0 environment variables to enable
-            Quadra ID sign-in.
+            Store account requires Supabase. Set{" "}
+            <code>NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
+            <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code>.
           </p>
         </div>
       </main>
     );
   }
 
-  const session = await auth0.getSession();
-  if (!session?.user) {
+  const user = await getSessionUser();
+  if (!user) {
     return (
       <main className={styles.page}>
         <div className="page-shell">
           <p className="eyebrow">Account</p>
           <h1 className="display display-lg">Sign in to manage licenses.</h1>
-          <a href="/auth/login?returnTo=/account" className="btn btn-primary">
+          <a href="/login?returnTo=/account" className="btn btn-primary">
             Sign in
           </a>
         </div>
@@ -45,7 +45,7 @@ export default async function AccountPage() {
     );
   }
 
-  const admin = getSupabaseAdmin();
+  const supabase = await createClient();
   let orders: Array<{
     order_number: string;
     total_amount: number;
@@ -60,48 +60,46 @@ export default async function AccountPage() {
   }> = [];
   let loadError = false;
 
-  if (!admin) {
-    loadError = true;
-  } else {
-    try {
-      const [{ data: orderData, error: orderErr }, { data: licenseData, error: licenseErr }] =
-        await Promise.all([
-          admin
-            .from("orders")
-            .select("order_number,total_amount,currency,status,created_at")
-            .eq("auth0_sub", session.user.sub)
-            .order("created_at", { ascending: false }),
-          admin
-            .from("licenses")
-            .select("product_slug,status,issued_at")
-            .eq("auth0_sub", session.user.sub)
-            .order("issued_at", { ascending: false }),
-        ]);
-      if (orderErr || licenseErr) {
-        loadError = true;
-      } else {
-        orders = orderData || [];
-        licenses = licenseData || [];
-      }
-    } catch {
+  try {
+    const [{ data: orderData, error: orderErr }, { data: licenseData, error: licenseErr }] =
+      await Promise.all([
+        supabase
+          .from("orders")
+          .select("order_number,total_amount,currency,status,created_at")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("licenses")
+          .select("product_slug,status,issued_at")
+          .eq("user_id", user.id)
+          .order("issued_at", { ascending: false }),
+      ]);
+    if (orderErr || licenseErr) {
       loadError = true;
+    } else {
+      orders = orderData || [];
+      licenses = licenseData || [];
     }
+  } catch {
+    loadError = true;
   }
+
+  const displayName =
+    user.user_metadata?.full_name || user.user_metadata?.name || null;
 
   return (
     <main className={styles.page}>
       <div className="page-shell">
         <p className="eyebrow">Account</p>
         <h1 className="display display-lg">
-          Hello{session.user.name ? `, ${session.user.name}` : ""}.
+          Hello{displayName ? `, ${displayName}` : ""}.
         </h1>
-        <p className={styles.email}>{session.user.email}</p>
+        <p className={styles.email}>{user.email}</p>
 
         {loadError ? (
           <div className={styles.banner} role="status">
-            Order history is temporarily unavailable. Purchases still go through
-            when fulfillment is configured — try again shortly or contact
-            support if a payment just completed.
+            Order history is temporarily unavailable. Try again shortly or
+            contact support if a payment just completed.
           </div>
         ) : null}
 
@@ -138,7 +136,7 @@ export default async function AccountPage() {
                 <li key={order.order_number}>
                   <strong>{order.order_number}</strong>
                   <span>
-                    {formatPrice(Number(order.total_amount), order.currency)} ·{" "}
+                    {formatPrice(Number(order.total_amount), order.currency || "USD")} ·{" "}
                     {order.status}
                   </span>
                 </li>
@@ -147,9 +145,11 @@ export default async function AccountPage() {
           )}
         </section>
 
-        <a href="/auth/logout?returnTo=/" className="btn btn-secondary">
-          Log out
-        </a>
+        <form action="/auth/signout" method="post">
+          <button type="submit" className="btn btn-secondary">
+            Log out
+          </button>
+        </form>
       </div>
     </main>
   );

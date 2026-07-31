@@ -16,8 +16,7 @@ export default async function StorePage() {
         <p className="eyebrow">Store</p>
         <h1 className="display display-lg">Software for working studios.</h1>
         <p className="lede">
-          Perpetual licenses with account-backed checkout. Placeholder catalog —
-          replace with your final SKUs anytime.
+          Perpetual licenses with account-backed checkout.
         </p>
         <div className={styles.grid}>
           {products.map((product) => (

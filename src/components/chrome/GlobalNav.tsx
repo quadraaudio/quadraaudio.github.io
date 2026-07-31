@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import { useUser } from "@/components/providers/AuthProvider";
 import { useCart } from "@/components/providers/CartProvider";
 import { LogoMark } from "@/components/chrome/LogoMark";
 import styles from "./GlobalNav.module.scss";
@@ -21,11 +21,6 @@ const RESOURCE_LINKS = [
   { href: "/about", label: "About" },
   { href: "/legal/terms", label: "Legal" },
 ];
-
-function authHref(path: "/auth/login" | "/auth/logout", returnTo: string) {
-  const params = new URLSearchParams({ returnTo });
-  return `${path}?${params.toString()}`;
-}
 
 export function GlobalNav() {
   const { user, isLoading } = useUser();
@@ -49,8 +44,7 @@ export function GlobalNav() {
     };
   }, [mobileOpen]);
 
-  const loginHref = authHref("/auth/login", pathname);
-  const logoutHref = authHref("/auth/logout", "/");
+  const loginHref = `/login?returnTo=${encodeURIComponent(pathname)}`;
 
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
@@ -122,9 +116,11 @@ export function GlobalNav() {
               <Link href="/account" className={styles.linkQuiet}>
                 Account
               </Link>
-              <a href={logoutHref} className="btn btn-secondary">
-                Log out
-              </a>
+              <form action="/auth/signout" method="post">
+                <button type="submit" className="btn btn-secondary">
+                  Log out
+                </button>
+              </form>
             </>
           ) : (
             <a href={loginHref} className="btn btn-primary">
@@ -169,7 +165,9 @@ export function GlobalNav() {
               <Link href="/account" onClick={() => setMobileOpen(false)}>
                 Account
               </Link>
-              <a href={logoutHref}>Log out</a>
+              <form action="/auth/signout" method="post">
+                <button type="submit">Log out</button>
+              </form>
             </>
           ) : (
             <a href={loginHref}>Sign in</a>

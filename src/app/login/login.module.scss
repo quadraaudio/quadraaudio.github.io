@@ -1,0 +1,65 @@
+.page {
+  padding-block: var(--space-4xl) var(--space-5xl);
+}
+
+.shell {
+  max-width: 32rem;
+}
+
+.page :global(.lede) {
+  margin-top: var(--space-md);
+}
+
+.form {
+  margin-top: var(--space-2xl);
+  display: grid;
+  gap: 1rem;
+}
+
+.form label {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: var(--theme-text-muted);
+}
+
+.form input {
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  padding: 0.8rem 0.95rem;
+  font: inherit;
+  color: var(--theme-text);
+  background: var(--theme-bg-elevated);
+}
+
+.error {
+  margin: 0;
+  color: var(--quadra-danger);
+}
+
+.ok {
+  margin: 0;
+  color: var(--quadra-success);
+}
+
+.switch {
+  margin-top: var(--space-lg);
+  color: var(--theme-text-muted);
+}
+
+.switch button {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--theme-accent);
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+}
+
+.back {
+  display: inline-block;
+  margin-top: var(--space-xl);
+  color: var(--theme-text-muted);
+  text-decoration: underline;
+}

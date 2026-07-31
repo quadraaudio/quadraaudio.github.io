@@ -1,24 +1,20 @@
 import { NextResponse } from "next/server";
-import { auth0, auth0Configured } from "@/lib/auth0";
+import { createClient, supabaseConfigured } from "@/lib/supabase/server";
 import { persistCompletedOrder, priceCart } from "@/lib/checkout";
-import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 export async function POST(request: Request) {
-  if (!auth0Configured || !auth0) {
-    return NextResponse.json({ error: "Auth0 is not configured" }, { status: 503 });
-  }
-  if (!getSupabaseAdmin()) {
+  if (!supabaseConfigured()) {
     return NextResponse.json(
-      {
-        error:
-          "Checkout fulfillment is unavailable. SUPABASE_SERVICE_ROLE_KEY is required.",
-      },
+      { error: "Supabase is not configured" },
       { status: 503 }
     );
   }
 
-  const session = await auth0.getSession();
-  if (!session?.user) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -45,11 +41,12 @@ export async function POST(request: Request) {
     );
   }
 
-  const email = session.user.email || "customer@quadraaudio.com";
+  const email = user.email || "customer@quadraaudio.com";
   const persisted = await persistCompletedOrder({
-    auth0Sub: session.user.sub,
+    supabase,
+    userId: user.id,
     email,
-    name: session.user.name,
+    name: user.user_metadata?.full_name || user.user_metadata?.name || null,
     priced: priced.order,
     paypalOrderId: null,
     status: "completed",

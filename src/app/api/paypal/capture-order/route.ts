@@ -1,31 +1,25 @@
 import { NextResponse } from "next/server";
-import { auth0, auth0Configured } from "@/lib/auth0";
+import { createClient, supabaseConfigured } from "@/lib/supabase/server";
 import { capturePayPalOrder, paypalConfigured } from "@/lib/paypal";
 import { persistCompletedOrder, priceCart } from "@/lib/checkout";
-import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 export async function POST(request: Request) {
-  if (!auth0Configured || !auth0) {
-    return NextResponse.json({ error: "Auth0 is not configured" }, { status: 503 });
+  if (!supabaseConfigured()) {
+    return NextResponse.json(
+      { error: "Supabase is not configured" },
+      { status: 503 }
+    );
   }
   if (!paypalConfigured()) {
     return NextResponse.json({ error: "PayPal is not configured" }, { status: 503 });
   }
 
-  const session = await auth0.getSession();
-  if (!session?.user) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  if (!getSupabaseAdmin()) {
-    return NextResponse.json(
-      {
-        code: "admin_missing",
-        error:
-          "Cannot fulfill licenses without SUPABASE_SERVICE_ROLE_KEY. Payment was not captured.",
-      },
-      { status: 503 }
-    );
   }
 
   const body = (await request.json().catch(() => ({}))) as {
@@ -40,7 +34,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Missing orderID" }, { status: 400 });
   }
 
-  // Re-price on the server — never trust client unit prices.
   const priced = await priceCart({
     items: (body.items || []).map((item) => ({
       slug: item.slug,
@@ -76,14 +69,15 @@ export async function POST(request: Request) {
   }
 
   const email =
-    session.user.email ||
+    user.email ||
     capture.payer?.email_address ||
     "customer@quadraaudio.com";
 
   const persisted = await persistCompletedOrder({
-    auth0Sub: session.user.sub,
+    supabase,
+    userId: user.id,
     email,
-    name: session.user.name,
+    name: user.user_metadata?.full_name || user.user_metadata?.name || null,
     priced: priced.order,
     paypalOrderId: capture.id,
     status: "completed",

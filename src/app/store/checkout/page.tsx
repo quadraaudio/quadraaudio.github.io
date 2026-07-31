@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { auth0, auth0Configured } from "@/lib/auth0";
+import { getSessionUser, supabaseConfigured } from "@/lib/supabase/server";
 import { CheckoutClient } from "./CheckoutClient";
 import styles from "./checkout.module.scss";
 
@@ -10,9 +10,9 @@ export const metadata = {
 };
 
 export default async function CheckoutPage() {
-  const session = auth0Configured && auth0 ? await auth0.getSession() : null;
+  const user = supabaseConfigured() ? await getSessionUser() : null;
 
-  if (!session?.user) {
+  if (!user) {
     return (
       <main className={styles.page}>
         <div className="page-shell">
@@ -22,15 +22,16 @@ export default async function CheckoutPage() {
             Sign in with your Quadra account to complete purchase and receive
             licenses in your account.
           </p>
-          {!auth0Configured ? (
+          {!supabaseConfigured() ? (
             <p className={styles.notice}>
-              Auth0 is not configured yet. Add `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`,
-              `AUTH0_CLIENT_SECRET`, and `AUTH0_SECRET` to enable sign-in.
+              Supabase is not configured yet. Add{" "}
+              <code>NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
+              <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code>.
             </p>
           ) : null}
           <div className={styles.actions}>
             <a
-              href="/auth/login?returnTo=/store/checkout"
+              href="/login?returnTo=/store/checkout"
               className="btn btn-primary"
             >
               Sign in
@@ -50,7 +51,7 @@ export default async function CheckoutPage() {
         <p className="eyebrow">Checkout</p>
         <h1 className="display display-lg">Complete your order.</h1>
         <p className={styles.signedIn}>
-          Signed in as {session.user.email || session.user.name}
+          Signed in as {user.email}
         </p>
         <CheckoutClient
           paypalClientId={process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || ""}

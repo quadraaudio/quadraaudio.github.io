@@ -23,8 +23,8 @@ export default function AboutPage() {
           </p>
           <p>
             This site is a clean foundation: cinematic marketing, a working store
-            with Auth0 and PayPal, and placeholder catalog SKUs you can replace
-            with your final product line.
+            with Supabase Auth and PayPal, and a starter catalog you can evolve
+            into your final product line.
           </p>
         </div>
       </div>

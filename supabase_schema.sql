@@ -1,6 +1,6 @@
 -- ─────────────────────────────────────────────────────────
--- Quadra Audio — Store schema (v1)
--- Paste into Supabase SQL Editor
+-- Quadra Audio — Store schema (v2, Supabase Auth)
+-- Applied via MCP migration e2e_store_auth_and_fulfillment
 -- ─────────────────────────────────────────────────────────
 
 DO $$ BEGIN
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS public.coupons (
 
 CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  auth0_sub TEXT UNIQUE NOT NULL,
+  user_id UUID UNIQUE NOT NULL,
   email TEXT NOT NULL,
   name TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -47,8 +47,9 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 CREATE TABLE IF NOT EXISTS public.orders (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   order_number TEXT UNIQUE NOT NULL,
-  auth0_sub TEXT NOT NULL,
-  email TEXT NOT NULL,
+  user_id UUID,
+  email TEXT,
+  user_email TEXT,
   total_amount NUMERIC(10, 2) NOT NULL,
   currency TEXT NOT NULL DEFAULT 'USD',
   paypal_order_id TEXT,
@@ -62,16 +63,18 @@ CREATE TABLE IF NOT EXISTS public.licenses (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   order_id UUID REFERENCES public.orders(id) ON DELETE SET NULL,
   product_slug TEXT NOT NULL,
-  email TEXT NOT NULL,
-  auth0_sub TEXT,
+  email TEXT,
+  user_email TEXT,
+  user_id UUID,
   status TEXT NOT NULL DEFAULT 'active',
+  hardware_id TEXT,
   issued_at TIMESTAMPTZ DEFAULT NOW(),
   expires_at TEXT DEFAULT 'PERPETUAL'
 );
 
-CREATE INDEX IF NOT EXISTS orders_auth0_sub_idx ON public.orders (auth0_sub);
+CREATE INDEX IF NOT EXISTS orders_user_id_idx ON public.orders (user_id);
 CREATE INDEX IF NOT EXISTS orders_paypal_order_id_idx ON public.orders (paypal_order_id);
-CREATE INDEX IF NOT EXISTS licenses_auth0_sub_idx ON public.licenses (auth0_sub);
+CREATE INDEX IF NOT EXISTS licenses_user_id_idx ON public.licenses (user_id);
 CREATE INDEX IF NOT EXISTS licenses_email_idx ON public.licenses (email);
 
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
@@ -87,7 +90,22 @@ DROP POLICY IF EXISTS "Public active coupons read" ON public.coupons;
 CREATE POLICY "Public active coupons read" ON public.coupons
   FOR SELECT USING (active = true);
 
--- Orders / licenses / profiles are written via service role from Next.js APIs.
+DROP POLICY IF EXISTS "Users read own orders" ON public.orders;
+CREATE POLICY "Users read own orders" ON public.orders
+  FOR SELECT TO authenticated
+  USING (user_id = auth.uid());
+
+DROP POLICY IF EXISTS "Users read own licenses" ON public.licenses;
+CREATE POLICY "Users read own licenses" ON public.licenses
+  FOR SELECT TO authenticated
+  USING (user_id = auth.uid());
+
+DROP POLICY IF EXISTS "Users read own profile" ON public.profiles;
+CREATE POLICY "Users read own profile" ON public.profiles
+  FOR SELECT TO authenticated
+  USING (user_id = auth.uid());
+
+-- Fulfillment RPC (authenticated) — see migration e2e_store_auth_and_fulfillment
 
 INSERT INTO public.products (
   slug, name, tagline, description, price, currency, category, badge,

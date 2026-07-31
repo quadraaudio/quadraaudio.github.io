@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Syne, Manrope, IBM_Plex_Mono } from "next/font/google";
-import { Auth0Provider } from "@auth0/nextjs-auth0/client";
+import { AuthProvider } from "@/components/providers/AuthProvider";
 import { CartProvider } from "@/components/providers/CartProvider";
 import { GlobalNav } from "@/components/chrome/GlobalNav";
 import { GlobalFooter } from "@/components/chrome/GlobalFooter";
@@ -64,7 +64,7 @@ export default function RootLayout({
           } as React.CSSProperties
         }
       >
-        <Auth0Provider>
+        <AuthProvider>
           <CartProvider>
             <SmoothScroll>
               <GlobalNav />
@@ -72,7 +72,7 @@ export default function RootLayout({
               <GlobalFooter />
             </SmoothScroll>
           </CartProvider>
-        </Auth0Provider>
+        </AuthProvider>
       </body>
     </html>
   );
