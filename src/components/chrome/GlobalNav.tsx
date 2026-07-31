@@ -2,33 +2,27 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { useCart } from "@/components/providers/CartProvider";
 import { LogoMark } from "@/components/chrome/LogoMark";
+import { BagIcon } from "@/components/chrome/BagIcon";
 import styles from "./GlobalNav.module.scss";
 
-/** Top-level product links — Apple-style primary product bar. */
-const PRIMARY_PRODUCTS = [
+/** After logo: Store first, products, Support last before actions. */
+const NAV_LINKS = [
+  { href: "/store", label: "Store" },
   { href: "/products/hydra", label: "Hydra" },
   { href: "/store/quadra-channel", label: "Channel" },
   { href: "/store/quadra-dynamics", label: "Dynamics" },
   { href: "/store/quadra-studio-bundle", label: "Bundle" },
-];
-
-const RESOURCE_LINKS = [
   { href: "/support", label: "Support" },
-  { href: "/contact", label: "Contact" },
-  { href: "/about", label: "About" },
-  { href: "/legal/terms", label: "Legal" },
 ];
 
 export function GlobalNav() {
-  const { user, isLoading, logout } = useAuth();
+  const { user, isLoading } = useAuth();
   const { itemCount } = useCart();
   const pathname = usePathname() || "/";
-  const router = useRouter();
-  const [open, setOpen] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -46,15 +40,23 @@ export function GlobalNav() {
     };
   }, [mobileOpen]);
 
-  const loginHref = `/login?returnTo=${encodeURIComponent(pathname)}`;
-
-  async function onLogout() {
-    await logout();
-    router.refresh();
-  }
+  const accountHref = user
+    ? "/account"
+    : `/login?returnTo=${encodeURIComponent(pathname)}`;
 
   function isActive(href: string) {
-    if (href === "/") return pathname === "/";
+    if (href === "/store") {
+      return (
+        pathname === "/store" ||
+        pathname === "/store/" ||
+        (pathname.startsWith("/store/") &&
+          !NAV_LINKS.some(
+            (l) =>
+              l.href !== "/store" &&
+              (pathname === l.href || pathname.startsWith(`${l.href}/`)),
+          ))
+      );
+    }
     return pathname === href || pathname.startsWith(`${href}/`);
   }
 
@@ -66,7 +68,7 @@ export function GlobalNav() {
         </Link>
 
         <nav className={styles.nav} aria-label="Primary">
-          {PRIMARY_PRODUCTS.map((link) => (
+          {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -75,58 +77,29 @@ export function GlobalNav() {
               {link.label}
             </Link>
           ))}
-          <Link
-            href="/store"
-            className={`${styles.link} ${isActive("/store") && !PRIMARY_PRODUCTS.some((p) => isActive(p.href)) ? styles.linkActive : ""}`}
-          >
-            Store
-          </Link>
-          <div
-            className={styles.item}
-            onMouseEnter={() => setOpen("resources")}
-            onMouseLeave={() => setOpen(null)}
-          >
-            <button
-              type="button"
-              className={styles.trigger}
-              aria-expanded={open === "resources"}
-            >
-              Resources
-            </button>
-            {open === "resources" && (
-              <div className={styles.dropdown}>
-                {RESOURCE_LINKS.map((link) => (
-                  <Link key={link.href} href={link.href} className={styles.dropLink}>
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
         </nav>
 
         <div className={styles.actions}>
-          <Link href="/store/bag" className={styles.bag} aria-label="Shopping bag">
-            Bag{itemCount > 0 ? ` (${itemCount})` : ""}
-          </Link>
-          {isLoading ? (
-            <span className={styles.linkQuiet} aria-hidden>
-              …
-            </span>
-          ) : user ? (
-            <>
-              <Link href="/account" className={styles.linkQuiet}>
-                Account
-              </Link>
-              <button type="button" className="btn btn-secondary" onClick={onLogout}>
-                Log out
-              </button>
-            </>
-          ) : (
-            <Link href={loginHref} className="btn btn-primary">
-              Sign in with Google
+          {!isLoading && (
+            <Link
+              href={accountHref}
+              className={`${styles.link} ${pathname.startsWith("/account") || pathname.startsWith("/login") ? styles.linkActive : ""}`}
+            >
+              Account
             </Link>
           )}
+          <Link
+            href="/store/bag"
+            className={styles.bag}
+            aria-label={
+              itemCount > 0 ? `Shopping bag, ${itemCount} items` : "Shopping bag"
+            }
+          >
+            <BagIcon className={styles.bagIcon} />
+            {itemCount > 0 ? (
+              <span className={styles.bagCount}>{itemCount}</span>
+            ) : null}
+          </Link>
           <button
             type="button"
             className={styles.menuBtn}
@@ -142,7 +115,7 @@ export function GlobalNav() {
 
       {mobileOpen && (
         <div className={styles.mobile}>
-          {PRIMARY_PRODUCTS.map((link) => (
+          {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -155,35 +128,28 @@ export function GlobalNav() {
           <Link href="/products" onClick={() => setMobileOpen(false)}>
             All products
           </Link>
-          <Link href="/store" onClick={() => setMobileOpen(false)}>
-            Store
-          </Link>
           <Link href="/about" onClick={() => setMobileOpen(false)}>
             About
-          </Link>
-          <Link href="/support" onClick={() => setMobileOpen(false)}>
-            Support
           </Link>
           <Link href="/contact" onClick={() => setMobileOpen(false)}>
             Contact
           </Link>
-          <Link href="/store/bag" onClick={() => setMobileOpen(false)}>
-            Bag{itemCount > 0 ? ` (${itemCount})` : ""}
-          </Link>
-          {isLoading ? null : user ? (
-            <>
-              <Link href="/account" onClick={() => setMobileOpen(false)}>
-                Account
-              </Link>
-              <button type="button" onClick={onLogout}>
-                Log out
-              </button>
-            </>
-          ) : (
-            <Link href={loginHref} onClick={() => setMobileOpen(false)}>
-              Sign in with Google
+          {!isLoading && (
+            <Link href={accountHref} onClick={() => setMobileOpen(false)}>
+              Account
             </Link>
           )}
+          <Link
+            href="/store/bag"
+            className={styles.mobileBag}
+            onClick={() => setMobileOpen(false)}
+            aria-label={
+              itemCount > 0 ? `Shopping bag, ${itemCount} items` : "Shopping bag"
+            }
+          >
+            <BagIcon className={styles.bagIcon} />
+            <span>Bag{itemCount > 0 ? ` (${itemCount})` : ""}</span>
+          </Link>
         </div>
       )}
     </header>

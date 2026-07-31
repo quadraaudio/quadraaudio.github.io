@@ -21,7 +21,7 @@
   height: 100%;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
 }
 
 .wordmark {
@@ -35,9 +35,10 @@
 
 .nav {
   display: none;
-  flex: 1;
-  justify-content: center;
+  align-items: center;
+  justify-content: flex-end;
   gap: 2px;
+  margin-left: auto;
 
   a {
     padding: 6px 11px;
@@ -58,7 +59,6 @@
 }
 
 .actions {
-  margin-left: auto;
   flex-shrink: 0;
 }
 
@@ -84,5 +84,15 @@
 @media (min-width: 900px) {
   .nav {
     display: flex;
+  }
+
+  .actions {
+    margin-left: 4px;
+  }
+}
+
+@media (max-width: 899px) {
+  .actions {
+    margin-left: auto;
   }
 }
