@@ -6,7 +6,7 @@ import { formatPrice } from "@/lib/products";
 import styles from "./bag.module.scss";
 
 export default function BagPage() {
-  const { items, subtotal, setQuantity, removeItem } = useCart();
+  const { items, subtotal, setQuantity, removeItem, hydrated } = useCart();
 
   return (
     <main className={styles.page}>
@@ -14,7 +14,11 @@ export default function BagPage() {
         <p className="eyebrow">Bag</p>
         <h1 className="display display-lg">Review your bag.</h1>
 
-        {!items.length ? (
+        {!hydrated ? (
+          <p className={styles.empty} role="status">
+            Loading bag…
+          </p>
+        ) : !items.length ? (
           <div className={styles.empty}>
             <p>Your bag is empty.</p>
             <Link href="/store" className="btn btn-primary">

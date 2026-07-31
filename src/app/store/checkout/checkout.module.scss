@@ -93,6 +93,24 @@
   color: var(--quadra-success);
 }
 
+.priceNote {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--theme-text-muted);
+}
+
+.priceNoteBlock {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--theme-text-muted);
+}
+
+.freeCopy {
+  margin: 0;
+  color: var(--theme-text-muted);
+  line-height: 1.5;
+}
+
 @media (min-width: 900px) {
   .layout {
     grid-template-columns: 1.1fr 0.9fr;

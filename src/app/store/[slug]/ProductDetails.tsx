@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import type { Product } from "@/data/products.seed";
 import { useCart } from "@/components/providers/CartProvider";
 import { formatPrice } from "@/lib/products";
@@ -10,6 +11,7 @@ import styles from "./pdp.module.scss";
 export function ProductDetails({ product }: { product: Product }) {
   const { addProduct } = useCart();
   const router = useRouter();
+  const [added, setAdded] = useState(false);
 
   return (
     <main className={styles.page}>
@@ -27,13 +29,16 @@ export function ProductDetails({ product }: { product: Product }) {
             <button
               type="button"
               className="btn btn-primary"
-              disabled={product.availabilityStatus !== "available"}
+              disabled={product.availabilityStatus !== "available" || added}
               onClick={() => {
                 addProduct(product);
-                router.push("/store/bag");
+                setAdded(true);
+                window.setTimeout(() => {
+                  router.push("/store/bag");
+                }, 450);
               }}
             >
-              Add to bag
+              {added ? "Added" : "Add to bag"}
             </button>
             <Link href="/store" className="btn btn-secondary">
               Back to store

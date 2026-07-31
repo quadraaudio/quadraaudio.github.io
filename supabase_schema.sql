@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS public.licenses (
 );
 
 CREATE INDEX IF NOT EXISTS orders_auth0_sub_idx ON public.orders (auth0_sub);
+CREATE INDEX IF NOT EXISTS orders_paypal_order_id_idx ON public.orders (paypal_order_id);
 CREATE INDEX IF NOT EXISTS licenses_auth0_sub_idx ON public.licenses (auth0_sub);
 CREATE INDEX IF NOT EXISTS licenses_email_idx ON public.licenses (email);
 
@@ -139,7 +140,8 @@ INSERT INTO public.coupons (code, discount_percent, discount_amount, active)
 VALUES
   ('QUADRA10', 10, 0, true),
   ('LAUNCH20', 20, 0, true),
-  ('STUDIO50', 50, 0, true)
+  ('STUDIO50', 50, 0, true),
+  ('FREE100', 100, 0, true)
 ON CONFLICT (code) DO UPDATE SET
   discount_percent = EXCLUDED.discount_percent,
   active = EXCLUDED.active;

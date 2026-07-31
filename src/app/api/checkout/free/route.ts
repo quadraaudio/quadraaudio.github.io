@@ -1,15 +1,11 @@
 import { NextResponse } from "next/server";
 import { auth0, auth0Configured } from "@/lib/auth0";
-import { createPayPalOrder, paypalConfigured } from "@/lib/paypal";
-import { buildPayPalUnits, priceCart } from "@/lib/checkout";
+import { persistCompletedOrder, priceCart } from "@/lib/checkout";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 export async function POST(request: Request) {
   if (!auth0Configured || !auth0) {
     return NextResponse.json({ error: "Auth0 is not configured" }, { status: 503 });
-  }
-  if (!paypalConfigured()) {
-    return NextResponse.json({ error: "PayPal is not configured" }, { status: 503 });
   }
   if (!getSupabaseAdmin()) {
     return NextResponse.json(
@@ -38,36 +34,37 @@ export async function POST(request: Request) {
   if (!priced.ok) {
     return NextResponse.json({ error: priced.error }, { status: 400 });
   }
-
-  if (priced.order.total <= 0) {
+  if (priced.order.total > 0) {
     return NextResponse.json(
       {
-        error: "ZERO_TOTAL",
-        message: "This order is free. Use Claim license instead of PayPal.",
+        error: "NOT_FREE",
+        message: "This order still has a balance. Use PayPal checkout.",
+        total: priced.order.total,
       },
       { status: 400 }
     );
   }
 
-  try {
-    const order = await createPayPalOrder({
-      amount: priced.order.total.toFixed(2),
-      currency: priced.order.currency,
-      customId: session.user.sub,
-      items: buildPayPalUnits(priced.order),
-    });
+  const email = session.user.email || "customer@quadraaudio.com";
+  const persisted = await persistCompletedOrder({
+    auth0Sub: session.user.sub,
+    email,
+    name: session.user.name,
+    priced: priced.order,
+    paypalOrderId: null,
+    status: "completed",
+  });
 
-    return NextResponse.json({
-      id: order.id,
-      status: order.status,
-      total: priced.order.total,
-      currency: priced.order.currency,
-      coupon: priced.order.coupon?.code || null,
-    });
-  } catch (error) {
+  if (!persisted.ok) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "PayPal create failed" },
-      { status: 502 }
+      { error: persisted.error, code: persisted.code },
+      { status: 500 }
     );
   }
+
+  return NextResponse.json({
+    ok: true,
+    persisted: true,
+    orderNumber: persisted.orderNumber,
+  });
 }

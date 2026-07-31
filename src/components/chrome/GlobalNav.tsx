@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useCart } from "@/components/providers/CartProvider";
 import { LogoMark } from "@/components/chrome/LogoMark";
@@ -21,9 +22,15 @@ const RESOURCE_LINKS = [
   { href: "/legal/terms", label: "Legal" },
 ];
 
+function authHref(path: "/auth/login" | "/auth/logout", returnTo: string) {
+  const params = new URLSearchParams({ returnTo });
+  return `${path}?${params.toString()}`;
+}
+
 export function GlobalNav() {
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
   const { itemCount } = useCart();
+  const pathname = usePathname() || "/";
   const [open, setOpen] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -41,6 +48,9 @@ export function GlobalNav() {
       document.body.style.overflow = "";
     };
   }, [mobileOpen]);
+
+  const loginHref = authHref("/auth/login", pathname);
+  const logoutHref = authHref("/auth/logout", "/");
 
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
@@ -103,17 +113,21 @@ export function GlobalNav() {
           <Link href="/store/bag" className={styles.bag} aria-label="Shopping bag">
             Bag{itemCount > 0 ? ` (${itemCount})` : ""}
           </Link>
-          {user ? (
+          {isLoading ? (
+            <span className={styles.linkQuiet} aria-hidden>
+              …
+            </span>
+          ) : user ? (
             <>
               <Link href="/account" className={styles.linkQuiet}>
                 Account
               </Link>
-              <a href="/auth/logout" className="btn btn-secondary">
+              <a href={logoutHref} className="btn btn-secondary">
                 Log out
               </a>
             </>
           ) : (
-            <a href="/auth/login" className="btn btn-primary">
+            <a href={loginHref} className="btn btn-primary">
               Sign in
             </a>
           )}
@@ -150,15 +164,15 @@ export function GlobalNav() {
           <Link href="/store/bag" onClick={() => setMobileOpen(false)}>
             Bag{itemCount > 0 ? ` (${itemCount})` : ""}
           </Link>
-          {user ? (
+          {isLoading ? null : user ? (
             <>
               <Link href="/account" onClick={() => setMobileOpen(false)}>
                 Account
               </Link>
-              <a href="/auth/logout">Log out</a>
+              <a href={logoutHref}>Log out</a>
             </>
           ) : (
-            <a href="/auth/login">Sign in</a>
+            <a href={loginHref}>Sign in</a>
           )}
         </div>
       )}

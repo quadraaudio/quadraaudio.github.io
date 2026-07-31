@@ -12,3 +12,14 @@
   flex-wrap: wrap;
   gap: 0.75rem;
 }
+
+.meta {
+  margin-top: var(--space-md);
+  color: var(--theme-text-muted);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.95rem;
+}
+
+.meta code {
+  font: inherit;
+}

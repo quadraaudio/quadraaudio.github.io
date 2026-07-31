@@ -7,6 +7,16 @@
   color: var(--theme-text-muted);
 }
 
+.banner {
+  margin: calc(var(--space-3xl) * -0.5) 0 var(--space-2xl);
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius-md);
+  background: #fff4df;
+  color: #7a4d00;
+  max-width: 42rem;
+  line-height: 1.45;
+}
+
 .section {
   margin-bottom: var(--space-3xl);
 }

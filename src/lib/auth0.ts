@@ -13,13 +13,6 @@ export const auth0Configured = hasAuth0Config();
 
 /**
  * Auth0 client for App Router. Requires AUTH0_* env vars at runtime for login.
- * During local builds without secrets, a inert client is avoided — callers check auth0Configured.
+ * Connection choice comes from Auth0 Universal Login / dashboard — not hardcoded here.
  */
-export const auth0 = auth0Configured
-  ? new Auth0Client({
-      authorizationParameters: {
-        // Prefer Google when configured in Auth0 dashboard social connections.
-        connection: "google-oauth2",
-      },
-    })
-  : null;
+export const auth0 = auth0Configured ? new Auth0Client() : null;

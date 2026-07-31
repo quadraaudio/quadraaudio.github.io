@@ -19,8 +19,8 @@ export default async function CheckoutPage() {
           <p className="eyebrow">Checkout</p>
           <h1 className="display display-lg">Sign in to continue.</h1>
           <p className="lede">
-            Checkout uses Auth0 with Google. Sign in with your Quadra account to
-            complete purchase and receive licenses.
+            Sign in with your Quadra account to complete purchase and receive
+            licenses in your account.
           </p>
           {!auth0Configured ? (
             <p className={styles.notice}>
@@ -33,7 +33,7 @@ export default async function CheckoutPage() {
               href="/auth/login?returnTo=/store/checkout"
               className="btn btn-primary"
             >
-              Sign in with Google
+              Sign in
             </a>
             <Link href="/store/bag" className="btn btn-secondary">
               Back to bag
