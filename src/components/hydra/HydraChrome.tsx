@@ -17,7 +17,7 @@ export function HydraChrome() {
   }, []);
 
   useEffect(() => {
-    const ids = ["overview", ...HYDRA_NAV.map((n) => n.href.slice(1))];
+    const ids = HYDRA_NAV.map((n) => n.href.slice(1));
     const nodes = ids
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => Boolean(el));
@@ -33,7 +33,7 @@ export function HydraChrome() {
           setActive(`#${visible.target.id}`);
         }
       },
-      { rootMargin: "-30% 0px -55% 0px", threshold: [0.1, 0.35, 0.6] },
+      { rootMargin: "-35% 0px -50% 0px", threshold: [0.15, 0.4, 0.65] },
     );
 
     nodes.forEach((node) => observer.observe(node));
@@ -41,11 +41,11 @@ export function HydraChrome() {
   }, []);
 
   return (
-    <header className={`${styles.bar} ${scrolled ? styles.scrolled : ""}`}>
+    <div className={`${styles.bar} ${scrolled ? styles.scrolled : ""}`}>
       <div className={styles.inner}>
-        <Link href="#overview" className={styles.wordmark} aria-label="Hydra">
+        <a href="#overview" className={styles.wordmark} aria-label="Hydra">
           {HYDRA.name}
-        </Link>
+        </a>
 
         <nav className={styles.nav} aria-label="Hydra sections">
           {HYDRA_NAV.map((item) => (
@@ -60,14 +60,11 @@ export function HydraChrome() {
         </nav>
 
         <div className={styles.actions}>
-          <Link href="/" className={styles.parent}>
-            Quadra
-          </Link>
           <Link href={HYDRA.ctaPrimary.href} className={styles.cta}>
             {HYDRA.ctaPrimary.label}
           </Link>
         </div>
       </div>
-    </header>
+    </div>
   );
 }

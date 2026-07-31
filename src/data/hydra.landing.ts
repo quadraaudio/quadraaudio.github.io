@@ -11,11 +11,9 @@ export const HYDRA = {
 
 export const HYDRA_NAV = [
   { href: "#overview", label: "Overview" },
-  { href: "#matrix", label: "Matrix" },
-  { href: "#bridges", label: "Bridges" },
-  { href: "#network", label: "Network" },
-  { href: "#strips", label: "Strips" },
-  { href: "#specs", label: "Specs" },
+  { href: "#capabilities", label: "Capabilities" },
+  { href: "#control", label: "Control" },
+  { href: "#specs", label: "Tech Specs" },
 ] as const;
 
 export const HYDRA_CHAPTERS = [
@@ -24,6 +22,8 @@ export const HYDRA_CHAPTERS = [
     eyebrow: "Patch matrix",
     title: "Every cross-point. With gain.",
     body: "Route any source channel to any destination with precise gain. Save scenes, name labels, and recall the room the way you left it.",
+    detail:
+      "The matrix is a gainful connection graph: each cross-point is addressable, metered, and scene-recallable. Labels travel with the graph so complex rooms stay readable across sessions.",
     image: "/hydra/chapter-matrix.png",
     imageAlt: "Abstract patch grid glowing on a display surface",
   },
@@ -32,6 +32,8 @@ export const HYDRA_CHAPTERS = [
     eyebrow: "Engine & bridges",
     title: "A hidden hub. Public bridges.",
     body: "Hydra Engine is a 256-channel CoreAudio hub. Eight Bridge devices — from 2 to 128 channels — appear as ordinary audio interfaces to every DAW and app on the Mac.",
+    detail:
+      "DAWs see standard CoreAudio devices. The hub stays hidden while Bridge 2A through 128 expose the channel counts you need — without rewiring the physical room.",
     image: "/hydra/chapter-bridges.png",
     imageAlt: "Mac in a dark studio showing abstract virtual device panels",
   },
@@ -40,6 +42,8 @@ export const HYDRA_CHAPTERS = [
     eyebrow: "Capture & network",
     title: "Local devices. Network streams. App taps.",
     body: "Bring in CoreAudio hardware, process capture from running apps, subscribe to AES67 via SAP/SDP, and send or receive NDI — all mixed in the same matrix.",
+    detail:
+      "Sources and destinations share one patch surface: hardware I/O, app process taps, AES67 discovery, and NDI send/receive. No parallel routing islands.",
     image: "/hydra/chapter-network.png",
     imageAlt: "Wide studio with network hardware and converging signal paths",
   },
@@ -48,6 +52,8 @@ export const HYDRA_CHAPTERS = [
     eyebrow: "Channel strips",
     title: "VST inserts that stay out of the way.",
     body: "Build channel strips with VST3 inserts. Run in-process or isolate chains in an out-of-process host so a bad plugin cannot take down the session.",
+    detail:
+      "Strip inserts can run in-process for lowest latency or in hydra-plugin-host over shared memory ABI v2. Plugin scans run in an isolated worker so a crash does not kill the engine.",
     image: "/hydra/chapter-control.png",
     imageAlt: "Engineer at dual monitors with abstract strip meters",
   },
@@ -58,6 +64,11 @@ export const HYDRA_CONTROL = {
   eyebrow: "Control room",
   title: "Monitor like a console.",
   body: "Dim, mono, swap, master mute, and talkback — with monitor and talkback device routing built into the engine.",
+  points: [
+    "Dim and talkback ducking in dB",
+    "Mono / swap L-R / master mute",
+    "Monitor and talkback device UIDs",
+  ],
 } as const;
 
 export const HYDRA_SPECS = [
