@@ -5,9 +5,9 @@ import * as THREE from "three";
 import styles from "./HeroParticles.module.scss";
 
 /**
- * Quadra Waveform Depth — a classic audio wave with real Z depth.
- * X = time, Y = amplitude, Z = stacked history into the distance.
- * Not a flat DAW editor view.
+ * Clear 3D audio waveform:
+ * - Classic oscilloscope silhouette around a visible zero-line (X = time, Y = amp)
+ * - Depth = ghosted history traces behind the live wave (not a terrain mesh)
  */
 export function HeroParticles() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -18,97 +18,122 @@ export function HeroParticles() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    const samples = isMobile ? 160 : 240; // time axis (wide)
-    const layers = isMobile ? 36 : 52; // depth history
-    const count = samples * layers;
-    const spanX = isMobile ? 30 : 44;
-    const spanZ = isMobile ? 10 : 14;
+    const samples = isMobile ? 220 : 360;
+    const traces = isMobile ? 14 : 22; // history layers into Z
+    const spanX = isMobile ? 26 : 38;
+    const depthStep = isMobile ? 0.38 : 0.42;
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0xfbfcfd, 0.038);
+    scene.fog = new THREE.FogExp2(0xfbfcfd, 0.034);
 
     const camera = new THREE.PerspectiveCamera(
-      36,
+      34,
       mount.clientWidth / mount.clientHeight,
       0.1,
-      140
+      120
     );
-    camera.position.set(0, 2.4, 9.2);
+    camera.position.set(0, 0.55, 11.5);
 
     const renderer = new THREE.WebGLRenderer({
-      antialias: !isMobile,
+      antialias: true,
       alpha: true,
       powerPreference: "high-performance",
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.6 : 2));
     renderer.setSize(mount.clientWidth, mount.clientHeight);
     mount.appendChild(renderer.domElement);
 
-    const positions = new Float32Array(count * 3);
-    const colors = new Float32Array(count * 3);
+    const waveCount = samples * traces;
+    const stemCount = samples; // stems only on live trace for clarity
+    const zeroCount = samples;
 
-    // Synthetic “audio” harmonic stack — evolves slowly over time.
-    const sampleSignal = (phase: number, t: number) => {
-      const a =
-        Math.sin(phase * 1.0 + t * 0.35) * 0.55 +
-        Math.sin(phase * 2.05 + t * 0.22) * 0.28 +
-        Math.sin(phase * 3.1 - t * 0.18) * 0.14 +
-        Math.sin(phase * 5.2 + t * 0.5) * 0.08;
-      // Soft clip like analog headroom.
-      return Math.tanh(a * 1.15);
-    };
+    const wavePos = new Float32Array(waveCount * 3);
+    const waveCol = new Float32Array(waveCount * 3);
+    const stemPos = new Float32Array(stemCount * 2 * 3); // line pairs zero→peak
+    const stemCol = new Float32Array(stemCount * 2 * 3);
+    const zeroPos = new Float32Array(zeroCount * 3);
 
     const ink = { r: 0.102, g: 0.133, b: 0.176 };
     const teal = { r: 0.0, g: 0.639, b: 0.627 };
     const warm = { r: 0.91, g: 0.647, b: 0.294 };
 
-    // Seed initial grid in XZ; Y filled each frame from waveform.
-    let i = 0;
-    for (let layer = 0; layer < layers; layer += 1) {
-      for (let s = 0; s < samples; s += 1) {
-        const u = s / (samples - 1);
-        const v = layer / (layers - 1);
-        const ix = i * 3;
-        positions[ix] = (u - 0.5) * spanX;
-        positions[ix + 1] = 0;
-        positions[ix + 2] = (v - 0.5) * spanZ;
-        colors[ix] = teal.r;
-        colors[ix + 1] = teal.g;
-        colors[ix + 2] = teal.b;
-        i += 1;
-      }
+    // Classic multi-harmonic audio-looking signal.
+    const sampleAmp = (xNorm: number, t: number, lag: number) => {
+      const p = xNorm * Math.PI * 2;
+      // Carrier + harmonics + slow AM — reads as audio, not soft hills.
+      const carrier = Math.sin(p * 2.0 - t * 0.55 - lag);
+      const h2 = Math.sin(p * 4.0 + t * 0.3 - lag * 1.2) * 0.42;
+      const h3 = Math.sin(p * 6.0 - t * 0.45 - lag) * 0.22;
+      const h5 = Math.sin(p * 10.0 + t * 0.8 - lag * 0.7) * 0.1;
+      const am = 0.72 + 0.28 * Math.sin(p * 0.35 + t * 0.2);
+      return Math.tanh((carrier + h2 + h3 + h5) * am * 1.35);
+    };
+
+    // Zero-line across time (readable oscilloscope baseline).
+    for (let s = 0; s < zeroCount; s += 1) {
+      const u = s / (zeroCount - 1);
+      const ix = s * 3;
+      zeroPos[ix] = (u - 0.5) * spanX;
+      zeroPos[ix + 1] = 0;
+      zeroPos[ix + 2] = 0;
     }
 
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-    const material = new THREE.PointsMaterial({
-      size: isMobile ? 0.048 : 0.038,
+    const waveGeo = new THREE.BufferGeometry();
+    waveGeo.setAttribute("position", new THREE.BufferAttribute(wavePos, 3));
+    waveGeo.setAttribute("color", new THREE.BufferAttribute(waveCol, 3));
+    const waveMat = new THREE.PointsMaterial({
+      size: isMobile ? 0.055 : 0.045,
       vertexColors: true,
-      transparent: true,
-      opacity: 0.92,
-      depthWrite: false,
-      sizeAttenuation: true,
-    });
-    const points = new THREE.Points(geometry, material);
-    // Tip the waveform landscape toward the viewer.
-    points.rotation.x = -0.52;
-    scene.add(points);
-
-    // Bright “playhead” waveform on the nearest layer.
-    const headPos = new Float32Array(samples * 3);
-    const headGeo = new THREE.BufferGeometry();
-    headGeo.setAttribute("position", new THREE.BufferAttribute(headPos, 3));
-    const headMat = new THREE.PointsMaterial({
-      color: "#e8a54b",
-      size: isMobile ? 0.075 : 0.065,
       transparent: true,
       opacity: 0.95,
       depthWrite: false,
+      sizeAttenuation: true,
     });
-    const head = new THREE.Points(headGeo, headMat);
-    head.rotation.x = -0.52;
-    scene.add(head);
+    const wavePoints = new THREE.Points(waveGeo, waveMat);
+    wavePoints.rotation.x = -0.28;
+    scene.add(wavePoints);
+
+    const stemGeo = new THREE.BufferGeometry();
+    stemGeo.setAttribute("position", new THREE.BufferAttribute(stemPos, 3));
+    stemGeo.setAttribute("color", new THREE.BufferAttribute(stemCol, 3));
+    const stemMat = new THREE.PointsMaterial({
+      size: isMobile ? 0.028 : 0.022,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.45,
+      depthWrite: false,
+    });
+    const stems = new THREE.Points(stemGeo, stemMat);
+    stems.rotation.x = -0.28;
+    scene.add(stems);
+
+    const zeroGeo = new THREE.BufferGeometry();
+    zeroGeo.setAttribute("position", new THREE.BufferAttribute(zeroPos, 3));
+    const zeroMat = new THREE.PointsMaterial({
+      color: "#8b95a5",
+      size: isMobile ? 0.03 : 0.024,
+      transparent: true,
+      opacity: 0.55,
+      depthWrite: false,
+    });
+    const zeroLine = new THREE.Points(zeroGeo, zeroMat);
+    zeroLine.rotation.x = -0.28;
+    scene.add(zeroLine);
+
+    // Live outline — denser/brighter front waveform.
+    const livePos = new Float32Array(samples * 3);
+    const liveGeo = new THREE.BufferGeometry();
+    liveGeo.setAttribute("position", new THREE.BufferAttribute(livePos, 3));
+    const liveMat = new THREE.PointsMaterial({
+      color: "#00a3a0",
+      size: isMobile ? 0.08 : 0.07,
+      transparent: true,
+      opacity: 1,
+      depthWrite: false,
+    });
+    const liveWave = new THREE.Points(liveGeo, liveMat);
+    liveWave.rotation.x = -0.28;
+    scene.add(liveWave);
 
     const pointer = { x: 0, y: 0, tx: 0, ty: 0, active: false };
     const onPointerMove = (event: PointerEvent) => {
@@ -131,86 +156,104 @@ export function HeroParticles() {
 
     let frame = 0;
     let raf = 0;
+    const amplitude = isMobile ? 1.55 : 1.85;
+
     const animate = () => {
       raf = requestAnimationFrame(animate);
       if (!visible) return;
       frame += 1;
-      const t = frame * 0.0055;
+      const t = frame * 0.007;
 
       const ease = pointer.active ? 0.14 : 0.06;
       pointer.x += (pointer.tx - pointer.x) * ease;
       pointer.y += (pointer.ty - pointer.y) * ease;
 
-      const ampBoost = 1 + (pointer.active ? 0.35 + pointer.y * 0.25 : 0.15);
-      const focusX = pointer.x * (spanX * 0.42);
+      const gain = 1 + (pointer.active ? 0.45 + pointer.y * 0.35 : 0.12);
+      const focus = pointer.x * 0.55 + 0.5;
 
-      const pos = geometry.attributes.position as THREE.BufferAttribute;
-      const col = geometry.attributes.color as THREE.BufferAttribute;
-      const arr = pos.array as Float32Array;
-      const cols = col.array as Float32Array;
-      const hArr = headGeo.attributes.position.array as Float32Array;
+      const wArr = waveGeo.attributes.position.array as Float32Array;
+      const wCol = waveGeo.attributes.color.array as Float32Array;
+      const sArr = stemGeo.attributes.position.array as Float32Array;
+      const sCol = stemGeo.attributes.color.array as Float32Array;
+      const lArr = liveGeo.attributes.position.array as Float32Array;
 
-      let idx = 0;
-      for (let layer = 0; layer < layers; layer += 1) {
-        const v = layer / (layers - 1);
-        // Older layers sit farther in Z and are phase-lagged (time history).
-        const depthLag = (1 - v) * 2.8;
-        const depthFade = 0.25 + v * 0.75;
-        const z = (v - 0.5) * spanZ;
+      let wi = 0;
+      for (let tr = 0; tr < traces; tr += 1) {
+        const depthT = tr / (traces - 1);
+        const lag = depthT * 1.8;
+        const z = -depthT * traces * depthStep;
+        const fade = 1 - depthT * 0.82;
 
         for (let s = 0; s < samples; s += 1) {
           const u = s / (samples - 1);
           const x = (u - 0.5) * spanX;
-          const phase = u * Math.PI * 2 * 3.2;
+          let amp = sampleAmp(u, t, lag) * gain;
 
-          let amp = sampleSignal(phase - depthLag + t * 0.15, t) * ampBoost;
-
-          // Cursor as a local “gain / excitement” on the wave.
           if (pointer.active) {
-            const dx = x - focusX;
-            const local = Math.exp(-(dx * dx) * 0.045);
-            amp +=
-              local *
-              Math.sin(phase * 1.5 + t * 1.2) *
-              0.35 *
-              (0.6 + pointer.y * 0.4);
+            const local = Math.exp(-Math.pow((u - focus) * 7.5, 2));
+            amp += local * Math.sin(u * Math.PI * 14 + t * 2) * 0.28;
           }
 
-          const y = amp * (1.15 + (1 - v) * 0.35);
-          const ix = idx * 3;
-          arr[ix] = x;
-          arr[ix + 1] = y;
-          arr[ix + 2] = z;
+          const y = amp * amplitude;
+          const ix = wi * 3;
+          wArr[ix] = x;
+          wArr[ix + 1] = y;
+          wArr[ix + 2] = z;
 
           const energy = Math.min(1, Math.abs(amp));
           const side = Math.min(1, Math.abs(u - 0.5) * 2);
-          const fade = depthFade * (1 - side * side * 0.4);
-          const tr = ink.r + (teal.r - ink.r) * (0.35 + energy * 0.4) + (warm.r - teal.r) * energy * 0.55;
-          const tg = ink.g + (teal.g - ink.g) * (0.35 + energy * 0.4) + (warm.g - teal.g) * energy * 0.55;
-          const tb = ink.b + (teal.b - ink.b) * (0.35 + energy * 0.4) + (warm.b - teal.b) * energy * 0.55;
-          cols[ix] = tr * fade;
-          cols[ix + 1] = tg * fade;
-          cols[ix + 2] = tb * fade;
+          const edge = 1 - side * side * 0.35;
+          const isFront = tr === 0;
+          const r =
+            (isFront ? teal.r : ink.r + (teal.r - ink.r) * 0.55) +
+            (warm.r - teal.r) * energy * (isFront ? 0.5 : 0.15);
+          const g =
+            (isFront ? teal.g : ink.g + (teal.g - ink.g) * 0.55) +
+            (warm.g - teal.g) * energy * (isFront ? 0.5 : 0.15);
+          const b =
+            (isFront ? teal.b : ink.b + (teal.b - ink.b) * 0.55) +
+            (warm.b - teal.b) * energy * (isFront ? 0.5 : 0.15);
+          wCol[ix] = r * fade * edge;
+          wCol[ix + 1] = g * fade * edge;
+          wCol[ix + 2] = b * fade * edge;
 
-          // Nearest layer becomes the glowing playhead waveform.
-          if (layer === layers - 1) {
-            const hx = s * 3;
-            hArr[hx] = x;
-            hArr[hx + 1] = y + 0.04;
-            hArr[hx + 2] = z;
+          if (tr === 0) {
+            lArr[s * 3] = x;
+            lArr[s * 3 + 1] = y;
+            lArr[s * 3 + 2] = 0.02;
+
+            // Stem from zero-line up/down to sample — classic waveform cue.
+            const a = s * 6;
+            sArr[a] = x;
+            sArr[a + 1] = 0;
+            sArr[a + 2] = 0.01;
+            sArr[a + 3] = x;
+            sArr[a + 4] = y;
+            sArr[a + 5] = 0.01;
+            const sr = ink.r + (teal.r - ink.r) * 0.7;
+            const sg = ink.g + (teal.g - ink.g) * 0.7;
+            const sb = ink.b + (teal.b - ink.b) * 0.7;
+            sCol[a] = sr * 0.35;
+            sCol[a + 1] = sg * 0.35;
+            sCol[a + 2] = sb * 0.35;
+            sCol[a + 3] = sr;
+            sCol[a + 4] = sg;
+            sCol[a + 5] = sb;
           }
 
-          idx += 1;
+          wi += 1;
         }
       }
 
-      pos.needsUpdate = true;
-      col.needsUpdate = true;
-      (headGeo.attributes.position as THREE.BufferAttribute).needsUpdate = true;
+      (waveGeo.attributes.position as THREE.BufferAttribute).needsUpdate = true;
+      (waveGeo.attributes.color as THREE.BufferAttribute).needsUpdate = true;
+      (stemGeo.attributes.position as THREE.BufferAttribute).needsUpdate = true;
+      (stemGeo.attributes.color as THREE.BufferAttribute).needsUpdate = true;
+      (liveGeo.attributes.position as THREE.BufferAttribute).needsUpdate = true;
 
-      camera.position.x += (pointer.x * 0.7 - camera.position.x) * 0.06;
-      camera.position.y += (2.4 + pointer.y * 0.35 - camera.position.y) * 0.06;
-      camera.lookAt(pointer.x * 0.3, 0.2, -1.5);
+      camera.position.x += (pointer.x * 0.65 - camera.position.x) * 0.06;
+      camera.position.y += (0.55 + pointer.y * 0.25 - camera.position.y) * 0.06;
+      camera.lookAt(pointer.x * 0.25, 0.05, -2.5);
       renderer.render(scene, camera);
     };
     animate();
@@ -227,10 +270,14 @@ export function HeroParticles() {
       io.disconnect();
       window.removeEventListener("resize", onResize);
       window.removeEventListener("pointermove", onPointerMove);
-      geometry.dispose();
-      material.dispose();
-      headGeo.dispose();
-      headMat.dispose();
+      waveGeo.dispose();
+      waveMat.dispose();
+      stemGeo.dispose();
+      stemMat.dispose();
+      zeroGeo.dispose();
+      zeroMat.dispose();
+      liveGeo.dispose();
+      liveMat.dispose();
       renderer.dispose();
       if (renderer.domElement.parentElement === mount) {
         mount.removeChild(renderer.domElement);
