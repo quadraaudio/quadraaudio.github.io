@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useState } from "react";
 import { Reveal } from "@/components/motion/Reveal";
-import { SpectrumCascade } from "@/components/three/SpectrumCascade";
+import { PatchbayField } from "@/components/three/PatchbayField";
 import { HydraCarousel } from "@/components/hydra/HydraCarousel";
 import { HydraSheet } from "@/components/hydra/HydraSheet";
 import {
@@ -25,7 +25,7 @@ export function HydraMicrosite() {
     <main className={styles.main}>
       <section id="overview" className={styles.hero}>
         <div className={styles.heroVisual} aria-hidden>
-          <SpectrumCascade />
+          <PatchbayField />
           <div className={styles.heroShade} />
         </div>
         <div className={styles.heroContent}>
@@ -119,18 +119,6 @@ export function HydraMicrosite() {
           </Reveal>
         </div>
       </section>
-
-      <footer className={styles.footer}>
-        <p>
-          <Link href="/">Quadra</Link>
-          <span aria-hidden>·</span>
-          <span>
-            {HYDRA.name} {HYDRA.version}
-          </span>
-          <span aria-hidden>·</span>
-          <span>{HYDRA.platform}</span>
-        </p>
-      </footer>
 
       <HydraSheet
         open={sheet === "specs"}

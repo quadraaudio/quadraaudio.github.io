@@ -29,3 +29,10 @@
 .shell :global(a) {
   color: inherit;
 }
+
+.shell :global(footer) {
+  margin-top: 0;
+  background:
+    radial-gradient(80% 60% at 10% 0%, rgba(41, 151, 255, 0.1), transparent 55%),
+    #0c0f14;
+}

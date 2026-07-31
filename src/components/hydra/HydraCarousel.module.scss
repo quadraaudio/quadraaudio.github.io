@@ -20,6 +20,7 @@
 .tabActive {
   flex: 0 0 auto;
   border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 980px;
   background: transparent;
   color: rgba(245, 245, 247, 0.62);
   min-height: 36px;
@@ -46,6 +47,8 @@
   display: grid;
   background: #0c0f14;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  overflow: hidden;
   animation: panelIn 0.45s var(--ease-out) both;
 }
 

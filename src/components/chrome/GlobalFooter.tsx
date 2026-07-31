@@ -16,6 +16,7 @@ export function GlobalFooter() {
         <div className={styles.cols}>
           <div>
             <p className={styles.label}>Product</p>
+            <Link href="/products/hydra">Hydra</Link>
             <Link href="/products">Products</Link>
             <Link href="/store">Store</Link>
             <Link href="/about">About</Link>
