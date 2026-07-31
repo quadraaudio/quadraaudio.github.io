@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { useCart } from "@/components/providers/CartProvider";
 import { LogoMark } from "@/components/chrome/LogoMark";
 import styles from "./GlobalNav.module.scss";
@@ -23,14 +23,13 @@ const RESOURCE_LINKS = [
 ];
 
 export function GlobalNav() {
-  const { data: session, status } = useSession();
+  const { user, isLoading, logout } = useAuth();
   const { itemCount } = useCart();
   const pathname = usePathname() || "/";
+  const router = useRouter();
   const [open, setOpen] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const isLoading = status === "loading";
-  const user = session?.user;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -47,6 +46,11 @@ export function GlobalNav() {
   }, [mobileOpen]);
 
   const loginHref = `/login?returnTo=${encodeURIComponent(pathname)}`;
+
+  async function onLogout() {
+    await logout();
+    router.refresh();
+  }
 
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
@@ -118,11 +122,7 @@ export function GlobalNav() {
               <Link href="/account" className={styles.linkQuiet}>
                 Account
               </Link>
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={() => signOut({ callbackUrl: "/" })}
-              >
+              <button type="button" className="btn btn-secondary" onClick={onLogout}>
                 Log out
               </button>
             </>
@@ -169,7 +169,7 @@ export function GlobalNav() {
               <Link href="/account" onClick={() => setMobileOpen(false)}>
                 Account
               </Link>
-              <button type="button" onClick={() => signOut({ callbackUrl: "/" })}>
+              <button type="button" onClick={onLogout}>
                 Log out
               </button>
             </>

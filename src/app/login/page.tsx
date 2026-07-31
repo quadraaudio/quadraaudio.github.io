@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { googleAuthConfigured } from "@/auth";
 import LoginClient from "./LoginClient";
 
 export const metadata = {
@@ -15,7 +14,7 @@ export default function LoginPage() {
         </main>
       }
     >
-      <LoginClient configured={googleAuthConfigured} />
+      <LoginClient />
     </Suspense>
   );
 }

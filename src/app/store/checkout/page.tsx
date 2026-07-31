@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { auth, googleAuthConfigured } from "@/auth";
 import { CheckoutClient } from "./CheckoutClient";
+import { getSessionUser, googleAuthConfigured } from "@/lib/googleAuth";
 import styles from "./checkout.module.scss";
 
 export const dynamic = "force-dynamic";
@@ -10,9 +10,9 @@ export const metadata = {
 };
 
 export default async function CheckoutPage() {
-  const session = googleAuthConfigured ? await auth() : null;
+  const user = googleAuthConfigured() ? await getSessionUser() : null;
 
-  if (!session?.user?.id) {
+  if (!user) {
     return (
       <main className={styles.page}>
         <div className="page-shell">
@@ -22,10 +22,9 @@ export default async function CheckoutPage() {
             Sign in with Google to complete purchase and receive licenses in
             your account.
           </p>
-          {!googleAuthConfigured ? (
+          {!googleAuthConfigured() ? (
             <p className={styles.notice}>
-              Google sign-in is not connected yet. Add `AUTH_GOOGLE_ID`,
-              `AUTH_GOOGLE_SECRET`, and `AUTH_SECRET` to enable it.
+              Google sign-in needs <code>AUTH_SECRET</code> on the server.
             </p>
           ) : null}
           <div className={styles.actions}>
@@ -50,7 +49,7 @@ export default async function CheckoutPage() {
         <p className="eyebrow">Checkout</p>
         <h1 className="display display-lg">Complete your order.</h1>
         <p className={styles.signedIn}>
-          Signed in as {session.user.email || session.user.name}
+          Signed in as {user.email || user.name}
         </p>
         <CheckoutClient
           paypalClientId={process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || ""}

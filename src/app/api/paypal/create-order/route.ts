@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-import { auth, googleAuthConfigured } from "@/auth";
 import {
   buildPayPalUnits,
   priceCart,
 } from "@/lib/checkout";
+import { getSessionUser, googleAuthConfigured } from "@/lib/googleAuth";
 import { createPayPalOrder, paypalConfigured } from "@/lib/paypal";
 
 export async function POST(request: Request) {
-  if (!googleAuthConfigured) {
+  if (!googleAuthConfigured()) {
     return NextResponse.json(
       { error: "Google sign-in is not configured" },
       { status: 503 }
@@ -26,8 +26,8 @@ export async function POST(request: Request) {
     );
   }
 
-  const session = await auth();
-  if (!session?.user?.id) {
+  const user = await getSessionUser();
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     const order = await createPayPalOrder({
       amount: priced.order.total.toFixed(2),
       currency: priced.order.currency,
-      customId: session.user.id,
+      customId: user.id,
       items: buildPayPalUnits(priced.order),
     });
 

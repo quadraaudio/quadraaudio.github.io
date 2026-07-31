@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { auth, googleAuthConfigured } from "@/auth";
 import { getSeedProduct } from "@/data/products.seed";
 import { loadAccountForAuth0 } from "@/lib/checkout";
+import { getSessionUser, googleAuthConfigured } from "@/lib/googleAuth";
 import { formatPrice } from "@/lib/products";
 import styles from "./account.module.scss";
 
@@ -16,25 +16,21 @@ function productName(slug: string) {
 }
 
 export default async function AccountPage() {
-  if (!googleAuthConfigured) {
+  if (!googleAuthConfigured()) {
     return (
       <main className={styles.page}>
         <div className="page-shell">
           <h1 className="display display-lg">Account</h1>
           <p className="lede">
-            Google sign-in is not connected yet. Add Google Cloud OAuth keys to
-            enable your Quadra account.
+            Google sign-in needs <code>AUTH_SECRET</code> on the server.
           </p>
-          <a href="/login?returnTo=/account" className="btn btn-primary">
-            Sign in with Google
-          </a>
         </div>
       </main>
     );
   }
 
-  const session = await auth();
-  if (!session?.user?.id) {
+  const user = await getSessionUser();
+  if (!user) {
     return (
       <main className={styles.page}>
         <div className="page-shell">
@@ -48,7 +44,7 @@ export default async function AccountPage() {
     );
   }
 
-  const account = await loadAccountForAuth0(session.user.id);
+  const account = await loadAccountForAuth0(user.id);
   const loadError = !account.ok;
   const orders = account.ok ? account.orders : [];
   const licenses = account.ok ? account.licenses : [];
@@ -58,9 +54,9 @@ export default async function AccountPage() {
       <div className="page-shell">
         <p className="eyebrow">Account</p>
         <h1 className="display display-lg">
-          Hello{session.user.name ? `, ${session.user.name}` : ""}.
+          Hello{user.name ? `, ${user.name}` : ""}.
         </h1>
-        <p className={styles.email}>{session.user.email}</p>
+        <p className={styles.email}>{user.email}</p>
 
         {loadError ? (
           <div className={styles.banner} role="status">
