@@ -4,156 +4,209 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
   SUPPORT_ARTICLES,
-  SUPPORT_CATEGORIES,
+  type SupportArticle,
 } from "@/data/supportArticles";
 import styles from "./support.module.scss";
 
-const TOPIC_CARDS = [
+type Topic = {
+  id: string;
+  title: string;
+  body: string;
+  /** Categories that belong to this topic */
+  categories: string[];
+};
+
+const TOPICS: Topic[] = [
   {
-    title: "Getting Started",
-    body: "Install Hydra, verify HAL bridges, and create your first Matrix Grid patch.",
-    href: "/support/article/getting-started",
+    id: "setup",
+    title: "Setup & install",
+    body: "Requirements, drivers, and first launch.",
+    categories: ["Setup"],
   },
   {
-    title: "Activation & Licensing",
-    body: "Quadra ID, Quadra Guard HWID binding, seats, trial, and offline licenses.",
-    href: "/support/article/license-activation",
+    id: "licensing",
+    title: "Licensing",
+    body: "Activate, seats, trial, and offline licenses.",
+    categories: ["Licensing"],
   },
   {
-    title: "Matrix Grid & Routing",
-    body: "Cross-points, gainful connections, labels, scenes, and feedback protection.",
-    href: "/support/article/matrix-grid",
+    id: "routing",
+    title: "Routing",
+    body: "Matrix Grid, app capture, scenes, and labels.",
+    categories: ["Routing"],
   },
   {
-    title: "Network Audio (AES67 / NDI)",
-    body: "PTP/SAP/SDP AES67 streams, NDI runtime, subscribe and transmit on the LAN.",
-    href: "/support/article/network-aes67-ndi",
+    id: "devices",
+    title: "Bridges & devices",
+    body: "Audio bridges, hardware I/O, and ASRC.",
+    categories: ["Virtual Soundcard"],
   },
   {
-    title: "Control Room Monitor",
-    body: "DIM, MONO, SWAP L/R, MUTE, TALKBACK, and the floating Studio HUD.",
-    href: "/support/article/control-room",
+    id: "network",
+    title: "Network audio",
+    body: "AES67, NDI, PTP, and LAN transmit.",
+    categories: ["Network"],
   },
   {
-    title: "Troubleshooting",
-    body: "Missing devices, silence, license mute, discovery issues, and plugin workers.",
-    href: "/support/article/troubleshooting",
+    id: "fix",
+    title: "Fix a problem",
+    body: "Silence, dropouts, discovery, and plugins.",
+    categories: ["Troubleshooting", "Plugins", "Monitor Control"],
   },
 ];
 
+const SUGGESTED_IDS = [
+  "getting-started",
+  "license-activation",
+  "matrix-grid",
+  "network-aes67-ndi",
+  "troubleshooting",
+] as const;
+
+function matchesQuery(article: SupportArticle, q: string) {
+  return (
+    article.title.toLowerCase().includes(q) ||
+    article.hubBlurb.toLowerCase().includes(q) ||
+    article.category.toLowerCase().includes(q) ||
+    article.summary.toLowerCase().includes(q)
+  );
+}
+
 export default function SupportPage() {
   const [query, setQuery] = useState("");
+  const [topicId, setTopicId] = useState<string | null>(null);
 
-  const filtered = useMemo(() => {
+  const activeTopic = TOPICS.find((t) => t.id === topicId) ?? null;
+  const searching = query.trim().length > 0;
+
+  const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return SUPPORT_ARTICLES;
-    return SUPPORT_ARTICLES.filter(
-      (a) =>
-        a.title.toLowerCase().includes(q) ||
-        a.hubBlurb.toLowerCase().includes(q) ||
-        a.category.toLowerCase().includes(q) ||
-        a.summary.toLowerCase().includes(q)
-    );
-  }, [query]);
+
+    if (q) {
+      return SUPPORT_ARTICLES.filter((a) => matchesQuery(a, q));
+    }
+
+    if (activeTopic) {
+      return SUPPORT_ARTICLES.filter((a) =>
+        activeTopic.categories.includes(a.category)
+      );
+    }
+
+    return SUGGESTED_IDS.map(
+      (id) => SUPPORT_ARTICLES.find((a) => a.id === id)!
+    ).filter(Boolean);
+  }, [query, activeTopic]);
+
+  function clearBrowse() {
+    setQuery("");
+    setTopicId(null);
+  }
 
   return (
     <main className={styles.page}>
-      <div className={`page-shell ${styles.narrow}`}>
-        <p className="eyebrow">Support</p>
-        <h1 className="display display-lg">Hydra help for working studios.</h1>
-        <p className="lede">
-          Guides for bridges, matrix routing, network audio, licensing, and
-          troubleshooting — or reach the team directly.
-        </p>
+      <header className={styles.hero}>
+        <div className={`page-shell ${styles.heroInner}`}>
+          <h1 className={styles.title}>Support</h1>
+          <p className={styles.sub}>
+            Find answers for Hydra — or contact us if you&apos;re stuck.
+          </p>
 
-        <div className={styles.searchRow}>
-          <input
-            type="search"
-            className={styles.search}
-            placeholder="Search Hydra support"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            aria-label="Search Hydra support"
-          />
+          <label className={styles.searchWrap}>
+            <span className={styles.searchIcon} aria-hidden>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="7" />
+                <path d="M20 20l-3.5-3.5" />
+              </svg>
+            </span>
+            <input
+              type="search"
+              className={styles.search}
+              placeholder="Search support"
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                if (e.target.value.trim()) setTopicId(null);
+              }}
+              aria-label="Search support"
+            />
+          </label>
         </div>
+      </header>
 
-        <div className={styles.pills}>
-          {["AES67", "NDI", "License", "Buffer", "VST", "Control Room"].map(
-            (pill) => (
-              <button
-                key={pill}
-                type="button"
-                className={styles.pill}
-                onClick={() => setQuery(pill)}
-              >
-                {pill}
-              </button>
-            )
-          )}
-        </div>
-
-        {!query.trim() && (
-          <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>Popular topics</h2>
-            <div className={styles.cards}>
-              {TOPIC_CARDS.map((topic) => (
-                <article key={topic.title}>
-                  <h3>{topic.title}</h3>
-                  <p>{topic.body}</p>
-                  <Link href={topic.href}>Learn more →</Link>
-                </article>
+      <div className={`page-shell ${styles.body}`}>
+        {!searching && !activeTopic && (
+          <section className={styles.section} aria-labelledby="topics-heading">
+            <h2 id="topics-heading" className={styles.sectionTitle}>
+              Browse by topic
+            </h2>
+            <div className={styles.topicGrid}>
+              {TOPICS.map((topic) => (
+                <button
+                  key={topic.id}
+                  type="button"
+                  className={styles.topicTile}
+                  onClick={() => setTopicId(topic.id)}
+                >
+                  <span className={styles.topicTitle}>{topic.title}</span>
+                  <span className={styles.topicBody}>{topic.body}</span>
+                </button>
               ))}
             </div>
           </section>
         )}
 
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>
-            {query.trim() ? "Search results" : "Knowledge base"}
-          </h2>
+        <section className={styles.section} aria-labelledby="articles-heading">
+          <div className={styles.sectionHead}>
+            <h2 id="articles-heading" className={styles.sectionTitle}>
+              {searching
+                ? results.length
+                  ? `Results (${results.length})`
+                  : "No results"
+                : activeTopic
+                  ? activeTopic.title
+                  : "Suggested articles"}
+            </h2>
 
-          {filtered.length === 0 ? (
+            {(searching || activeTopic) && (
+              <button type="button" className={styles.backBtn} onClick={clearBrowse}>
+                ← All topics
+              </button>
+            )}
+          </div>
+
+          {results.length === 0 ? (
             <p className={styles.empty}>
-              No articles matched. Try another term or{" "}
+              Nothing matched. Try another search, browse a topic, or{" "}
               <Link href="/contact">contact support</Link>.
             </p>
           ) : (
-            SUPPORT_CATEGORIES.map((category) => {
-              const items = filtered.filter((a) => a.category === category);
-              if (items.length === 0) return null;
-              return (
-                <div key={category} className={styles.category}>
-                  <h3>{category}</h3>
-                  <ul>
-                    {items.map((article) => (
-                      <li key={article.id}>
-                        <Link href={`/support/article/${article.id}`}>
-                          <span className={styles.articleTitle}>
-                            {article.title}
-                          </span>
-                          <span className={styles.articleBlurb}>
-                            {article.hubBlurb}
-                          </span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              );
-            })
+            <ul className={styles.articleList}>
+              {results.map((article) => (
+                <li key={article.id}>
+                  <Link href={`/support/article/${article.id}`} className={styles.articleLink}>
+                    <span className={styles.articleCategory}>{article.category}</span>
+                    <span className={styles.articleTitle}>{article.title}</span>
+                    <span className={styles.articleBlurb}>{article.hubBlurb}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {!searching && !activeTopic && (
+            <p className={styles.hint}>
+              Pick a topic above to see every guide in that area.
+            </p>
           )}
         </section>
 
-        <section className={styles.contactBand}>
-          <h2 className={styles.sectionTitle}>Still need help?</h2>
+        <section className={styles.help}>
+          <h2 className={styles.helpTitle}>Still need help?</h2>
           <p>
-            Email{" "}
-            <a href="mailto:support@quadraaudio.com">support@quadraaudio.com</a>{" "}
-            or use the contact page. We typically reply within one business day.
+            <Link href="/contact">Contact Quadra</Link>
+            {" · "}
+            <a href="mailto:support@quadraaudio.com">support@quadraaudio.com</a>
           </p>
-          <Link href="/contact" className={styles.cta}>
-            Contact Quadra
-          </Link>
         </section>
       </div>
     </main>

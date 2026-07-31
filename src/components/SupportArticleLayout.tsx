@@ -1,12 +1,18 @@
 import Link from "next/link";
 import styles from "./SupportArticleLayout.module.scss";
 
+interface RelatedArticle {
+  id: string;
+  title: string;
+}
+
 interface SupportArticleLayoutProps {
   category: string;
   title: string;
   date: string;
   articleId: string;
   summary: string;
+  related?: RelatedArticle[];
   children: React.ReactNode;
 }
 
@@ -14,8 +20,8 @@ export function SupportArticleLayout({
   category,
   title,
   date,
-  articleId,
   summary,
+  related = [],
   children,
 }: SupportArticleLayoutProps) {
   return (
@@ -27,28 +33,38 @@ export function SupportArticleLayout({
           <span>{category}</span>
         </nav>
 
-        <p className="eyebrow">{category}</p>
-        <h1 className={`display display-lg ${styles.title}`}>{title}</h1>
-        <p className={styles.meta}>
-          Updated: {date} · Reference: Q-KB-{articleId}
-        </p>
+        <p className={styles.category}>{category}</p>
+        <h1 className={styles.title}>{title}</h1>
+        <p className={styles.meta}>Updated {date}</p>
 
         <div className={styles.lead}>{summary}</div>
 
         <div className={styles.content}>{children}</div>
 
+        {related.length > 0 && (
+          <aside className={styles.related}>
+            <h2>Related articles</h2>
+            <ul>
+              {related.map((item) => (
+                <li key={item.id}>
+                  <Link href={`/support/article/${item.id}`}>{item.title}</Link>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )}
+
         <aside className={styles.help}>
           <h2>Need more help?</h2>
           <p>
-            Reach the team at{" "}
-            <a href="mailto:support@quadraaudio.com">support@quadraaudio.com</a>{" "}
-            or via the <Link href="/contact">contact page</Link>. Include your
-            Hydra version, macOS version, and steps to reproduce.
+            <Link href="/contact">Contact Quadra</Link>
+            {" · "}
+            <a href="mailto:support@quadraaudio.com">support@quadraaudio.com</a>
           </p>
         </aside>
 
         <p className={styles.back}>
-          <Link href="/support">← All support topics</Link>
+          <Link href="/support">← Back to Support</Link>
         </p>
       </div>
     </main>

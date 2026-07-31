@@ -34,6 +34,12 @@ export default async function SupportArticlePage({
   const article = SUPPORT_ARTICLE_MAP[id];
   if (!article) notFound();
 
+  const related = SUPPORT_ARTICLES.filter(
+    (a) => a.category === article.category && a.id !== article.id
+  )
+    .slice(0, 4)
+    .map((a) => ({ id: a.id, title: a.title }));
+
   return (
     <SupportArticleLayout
       category={article.category}
@@ -41,6 +47,7 @@ export default async function SupportArticlePage({
       date={article.date}
       articleId={article.id}
       summary={article.summary}
+      related={related}
     >
       {article.steps.map((step) => (
         <section key={step.heading}>
