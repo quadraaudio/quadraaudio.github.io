@@ -30,11 +30,11 @@ export function Reveal({
         {
           autoAlpha: 1,
           y: 0,
-          duration: 1,
+          duration: 0.7,
           ease: "power3.out",
           scrollTrigger: {
             trigger: el,
-            start: "top 85%",
+            start: "top 88%",
           },
         }
       );

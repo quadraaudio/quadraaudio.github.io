@@ -5,7 +5,7 @@ import Link from "next/link";
 import { TypedHeader } from "@/components/motion/TypedHeader";
 import { Reveal } from "@/components/motion/Reveal";
 import { HeroParticles } from "@/components/three/HeroParticles";
-import { MorphParticles } from "@/components/three/MorphParticles";
+import { SpectrumCascade } from "@/components/three/SpectrumCascade";
 import type { Product } from "@/data/products.seed";
 import { formatPrice } from "@/lib/products";
 import styles from "./HomePage.module.scss";
@@ -196,7 +196,7 @@ export function HomePage({ products }: { products: Product[] }) {
       <section className={styles.storeTeaser}>
         <div className={`page-shell ${styles.storeInner}`}>
           <div className={styles.storeBackdrop} aria-hidden>
-            <MorphParticles />
+            <SpectrumCascade />
           </div>
           <Reveal>
             <p className={styles.storeBrand}>Quadra Store</p>
