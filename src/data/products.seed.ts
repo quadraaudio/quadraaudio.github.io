@@ -18,6 +18,35 @@ export interface Product {
 /** Placeholder catalog — generic Quadra software SKUs (no product-line spoilers). */
 export const PRODUCTS_SEED: Product[] = [
   {
+    slug: "quadra-matrix",
+    name: "Quadra Matrix",
+    tagline: "Patch matrix + monitor for Mac.",
+    description:
+      "Start edition: Matrix Bridge HAL, NxN patch field, control-room monitor, scenes, and Quadra Guard activation via Quadra ID.",
+    price: 179.0,
+    currency: "USD",
+    category: "software",
+    badge: "Start 1.0",
+    // Listed for fulfillment / promo; storefront can hide via availability later.
+    availabilityStatus: "available",
+    features: [
+      {
+        title: "Patch field",
+        description: "Grid and list routing with device grouping and paint mode.",
+      },
+      {
+        title: "Matrix Bridge",
+        description: "Activate 2A…128 channel virtual devices in Audio MIDI Setup.",
+      },
+      {
+        title: "Quadra Guard",
+        description: "14-day trial, then activate this Mac with your Quadra ID (2 seats).",
+      },
+    ],
+    systemRequirements: ["macOS 14+", "Apple Silicon or Intel", "Admin install for HAL"],
+    cardGradient: "linear-gradient(145deg, #0e1218 0%, #1c4f4d 55%, #00a3a0 120%)",
+  },
+  {
     slug: "quadra-channel",
     name: "Quadra Channel",
     tagline: "A modern channel strip for demanding sessions.",

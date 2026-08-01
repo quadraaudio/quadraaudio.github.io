@@ -111,35 +111,35 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
     id: "license-activation",
     title: "Activation & Licensing (Quadra Guard)",
     category: "Licensing",
-    date: "July 2026",
+    date: "August 2026",
     hubBlurb:
-      "Activate with Quadra ID, bind a Mac via HWID, manage seats, and use offline .qkey files.",
+      "Activate with Quadra ID, bind a Mac via HWID, and manage up to 2 seats — no license-key paste.",
     summary:
-      "Hydra licenses are perpetual with lifetime updates. Quadra Guard binds activation to a hardware ID (HWID), verifies signed license payloads locally, and mutes engine output if the guard fails. Up to 2 Macs per license via your Quadra ID.",
+      "Quadra Matrix (and future Quadra apps) use Quadra Guard: sign in with the same Google Quadra ID you use on the website, bind this Mac’s hardware ID, and receive a signed license payload stored in the Keychain. Up to 2 Macs per license. There is no license-key field in Start 1.0.",
     steps: [
       {
-        heading: "1. Online activation",
-        text: "In Hydra, open License / Account and sign in with your Quadra ID (email or Google). The license server verifies entitlement for your machine ID and returns a signed license payload stored on the Mac.",
+        heading: "1. Online activation (Matrix)",
+        text: "In Quadra Matrix, open Authorization (or Settings → Account) and choose Sign in on the web. Complete login on quadraaudio.com/activate — the site binds this Mac and returns a signed license to the app automatically (no file download).",
         bullets: [
-          "Activation needs network once; afterward the license works offline.",
-          "Manage devices from your Quadra Account on the website.",
+          "The app sends only a hardware ID; your password never enters the Mac app.",
+          "Manage seats from quadraaudio.com/account.",
         ],
       },
       {
-        heading: "2. Offline / .qkey activation",
-        text: "If you received a signed license file, use Offline Activation in the License UI. Paste or import the file so LicenseEngine can verify and save it locally.",
+        heading: "2. Offline / .qkey",
+        text: "If you exported a signed .qkey from your account, use Import .qkey on the Authorization screen. The same signature check applies as online.",
       },
       {
         heading: "3. Seat limits",
-        text: "Each full license permits activation on up to 2 Macs. Deactivate a machine from Account or License settings before moving a seat to another Mac.",
+        text: "Each full license permits activation on up to 2 Macs. Deactivate a machine from Account on the website before moving a seat.",
       },
       {
         heading: "4. Trial",
-        text: "Hydra includes a fully functional 90-day trial. When the trial ends without a license, the engine guard zeros audio output until you activate.",
+        text: "Matrix includes a fully functional 14-day trial started on the web (one per account email and per Mac). Choose Start trial on the web from Authorization. When the trial ends without a full license, Guard mutes the monitor path and blocks new route enables.",
       },
       {
         heading: "5. Troubleshooting activation",
-        text: "Confirm the email matches your purchase, that you have an open seat, and that the Mac’s clock is accurate (signature checks can fail on extreme clock skew). Contact support with your order email and HWID if verification keeps failing.",
+        text: "Confirm the email matches your purchase, that you have an open seat, and that the Mac’s clock is accurate. Contact support with your order email and HWID if verification keeps failing.",
       },
     ],
   },
