@@ -26,7 +26,7 @@ export default async function ProductsPage() {
         <Link href="/products/matrix" className={styles.hydraFeature}>
           <div className={styles.hydraMedia}>
             <Image
-              src={HYDRA.brandMark}
+              src={HYDRA.heroMedia.src}
               alt=""
               fill
               sizes="(max-width: 860px) 100vw, 60vw"

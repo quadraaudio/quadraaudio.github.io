@@ -1,7 +1,8 @@
 .frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  /* Native hydra assets are 1536×1024 (3:2) — do not force 16:9 crop */
+  aspect-ratio: 3 / 2;
   overflow: hidden;
   border-radius: 16px;
   background: #1c242e;
@@ -10,7 +11,7 @@
 
 .large {
   border-radius: 16px;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 3 / 2;
 }
 
 .image,

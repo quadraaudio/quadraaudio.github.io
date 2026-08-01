@@ -3,13 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { PatchbayField } from "@/components/three/PatchbayField";
 import { HYDRA } from "@/data/hydra.landing";
 import styles from "./HydraHero.module.scss";
 
 /**
- * First viewport — Matrix dark shell: StudioAtmosphere + BrandMark + fade-in
- * (matches RootShell / Authorization gate, not Apple marketing rise).
+ * Matrix dark hero — generic studio still + visible staggered fade/rise
+ * (RootShell easing, longer so the motion reads).
  */
 export function HydraHero() {
   const [revealed, setRevealed] = useState(false);
@@ -20,25 +19,27 @@ export function HydraHero() {
       setRevealed(true);
       return;
     }
-    const id = requestAnimationFrame(() => setRevealed(true));
-    return () => cancelAnimationFrame(id);
+    const t = window.setTimeout(() => setRevealed(true), 80);
+    return () => window.clearTimeout(t);
   }, []);
 
   return (
     <section id="overview" className={styles.hero}>
       <div className={styles.atmosphere} aria-hidden>
         <div className={styles.glow} />
-        <div className={styles.patchLayer}>
-          <PatchbayField
-            fallbackSrc={HYDRA.heroMedia.src}
-            fallbackAlt={HYDRA.heroMedia.alt}
-          />
-        </div>
+        <Image
+          src={HYDRA.heroMedia.src}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className={styles.heroStill}
+        />
         <div className={styles.shade} />
       </div>
 
       <div className={`${styles.copy} ${revealed ? styles.revealed : ""}`}>
-        <div className={styles.brandRow}>
+        <div className={`${styles.brandRow} ${styles.in1}`}>
           <Image
             src={HYDRA.brandMark}
             alt=""
@@ -49,9 +50,9 @@ export function HydraHero() {
           />
           <p className={styles.productName}>{HYDRA.brandLine}</p>
         </div>
-        <h1 className={styles.headline}>{HYDRA.headline}</h1>
-        <p className={styles.lede}>{HYDRA.lede}</p>
-        <div className={styles.ctaRow}>
+        <h1 className={`${styles.headline} ${styles.in2}`}>{HYDRA.headline}</h1>
+        <p className={`${styles.lede} ${styles.in3}`}>{HYDRA.lede}</p>
+        <div className={`${styles.ctaRow} ${styles.in4}`}>
           <Link href={HYDRA.ctaPrimary.href} className={styles.btnPrimary}>
             {HYDRA.ctaPrimary.label}
           </Link>

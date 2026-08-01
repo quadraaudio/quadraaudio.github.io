@@ -124,7 +124,7 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
     title: "Monitor like a console.",
     body: "Dim, mono, mute, talkback, and cue on your real speakers and headphones — separate from the patch matrix.",
     media: {
-      src: "/hydra/hero-studio.png",
+      src: "/hydra/chapter-control.png",
       alt: "Quadra Matrix control-room monitor",
       slot: "chapter-control",
     },
@@ -149,8 +149,8 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
     title: "Authorize on the web. Work offline.",
     body: "Start a 14-day full trial or activate a seat with your Quadra ID. The Mac receives a signed license — same as offline .qkey.",
     media: {
-      src: "/matrix/brand-mark.png",
-      alt: "Quadra Matrix brand mark",
+      src: "/hydra/chapter-network.png",
+      alt: "Quadra Matrix authorization and studio routing",
       slot: "chapter-guard",
     },
     subfeatures: [
@@ -181,11 +181,11 @@ export const HYDRA_SPECS = [
   { label: "Price", value: "$179 perpetual · $11.90 × 18 RTO" },
 ] as const;
 
-/** Drop final files into public/hydra/ (or public/matrix/) using these names. */
+/** Drop final files into public/hydra/ using these names (1536×1024). */
 export const HYDRA_MEDIA_CONTRACT = [
-  "hero-studio.png|mp4 — Overview hero (app UI preferred)",
-  "chapter-matrix.png|mp4 — Patch field",
-  "chapter-bridges.png|mp4 — Matrix Bridge",
-  "chapter-control.png|mp4 — Control room",
-  "/matrix/brand-mark.png — Guard / brand",
+  "hero-studio.png — Overview hero",
+  "chapter-matrix.png — Patch field",
+  "chapter-bridges.png — Matrix Bridge",
+  "chapter-control.png — Control room",
+  "chapter-network.png — Guard chapter still",
 ] as const;

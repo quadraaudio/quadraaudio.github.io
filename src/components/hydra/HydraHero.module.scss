@@ -1,8 +1,7 @@
-/* Matrix dark hero — tokens from QuadraTheme fascia / StudioAtmosphere */
+/* Matrix dark hero — fascia atmosphere + visible enter motion */
 
 .hero {
   --mx-ink: #0e1218;
-  --mx-fascia: #121820;
   --mx-raised: #1c242e;
   --mx-text: #f7f9fb;
   --mx-mist: #8b95a5;
@@ -26,7 +25,6 @@
   z-index: 0;
 }
 
-/* StudioAtmosphere dark: teal radial top-right */
 .glow {
   position: absolute;
   top: -12%;
@@ -36,38 +34,34 @@
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(0, 163, 160, 0.18),
+    rgba(0, 163, 160, 0.22),
     transparent 68%
   );
   filter: blur(8px);
+  animation: glowPulse 5.5s ease-in-out infinite;
+  z-index: 1;
 }
 
-.patchLayer {
-  position: absolute;
-  inset: -8% -16vw -10%;
-  opacity: 0.28;
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 20%, transparent 75%);
+.heroStill {
+  object-fit: cover;
+  object-position: center 40%;
+  opacity: 0.42;
 }
 
 .shade {
   position: absolute;
   inset: 0;
+  z-index: 2;
   background:
     radial-gradient(55% 50% at 50% 40%, transparent 0%, rgba(14, 18, 24, 0.55) 100%),
-    linear-gradient(180deg, rgba(14, 18, 24, 0.2) 0%, rgba(14, 18, 24, 0.85) 100%);
+    linear-gradient(180deg, rgba(14, 18, 24, 0.35) 0%, rgba(14, 18, 24, 0.88) 100%);
 }
 
 .copy {
   position: relative;
-  z-index: 1;
+  z-index: 3;
   width: min(100% - 40px, 520px);
   margin-inline: auto;
-  opacity: 0;
-  transition: opacity 0.55s var(--mx-fade);
-}
-
-.revealed {
-  opacity: 1;
 }
 
 .brandRow {
@@ -82,7 +76,8 @@
   width: 72px;
   height: 72px;
   border-radius: 16px;
-  object-fit: cover;
+  object-fit: contain;
+  background: var(--mx-raised);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 }
 
@@ -132,8 +127,7 @@
   font-size: 0.9rem;
   font-weight: 600;
   letter-spacing: -0.01em;
-  transition: background 0.35s var(--mx-fade), border-color 0.35s var(--mx-fade),
-    opacity 0.35s var(--mx-fade);
+  transition: background 0.35s var(--mx-fade), border-color 0.35s var(--mx-fade);
 }
 
 .btnPrimary {
@@ -156,9 +150,69 @@
   border-color: rgba(0, 163, 160, 0.45);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .copy {
+/* Staggered enter — only runs when .revealed is on */
+.in1,
+.in2,
+.in3,
+.in4 {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+.revealed .in1,
+.revealed .in2,
+.revealed .in3,
+.revealed .in4 {
+  animation: matrixEnter 0.85s var(--mx-fade) both;
+}
+
+.revealed .in1 {
+  animation-delay: 0.05s;
+}
+.revealed .in2 {
+  animation-delay: 0.16s;
+}
+.revealed .in3 {
+  animation-delay: 0.28s;
+}
+.revealed .in4 {
+  animation-delay: 0.4s;
+}
+
+@keyframes matrixEnter {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
     opacity: 1;
-    transition: none;
+    transform: none;
+  }
+}
+
+@keyframes glowPulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .in1,
+  .in2,
+  .in3,
+  .in4 {
+    opacity: 1;
+    transform: none;
+    animation: none !important;
+  }
+
+  .glow {
+    animation: none;
   }
 }
