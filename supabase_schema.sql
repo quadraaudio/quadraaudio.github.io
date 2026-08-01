@@ -139,10 +139,14 @@ WHERE slug IN ('quadra-channel', 'quadra-dynamics', 'quadra-studio-bundle');
 
 INSERT INTO public.coupons (code, discount_percent, discount_amount, active)
 VALUES
-  ('QUADRA10', 10, 0, true),
-  ('LAUNCH20', 20, 0, true),
-  ('STUDIO50', 50, 0, true),
-  ('FREE100', 100, 0, true)
+  ('STUDIO20', 20, 0, true),
+  ('SPECIAL50', 50, 0, true),
+  ('FREE100', 100, 0, true),
+  ('VIP100', 100, 0, true)
 ON CONFLICT (code) DO UPDATE SET
   discount_percent = EXCLUDED.discount_percent,
+  discount_amount = EXCLUDED.discount_amount,
   active = EXCLUDED.active;
+
+DELETE FROM public.coupons
+WHERE code IN ('QUADRA10', 'LAUNCH20', 'STUDIO50');

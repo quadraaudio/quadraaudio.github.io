@@ -5,28 +5,21 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { useCart } from "@/components/providers/CartProvider";
 import { PayPalCheckout } from "@/components/store/PayPalCheckout";
-import { getSeedProduct } from "@/data/products.seed";
 import { callEdgeFunction } from "@/lib/edgeApi";
+import {
+  applyCouponToSubtotal,
+  resolveCoupon,
+  type ResolvedCoupon,
+} from "@/lib/coupons";
 import { formatPrice } from "@/lib/products";
 import styles from "./checkout.module.scss";
-
-const PRESETS: Record<string, { percent: number; amount: number }> = {
-  QUADRA10: { percent: 10, amount: 0 },
-  LAUNCH20: { percent: 20, amount: 0 },
-  STUDIO50: { percent: 50, amount: 0 },
-  FREE100: { percent: 100, amount: 0 },
-};
 
 export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
   const { user } = useAuth();
   const { items, clear, hydrated } = useCart();
   const router = useRouter();
   const [coupon, setCoupon] = useState("");
-  const [applied, setApplied] = useState<{
-    code: string;
-    discountPercent: number;
-    discountAmount: number;
-  } | null>(null);
+  const [applied, setApplied] = useState<ResolvedCoupon | null>(null);
   const [couponError, setCouponError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [claimError, setClaimError] = useState<string | null>(null);
@@ -44,16 +37,11 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
 
   const pricedLines = useMemo(() => {
     return items.map((item) => {
-      const live = getSeedProduct(item.slug);
-      const unitPrice = live?.price ?? item.price;
-      const name = live?.name ?? item.name;
-      const priceChanged = live != null && live.price !== item.price;
+      const unitPrice = item.price;
       return {
         ...item,
-        name,
         unitPrice,
         lineTotal: unitPrice * item.quantity,
-        priceChanged,
       };
     });
   }, [items]);
@@ -63,14 +51,10 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
     [pricedLines]
   );
 
-  const priceUpdated = pricedLines.some((line) => line.priceChanged);
-
-  const total = useMemo(() => {
-    if (!applied) return subtotal;
-    const percentOff = subtotal * ((applied.discountPercent || 0) / 100);
-    const amountOff = applied.discountAmount || 0;
-    return Math.max(0, Number((subtotal - percentOff - amountOff).toFixed(2)));
-  }, [subtotal, applied]);
+  const total = useMemo(
+    () => Number(applyCouponToSubtotal(subtotal, applied).toFixed(2)),
+    [subtotal, applied]
+  );
 
   const isFree = total <= 0 && items.length > 0;
 
@@ -78,18 +62,14 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
     setBusy(true);
     setCouponError(null);
     try {
-      const upper = coupon.trim().toUpperCase();
-      const preset = PRESETS[upper];
-      if (!preset) {
+      const resolved = await resolveCoupon(coupon);
+      if (!resolved) {
         setApplied(null);
         setCouponError("Invalid or expired promo code");
         return;
       }
-      setApplied({
-        code: upper,
-        discountPercent: preset.percent,
-        discountAmount: preset.amount,
-      });
+      setApplied(resolved);
+      setCoupon(resolved.code);
     } finally {
       setBusy(false);
     }
@@ -98,6 +78,10 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
   async function claimFree() {
     if (!user?.accessToken) {
       setClaimError("Sign in with Google again, then claim.");
+      return;
+    }
+    if (!applied) {
+      setClaimError("Apply a valid 100% promo code first.");
       return;
     }
     setClaiming(true);
@@ -112,7 +96,7 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
         {
           googleAccessToken: user.accessToken,
           items: items.map((i) => ({ slug: i.slug, quantity: i.quantity })),
-          couponCode: applied?.code || undefined,
+          couponCode: applied.code,
         },
         user.accessToken
       );
@@ -146,32 +130,49 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
             <li key={item.slug}>
               <span>
                 {item.name} × {item.quantity}
-                {item.priceChanged ? (
-                  <em className={styles.priceNote}> · price updated</em>
-                ) : null}
               </span>
               <strong>{formatPrice(item.lineTotal, item.currency)}</strong>
             </li>
           ))}
         </ul>
-        {priceUpdated ? (
-          <p className={styles.priceNoteBlock}>
-            Prices refreshed from the live catalog before payment.
-          </p>
-        ) : null}
         <div className={styles.coupon}>
           <input
             value={coupon}
-            onChange={(e) => setCoupon(e.target.value)}
+            onChange={(e) => {
+              setCoupon(e.target.value);
+              if (applied) setApplied(null);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                void applyCoupon();
+              }
+            }}
             placeholder="Promo code"
             aria-label="Promo code"
+            autoCapitalize="characters"
           />
-          <button type="button" className="btn btn-secondary" onClick={applyCoupon} disabled={busy}>
-            Apply
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => void applyCoupon()}
+            disabled={busy || !coupon.trim()}
+          >
+            {busy ? "Checking…" : "Apply"}
           </button>
         </div>
         {couponError ? <p className={styles.error}>{couponError}</p> : null}
-        {applied ? <p className={styles.ok}>Applied {applied.code}</p> : null}
+        {applied ? (
+          <p className={styles.ok}>
+            Applied {applied.code}
+            {applied.discountPercent
+              ? ` (−${applied.discountPercent}%)`
+              : ""}
+            {applied.discountAmount
+              ? ` (−${formatPrice(applied.discountAmount)})`
+              : ""}
+          </p>
+        ) : null}
         <div className={styles.total}>
           <span>Total</span>
           <strong>{formatPrice(total)}</strong>
@@ -189,7 +190,7 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
             <button
               type="button"
               className="btn btn-primary"
-              onClick={claimFree}
+              onClick={() => void claimFree()}
               disabled={claiming}
             >
               {claiming ? "Claiming…" : "Claim license"}
@@ -205,8 +206,8 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
             <h2>Pay with PayPal</h2>
             {!paypalClientId ? (
               <p className={styles.priceNoteBlock}>
-                PayPal is not configured. Set{" "}
-                <code>NEXT_PUBLIC_PAYPAL_CLIENT_ID</code>.
+                PayPal is not configured yet. Use a 100% promo code (for example{" "}
+                <code>FREE100</code> or <code>VIP100</code>) to claim a license.
               </p>
             ) : (
               <PayPalCheckout couponCode={applied?.code} />
