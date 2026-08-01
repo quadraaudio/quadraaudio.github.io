@@ -35,7 +35,7 @@ function loadGsi(): Promise<void> {
   if (window.google?.accounts?.oauth2) return Promise.resolve();
   if (gsiLoading) return gsiLoading;
 
-  gsiLoading = new Promise((resolve, reject) => {
+  gsiLoading = new Promise<void>((resolve, reject) => {
     const existing = document.querySelector<HTMLScriptElement>(
       `script[src="${GSI_SRC}"]`
     );
@@ -57,7 +57,9 @@ function loadGsi(): Promise<void> {
     script.onload = () => resolve();
     script.onerror = () => reject(new Error("Failed to load Google sign-in"));
     document.head.appendChild(script);
-  }).finally(() => {
+  });
+
+  void gsiLoading.finally(() => {
     gsiLoading = null;
   });
 
