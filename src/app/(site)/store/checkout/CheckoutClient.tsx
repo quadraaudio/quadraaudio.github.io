@@ -15,7 +15,7 @@ import { formatPrice } from "@/lib/products";
 import styles from "./checkout.module.scss";
 
 export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
-  const { user } = useAuth();
+  const { user, ensureAccessToken } = useAuth();
   const { items, clear, hydrated } = useCart();
   const router = useRouter();
   const [coupon, setCoupon] = useState("");
@@ -76,7 +76,7 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
   }
 
   async function claimFree() {
-    if (!user?.accessToken) {
+    if (!user) {
       setClaimError("Sign in with Google again, then claim.");
       return;
     }
@@ -87,6 +87,7 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
     setClaiming(true);
     setClaimError(null);
     try {
+      const accessToken = await ensureAccessToken();
       const data = await callEdgeFunction<{
         persisted?: boolean;
         orderNumber?: string;
@@ -94,11 +95,11 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
       }>(
         "store-checkout-free",
         {
-          googleAccessToken: user.accessToken,
+          googleAccessToken: accessToken,
           items: items.map((i) => ({ slug: i.slug, quantity: i.quantity })),
           couponCode: applied.code,
         },
-        user.accessToken
+        accessToken
       );
       if (!data.persisted) {
         throw new Error(data.error || "Could not claim license");
@@ -108,7 +109,12 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
         `/store/success/?status=ok&order=${encodeURIComponent(data.orderNumber || "")}`
       );
     } catch (err) {
-      setClaimError(err instanceof Error ? err.message : "Claim failed");
+      const message = err instanceof Error ? err.message : "Claim failed";
+      setClaimError(
+        /unauthorized/i.test(message)
+          ? "Google session expired. Click Claim again to refresh sign-in."
+          : message
+      );
       setClaiming(false);
     }
   }

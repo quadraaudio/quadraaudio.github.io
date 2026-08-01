@@ -14,7 +14,7 @@ type Props = {
 };
 
 export function PayPalCheckout({ couponCode, disabled }: Props) {
-  const { user } = useAuth();
+  const { user, ensureAccessToken } = useAuth();
   const { items, clear } = useCart();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -53,34 +53,36 @@ export function PayPalCheckout({ couponCode, disabled }: Props) {
       >
         <PayPalButtons
           style={{ layout: "vertical", color: "black", shape: "rect", label: "pay" }}
-          disabled={capturing || !user?.accessToken}
+          disabled={capturing || !user}
           onCancel={() => {
             setCapturing(false);
             setError("PayPal checkout was cancelled. Your bag is unchanged.");
           }}
           createOrder={async () => {
-            if (!user?.accessToken) throw new Error("Sign in with Google first");
+            if (!user) throw new Error("Sign in with Google first");
             setError(null);
+            const accessToken = await ensureAccessToken();
             const data = await callEdgeFunction<{ id?: string; error?: string }>(
               "store-paypal-create",
               {
-                googleAccessToken: user.accessToken,
+                googleAccessToken: accessToken,
                 items: items.map((i) => ({
                   slug: i.slug,
                   quantity: i.quantity,
                 })),
                 couponCode: couponCode || undefined,
               },
-              user.accessToken
+              accessToken
             );
             if (!data.id) throw new Error(data.error || "Could not create PayPal order");
             return data.id;
           }}
           onApprove={async (data) => {
-            if (!user?.accessToken) throw new Error("Sign in with Google first");
+            if (!user) throw new Error("Sign in with Google first");
             setCapturing(true);
             setError(null);
             try {
+              const accessToken = await ensureAccessToken();
               const json = await callEdgeFunction<{
                 persisted?: boolean;
                 code?: string;
@@ -89,7 +91,7 @@ export function PayPalCheckout({ couponCode, disabled }: Props) {
               }>(
                 "store-paypal-capture",
                 {
-                  googleAccessToken: user.accessToken,
+                  googleAccessToken: accessToken,
                   orderId: data.orderID,
                   items: items.map((i) => ({
                     slug: i.slug,
@@ -97,7 +99,7 @@ export function PayPalCheckout({ couponCode, disabled }: Props) {
                   })),
                   couponCode: couponCode || undefined,
                 },
-                user.accessToken
+                accessToken
               );
               if (json.code === "paid_but_unfulfilled" || !json.persisted) {
                 router.push(

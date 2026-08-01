@@ -13,7 +13,7 @@ function productName(slug: string) {
 }
 
 export default function AccountPage() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, ensureAccessToken } = useAuth();
   const [orders, setOrders] = useState<
     Array<{
       order_number: string;
@@ -30,7 +30,7 @@ export default function AccountPage() {
   const [loadingAccount, setLoadingAccount] = useState(false);
 
   useEffect(() => {
-    if (!user?.accessToken) {
+    if (!user) {
       setOrders([]);
       setLicenses([]);
       return;
@@ -38,29 +38,26 @@ export default function AccountPage() {
     let cancelled = false;
     setLoadingAccount(true);
     setLoadError(false);
-    callEdgeFunction<{
-      orders?: typeof orders;
-      licenses?: typeof licenses;
-    }>(
-      "store-account",
-      { googleAccessToken: user.accessToken },
-      user.accessToken
-    )
-      .then((data) => {
+    (async () => {
+      try {
+        const accessToken = await ensureAccessToken();
+        const data = await callEdgeFunction<{
+          orders?: typeof orders;
+          licenses?: typeof licenses;
+        }>("store-account", { googleAccessToken: accessToken }, accessToken);
         if (cancelled) return;
         setOrders(data.orders || []);
         setLicenses(data.licenses || []);
-      })
-      .catch(() => {
+      } catch {
         if (!cancelled) setLoadError(true);
-      })
-      .finally(() => {
+      } finally {
         if (!cancelled) setLoadingAccount(false);
-      });
+      }
+    })();
     return () => {
       cancelled = true;
     };
-  }, [user]);
+  }, [user?.id, ensureAccessToken]);
 
   if (isLoading) {
     return (

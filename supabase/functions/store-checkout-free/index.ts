@@ -12,17 +12,56 @@ const CORS = {
 };
 
 async function googleUser(accessToken: string) {
-  const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
-  if (!res.ok) return null;
-  const data = await res.json();
-  if (!data.sub || !data.email) return null;
-  return {
-    id: String(data.sub),
-    email: String(data.email),
-    name: data.name || null,
-  };
+  const token = (accessToken || "").trim();
+  if (!token) return null;
+
+  const fromUserInfo = await fetch(
+    "https://www.googleapis.com/oauth2/v3/userinfo",
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  if (fromUserInfo.ok) {
+    const data = await fromUserInfo.json();
+    if (data.sub && data.email) {
+      return {
+        id: String(data.sub),
+        email: String(data.email),
+        name: data.name || null,
+      };
+    }
+  }
+
+  // Fallback: tokeninfo works for both access tokens and ID tokens.
+  const infoRes = await fetch(
+    `https://oauth2.googleapis.com/tokeninfo?access_token=${encodeURIComponent(token)}`
+  );
+  if (infoRes.ok) {
+    const data = await infoRes.json();
+    if (data.sub && data.email) {
+      return {
+        id: String(data.sub),
+        email: String(data.email),
+        name: data.name || null,
+      };
+    }
+  }
+
+  if (token.split(".").length === 3) {
+    const idRes = await fetch(
+      `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(token)}`
+    );
+    if (idRes.ok) {
+      const data = await idRes.json();
+      if (data.sub && data.email) {
+        return {
+          id: String(data.sub),
+          email: String(data.email),
+          name: data.name || null,
+        };
+      }
+    }
+  }
+
+  return null;
 }
 
 function makeOrderNumber() {
@@ -61,7 +100,13 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const user = await googleUser(body.googleAccessToken || "");
     if (!user) {
-      return Response.json({ error: "Unauthorized" }, { status: 401, headers: CORS });
+      return Response.json(
+        {
+          error:
+            "Google session expired. Sign in again (or click Claim to refresh).",
+        },
+        { status: 401, headers: CORS }
+      );
     }
 
     const items = Array.isArray(body.items) ? body.items : [];
