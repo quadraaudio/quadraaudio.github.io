@@ -108,7 +108,7 @@ export default function SupportPage() {
         <div className={`page-shell ${styles.heroInner}`}>
           <h1 className={styles.title}>Support</h1>
           <p className={styles.sub}>
-            Find answers for Hydra — or contact us if you&apos;re stuck.
+            Find answers for MATRIX — or contact us if you&apos;re stuck.
           </p>
 
           <label className={styles.searchWrap}>

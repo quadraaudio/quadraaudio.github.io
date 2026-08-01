@@ -1,6 +1,10 @@
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { getSupabaseBrowser } from "@/lib/supabase";
-import { PRODUCTS_SEED, type Product, getSeedProduct } from "@/data/products.seed";
+import {
+  PRODUCTS_SEED,
+  type Product,
+  getSeedProduct,
+} from "@/data/products.seed";
 
 type DbProduct = {
   slug: string;
@@ -15,9 +19,10 @@ type DbProduct = {
   features: Product["features"] | null;
   system_requirements: string[] | null;
   card_gradient: string | null;
+  sort_order?: number | null;
 };
 
-function mapDbProduct(row: DbProduct): Product {
+export function mapDbProduct(row: DbProduct): Product {
   return {
     slug: row.slug,
     name: row.name,
@@ -33,28 +38,45 @@ function mapDbProduct(row: DbProduct): Product {
     cardGradient:
       row.card_gradient ||
       "linear-gradient(145deg, #0e1218 0%, #243041 55%, #00a3a0 120%)",
+    sortOrder: row.sort_order ?? 100,
   };
 }
 
-export async function listProducts(): Promise<Product[]> {
+function sortProducts(products: Product[]) {
+  return [...products].sort(
+    (a, b) => (a.sortOrder ?? 100) - (b.sortOrder ?? 100) || a.name.localeCompare(b.name)
+  );
+}
+
+/** Storefront catalog — Supabase `products` table, seed as offline fallback. */
+export async function listProducts(options?: {
+  includeUnavailable?: boolean;
+}): Promise<Product[]> {
   const admin = getSupabaseAdmin();
   const client = admin || getSupabaseBrowser();
-  if (!client) return PRODUCTS_SEED;
+  if (!client) return sortProducts(PRODUCTS_SEED);
 
   try {
-    const { data, error } = await client
-      .from("products")
-      .select("*")
-      .order("name", { ascending: true });
+    let query = client.from("products").select("*").order("sort_order", {
+      ascending: true,
+    });
 
-    if (error || !data?.length) return PRODUCTS_SEED;
-    return data.map((row) => mapDbProduct(row as DbProduct));
+    if (!options?.includeUnavailable) {
+      query = query.eq("availability_status", "available");
+    }
+
+    const { data, error } = await query;
+
+    if (error || !data?.length) return sortProducts(PRODUCTS_SEED);
+    return sortProducts(data.map((row) => mapDbProduct(row as DbProduct)));
   } catch {
-    return PRODUCTS_SEED;
+    return sortProducts(PRODUCTS_SEED);
   }
 }
 
-export async function getProductBySlug(slug: string): Promise<Product | undefined> {
+export async function getProductBySlug(
+  slug: string
+): Promise<Product | undefined> {
   const admin = getSupabaseAdmin();
   const client = admin || getSupabaseBrowser();
   if (!client) return getSeedProduct(slug);
@@ -78,4 +100,23 @@ export function formatPrice(amount: number, currency = "USD") {
     style: "currency",
     currency,
   }).format(amount);
+}
+
+export function productToDbPayload(product: Partial<Product> & { slug: string }) {
+  return {
+    slug: product.slug,
+    name: product.name,
+    tagline: product.tagline ?? null,
+    description: product.description ?? null,
+    price: product.price ?? 0,
+    currency: product.currency ?? "USD",
+    category: product.category ?? "software",
+    badge: product.badge ?? null,
+    availability_status: product.availabilityStatus ?? "available",
+    features: product.features ?? [],
+    system_requirements: product.systemRequirements ?? [],
+    card_gradient: product.cardGradient ?? null,
+    sort_order: product.sortOrder ?? 100,
+    updated_at: new Date().toISOString(),
+  };
 }

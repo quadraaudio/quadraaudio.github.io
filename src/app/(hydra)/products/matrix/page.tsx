@@ -4,19 +4,19 @@ import { HYDRA } from "@/data/hydra.landing";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "Hydra — Professional audio routing for Mac",
+    absolute: "MATRIX — Professional audio routing for Mac",
   },
   description: HYDRA.lede,
   openGraph: {
-    title: "Hydra",
+    title: "MATRIX",
     description: HYDRA.lede,
-    url: "https://quadraaudio.com/products/hydra/",
-    siteName: "Hydra",
+    url: "https://quadraaudio.com/products/matrix/",
+    siteName: "MATRIX",
     type: "website",
     images: [{ url: "/hydra/hero-studio.png" }],
   },
 };
 
-export default function HydraProductPage() {
+export default function MatrixProductPage() {
   return <HydraMicrosite />;
 }

@@ -12,10 +12,8 @@ import styles from "./GlobalNav.module.scss";
 /** After logo: Store first, products, Support last before actions. */
 const NAV_LINKS = [
   { href: "/store", label: "Store" },
-  { href: "/products/hydra", label: "Hydra" },
-  { href: "/store/quadra-channel", label: "Channel" },
-  { href: "/store/quadra-dynamics", label: "Dynamics" },
-  { href: "/store/quadra-studio-bundle", label: "Bundle" },
+  { href: "/products/matrix", label: "MATRIX" },
+  { href: "/store/quadra-matrix", label: "Buy" },
   { href: "/support", label: "Support" },
 ];
 

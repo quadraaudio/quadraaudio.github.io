@@ -1,2 +1,4 @@
-/hydra /products/hydra/ 301
-/hydra/ /products/hydra/ 301
+/hydra /products/matrix/ 301
+/hydra/ /products/matrix/ 301
+/products/hydra /products/matrix/ 301
+/products/hydra/ /products/matrix/ 301

@@ -43,11 +43,11 @@ export function HydraChrome() {
   return (
     <div className={`${styles.bar} ${scrolled ? styles.scrolled : ""}`}>
       <div className={styles.inner}>
-        <a href="#overview" className={styles.wordmark} aria-label="Hydra">
+        <a href="#overview" className={styles.wordmark} aria-label="MATRIX">
           {HYDRA.name}
         </a>
 
-        <nav className={styles.nav} aria-label="Hydra sections">
+        <nav className={styles.nav} aria-label="MATRIX sections">
           {HYDRA_NAV.map((item) => (
             <a
               key={item.href}

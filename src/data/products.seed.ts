@@ -13,137 +13,54 @@ export interface Product {
   features: { title: string; description: string }[];
   systemRequirements: string[];
   cardGradient: string;
+  sortOrder?: number;
 }
 
-/** Placeholder catalog — generic Quadra software SKUs (no product-line spoilers). */
+/**
+ * Offline fallback catalog when Supabase is unavailable.
+ * Live storefront reads from the `products` table — edit there (or /admin/products).
+ */
 export const PRODUCTS_SEED: Product[] = [
   {
     slug: "quadra-matrix",
-    name: "Quadra Matrix",
-    tagline: "Patch matrix + monitor for Mac.",
+    name: "MATRIX",
+    tagline: "The complete virtual audio patchbay for macOS.",
     description:
-      "Start edition: Matrix Bridge HAL, NxN patch field, control-room monitor, scenes, and Quadra Guard activation via Quadra ID.",
+      "Eight selectable MATRIX Audio Bridges (2 to 128 channels each) that any app can pick as input or output, routed freely between apps, hardware, out-of-process VST3 plugins, and network audio — all in one visual Matrix Grid.",
     price: 179.0,
     currency: "USD",
     category: "software",
-    badge: "Start 1.0",
-    // Listed for fulfillment / promo; storefront can hide via availability later.
+    badge: "Virtual Audio Patchbay",
     availabilityStatus: "available",
     features: [
       {
-        title: "Patch field",
-        description: "Grid and list routing with device grouping and paint mode.",
+        title: "Eight Audio Bridges",
+        description:
+          "2‑A, 2‑B, 4, 8, 16, 32, 64 and 128‑channel virtual soundcards — up to 256 channels of routing headroom.",
       },
       {
-        title: "Matrix Bridge",
-        description: "Activate 2A…128 channel virtual devices in Audio MIDI Setup.",
+        title: "The Matrix Grid",
+        description: "Visual cross-point routing with gainful connections and scenes.",
       },
       {
         title: "Quadra Guard",
-        description: "14-day trial, then activate this Mac with your Quadra ID (2 seats).",
-      },
-    ],
-    systemRequirements: ["macOS 14+", "Apple Silicon or Intel", "Admin install for HAL"],
-    cardGradient: "linear-gradient(145deg, #0e1218 0%, #1c4f4d 55%, #00a3a0 120%)",
-  },
-  {
-    slug: "quadra-channel",
-    name: "Quadra Channel",
-    tagline: "A modern channel strip for demanding sessions.",
-    description:
-      "EQ, dynamics, and saturation shaped for pro tracking and mix buses. Low-latency processing with recall-safe presets for studio and live workflows.",
-    price: 149.0,
-    currency: "USD",
-    category: "software",
-    badge: "Channel Strip",
-    availabilityStatus: "available",
-    features: [
-      {
-        title: "Precision EQ",
-        description: "Musical curves with surgical mid-band focus and shelf air.",
-      },
-      {
-        title: "Adaptive Dynamics",
-        description: "Compressor and gate tuned for vocals, buses, and aggressive sources.",
-      },
-      {
-        title: "Recall Safe",
-        description: "Session presets that travel cleanly across machines and DAWs.",
+        description:
+          "14-day trial, then activate this Mac with your Quadra ID (2 seats).",
       },
     ],
     systemRequirements: [
-      "macOS 13+ or Windows 10+",
-      "VST3 / AU / AAX",
-      "8 GB RAM recommended",
+      "macOS 26+",
+      "Apple Silicon or Intel",
+      "Admin install for HAL drivers",
     ],
     cardGradient: "linear-gradient(145deg, #0e1218 0%, #1c4f4d 55%, #00a3a0 120%)",
-  },
-  {
-    slug: "quadra-dynamics",
-    name: "Quadra Dynamics",
-    tagline: "Compression and transient control with studio polish.",
-    description:
-      "A focused dynamics suite for mix engineers who need transparent leveling and character on demand — from invisible glue to punchy transient shaping.",
-    price: 129.0,
-    currency: "USD",
-    category: "software",
-    badge: "Dynamics",
-    availabilityStatus: "available",
-    features: [
-      {
-        title: "Dual Character",
-        description: "Clean digital path or warmer transformer-inspired color.",
-      },
-      {
-        title: "Transient Designer",
-        description: "Shape attack and sustain without wrecking the bus.",
-      },
-      {
-        title: "Sidechain Tools",
-        description: "Flexible detection filters for modern mix moves.",
-      },
-    ],
-    systemRequirements: [
-      "macOS 13+ or Windows 10+",
-      "VST3 / AU / AAX",
-      "8 GB RAM recommended",
-    ],
-    cardGradient: "linear-gradient(145deg, #121820 0%, #2a3a55 50%, #e8a54b 130%)",
-  },
-  {
-    slug: "quadra-studio-bundle",
-    name: "Quadra Studio Bundle",
-    tagline: "Core tools for tracking, mixing, and delivery.",
-    description:
-      "A curated starter set of Quadra processors for producers and engineers building a professional toolkit — available now as a placeholder catalog entry.",
-    price: 249.0,
-    currency: "USD",
-    category: "bundle",
-    badge: "Bundle",
-    availabilityStatus: "available",
-    features: [
-      {
-        title: "Channel + Dynamics",
-        description: "The essential Quadra Channel and Dynamics processors together.",
-      },
-      {
-        title: "Shared Preset Library",
-        description: "Cross-plugin presets for faster session starts.",
-      },
-      {
-        title: "Lifetime Updates",
-        description: "Licensed once. Updates included for the life of the product.",
-      },
-    ],
-    systemRequirements: [
-      "macOS 13+ or Windows 10+",
-      "VST3 / AU / AAX",
-      "8 GB RAM recommended",
-    ],
-    cardGradient: "linear-gradient(145deg, #0e1218 0%, #243041 45%, #8b95a5 120%)",
+    sortOrder: 10,
   },
 ];
 
 export function getSeedProduct(slug: string): Product | undefined {
   return PRODUCTS_SEED.find((p) => p.slug === slug);
 }
+
+/** Canonical store slug for the MATRIX product (licensing + deep links). */
+export const MATRIX_PRODUCT_SLUG = "quadra-matrix";

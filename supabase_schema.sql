@@ -112,34 +112,14 @@ INSERT INTO public.products (
   availability_status, features, system_requirements, card_gradient
 ) VALUES
 (
-  'quadra-channel',
-  'Quadra Channel',
-  'A modern channel strip for demanding sessions.',
-  'EQ, dynamics, and saturation shaped for pro tracking and mix buses.',
-  149.00, 'USD', 'software', 'Channel Strip', 'available',
-  '[{"title":"Precision EQ","description":"Musical curves with surgical mid-band focus."},{"title":"Adaptive Dynamics","description":"Compressor and gate tuned for vocals and buses."},{"title":"Recall Safe","description":"Session presets that travel cleanly across machines."}]'::jsonb,
-  '["macOS 13+ or Windows 10+","VST3 / AU / AAX","8 GB RAM recommended"]'::jsonb,
+  'quadra-matrix',
+  'MATRIX',
+  'The complete virtual audio patchbay for macOS.',
+  'Eight selectable MATRIX Audio Bridges routed in one Matrix Grid.',
+  179.00, 'USD', 'software', 'Virtual Audio Patchbay', 'available',
+  '[{"title":"Eight Audio Bridges","description":"2A–128 channel virtual soundcards."},{"title":"The Matrix Grid","description":"Gainful cross-point routing and scenes."},{"title":"Quadra Guard","description":"Trial then activate with Quadra ID (2 seats)."}]'::jsonb,
+  '["macOS 26+","Apple Silicon or Intel","Admin install for HAL"]'::jsonb,
   'linear-gradient(145deg, #0e1218 0%, #1c4f4d 55%, #00a3a0 120%)'
-),
-(
-  'quadra-dynamics',
-  'Quadra Dynamics',
-  'Compression and transient control with studio polish.',
-  'A focused dynamics suite for mix engineers who need transparent leveling and character on demand.',
-  129.00, 'USD', 'software', 'Dynamics', 'available',
-  '[{"title":"Dual Character","description":"Clean digital path or warmer color."},{"title":"Transient Designer","description":"Shape attack and sustain."},{"title":"Sidechain Tools","description":"Flexible detection filters."}]'::jsonb,
-  '["macOS 13+ or Windows 10+","VST3 / AU / AAX","8 GB RAM recommended"]'::jsonb,
-  'linear-gradient(145deg, #121820 0%, #2a3a55 50%, #e8a54b 130%)'
-),
-(
-  'quadra-studio-bundle',
-  'Quadra Studio Bundle',
-  'Core tools for tracking, mixing, and delivery.',
-  'A curated starter set of Quadra processors for producers and engineers.',
-  249.00, 'USD', 'bundle', 'Bundle', 'available',
-  '[{"title":"Channel + Dynamics","description":"Essential processors together."},{"title":"Shared Preset Library","description":"Cross-plugin presets."},{"title":"Lifetime Updates","description":"Licensed once."}]'::jsonb,
-  '["macOS 13+ or Windows 10+","VST3 / AU / AAX","8 GB RAM recommended"]'::jsonb,
-  'linear-gradient(145deg, #0e1218 0%, #243041 45%, #8b95a5 120%)'
 )
 ON CONFLICT (slug) DO UPDATE SET
   name = EXCLUDED.name,
@@ -153,6 +133,9 @@ ON CONFLICT (slug) DO UPDATE SET
   features = EXCLUDED.features,
   system_requirements = EXCLUDED.system_requirements,
   card_gradient = EXCLUDED.card_gradient;
+
+DELETE FROM public.products
+WHERE slug IN ('quadra-channel', 'quadra-dynamics', 'quadra-studio-bundle');
 
 INSERT INTO public.coupons (code, discount_percent, discount_amount, active)
 VALUES

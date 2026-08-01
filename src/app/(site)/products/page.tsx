@@ -23,7 +23,7 @@ export default async function ProductsPage() {
           engineers — processors you can trust on real sessions.
         </p>
 
-        <Link href="/products/hydra" className={styles.hydraFeature}>
+        <Link href="/products/matrix" className={styles.hydraFeature}>
           <div className={styles.hydraMedia}>
             <Image
               src="/hydra/hero-studio.png"
@@ -37,7 +37,7 @@ export default async function ProductsPage() {
             <p className={styles.hydraEyebrow}>Featured</p>
             <h2>{HYDRA.name}</h2>
             <p>{HYDRA.headline}</p>
-            <span className={styles.hydraLink}>Enter Hydra</span>
+            <span className={styles.hydraLink}>Enter MATRIX</span>
           </div>
         </Link>
 

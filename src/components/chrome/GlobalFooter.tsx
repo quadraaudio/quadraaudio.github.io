@@ -16,7 +16,8 @@ export function GlobalFooter() {
         <div className={styles.cols}>
           <div>
             <p className={styles.label}>Product</p>
-            <Link href="/products/hydra">Hydra</Link>
+            <Link href="/products/matrix">MATRIX</Link>
+            <Link href="/store/quadra-matrix">Buy MATRIX</Link>
             <Link href="/products">Products</Link>
             <Link href="/store">Store</Link>
             <Link href="/about">About</Link>
@@ -28,6 +29,7 @@ export function GlobalFooter() {
             <Link href="/support/article/troubleshooting">Troubleshooting</Link>
             <Link href="/contact">Contact</Link>
             <Link href="/account">Account</Link>
+            <Link href="/admin/products">Store admin</Link>
           </div>
           <div>
             <p className={styles.label}>Legal</p>

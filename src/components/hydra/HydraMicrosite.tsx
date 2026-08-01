@@ -18,7 +18,7 @@ export function HydraMicrosite() {
       <HydraHero />
 
       {/* Highlight rail */}
-      <section className={styles.highlights} aria-label="Hydra highlights">
+      <section className={styles.highlights} aria-label="MATRIX highlights">
         <div className={styles.shell}>
           <div className={styles.highlightGrid}>
             {HYDRA_HIGHLIGHTS.map((item) => (
@@ -72,7 +72,7 @@ export function HydraMicrosite() {
             <p className={styles.eyebrow}>Tech Specs</p>
             <h2 className={styles.chapterTitle}>Built for macOS.</h2>
             <p className={styles.chapterBody}>
-              Hydra {HYDRA.version}. Requires {HYDRA.platform}.
+              MATRIX {HYDRA.version}. Requires {HYDRA.platform}.
             </p>
           </Reveal>
           <dl className={styles.specList}>
@@ -91,7 +91,7 @@ export function HydraMicrosite() {
         <div className={styles.shellNarrow}>
           <Reveal>
             <p className={styles.productNameSm}>{HYDRA.name}</p>
-            <h2 className={styles.closeTitle}>Get Hydra for your room.</h2>
+            <h2 className={styles.closeTitle}>Get MATRIX for your room.</h2>
             <p className={styles.chapterBody}>
               Contact Quadra for access. Activate on your machine when you are
               ready.

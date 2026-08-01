@@ -38,10 +38,14 @@ export function ProductDetails({ product }: { product: Product }) {
                 }, 450);
               }}
             >
-              {added ? "Added" : "Add to bag"}
+              {added
+                ? "Added — opening bag…"
+                : product.availabilityStatus === "available"
+                  ? "Buy now"
+                  : "Unavailable"}
             </button>
-            <Link href="/store" className="btn btn-secondary">
-              Back to store
+            <Link href="/products/matrix" className="btn btn-secondary">
+              Product overview
             </Link>
           </div>
           <ul className={styles.features}>

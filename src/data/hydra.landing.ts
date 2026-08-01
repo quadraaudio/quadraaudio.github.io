@@ -1,24 +1,31 @@
 /**
- * Hydra marketing content — Apple product-page rhythm.
- * Media paths under /public/hydra/ are replaceable slots.
- * Drop final assets with the same filenames (or update `src` here).
+ * MATRIX marketing content — Apple product-page rhythm.
+ * Media paths under /public/hydra/ are replaceable slots (legacy asset folder).
+ * Store SKU slug remains `quadra-matrix` for licensing compatibility.
  */
+import { MATRIX_PRODUCT_SLUG } from "@/data/products.seed";
+
 export const HYDRA = {
-  name: "Hydra",
+  name: "MATRIX",
   version: "2.1.19",
   platform: "macOS 26.0+",
   sourceUrl: "https://github.com/quadraaudio/hydra",
+  storeSlug: MATRIX_PRODUCT_SLUG,
+  storeHref: `/store/${MATRIX_PRODUCT_SLUG}`,
   /** Hero product line — short, like Apple. */
   headline: "Route everything.",
   lede: "A virtual hub, public bridges, and a gainful patchbay for the Mac studio.",
-  ctaPrimary: { href: "/contact", label: "Get Hydra" },
+  ctaPrimary: { href: `/store/${MATRIX_PRODUCT_SLUG}`, label: "Buy MATRIX" },
   ctaSecondary: { href: "/support", label: "License & support" },
   heroMedia: {
     src: "/hydra/hero-studio.png",
-    alt: "Hydra hero — replace with product UI or campaign still",
+    alt: "MATRIX hero — replace with product UI or campaign still",
     slot: "hero",
   },
 } as const;
+
+/** Preferred export name after product rename. */
+export const MATRIX = HYDRA;
 
 export const HYDRA_NAV = [
   { href: "#overview", label: "Overview" },
@@ -69,7 +76,7 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
     body: "Connect any source to any destination. Label channels. Save scenes. Recall the room exactly as you left it.",
     media: {
       src: "/hydra/chapter-matrix.png",
-      alt: "Hydra patch matrix — replace with real UI",
+      alt: "MATRIX patch matrix — replace with real UI",
       slot: "chapter-matrix",
     },
     subfeatures: [
@@ -91,15 +98,15 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
     id: "bridges",
     eyebrow: "Engine & bridges",
     title: "A hidden hub. Public bridges.",
-    body: "Hydra Engine is a 256-channel CoreAudio hub. Bridge devices from 2 to 128 channels appear as ordinary interfaces to every DAW.",
+    body: "MATRIX Engine is a 256-channel CoreAudio hub. Bridge devices from 2 to 128 channels appear as ordinary interfaces to every DAW.",
     media: {
       src: "/hydra/chapter-bridges.png",
-      alt: "Hydra bridges — replace with real UI",
+      alt: "MATRIX bridges — replace with real UI",
       slot: "chapter-bridges",
     },
     subfeatures: [
       {
-        title: "Hydra Engine",
+        title: "MATRIX Engine",
         body: "A hidden 256-channel backplane your DAWs never have to manage.",
       },
       {
@@ -119,7 +126,7 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
     body: "Hardware, process taps, AES67, and NDI share one matrix — sources and destinations in the same patch surface.",
     media: {
       src: "/hydra/chapter-network.png",
-      alt: "Hydra network routing — replace with real UI",
+      alt: "MATRIX network routing — replace with real UI",
       slot: "chapter-network",
     },
     subfeatures: [
@@ -144,7 +151,7 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
     body: "Build strips with VST3. Run in-process, or isolate chains so a bad plugin cannot take down the session.",
     media: {
       src: "/hydra/chapter-control.png",
-      alt: "Hydra channel strips — replace with real UI",
+      alt: "MATRIX channel strips — replace with real UI",
       slot: "chapter-strips",
     },
     subfeatures: [
@@ -169,7 +176,7 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
     body: "Dim, mono, swap, master mute, and talkback — with monitor and talkback device routing in the engine.",
     media: {
       src: "/hydra/hero-studio.png",
-      alt: "Hydra control room — replace with real UI",
+      alt: "MATRIX control room — replace with real UI",
       slot: "chapter-control",
     },
     subfeatures: [
@@ -192,7 +199,7 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
 export const HYDRA_SPECS = [
   { label: "Version", value: "2.1.19" },
   { label: "Platform", value: "macOS 26.0+" },
-  { label: "Hub", value: "Hydra Engine · 256 channels" },
+  { label: "Hub", value: "MATRIX Engine · 256 channels" },
   { label: "Bridges", value: "2A, 2B, 4, 8, 16, 32, 64, 128" },
   { label: "Formats", value: "CoreAudio HAL · VST3 inserts" },
   { label: "Network", value: "AES67 · NDI" },

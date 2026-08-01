@@ -141,7 +141,7 @@ export function HomePage({ products }: { products: Product[] }) {
       </section>
 
       <section className={styles.hydraTeaser}>
-        <Link href="/products/hydra" className={styles.hydraTeaserLink}>
+        <Link href="/products/matrix" className={styles.hydraTeaserLink}>
           <div className={styles.hydraTeaserMedia} aria-hidden>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/hydra/hero-studio.png" alt="" />
@@ -149,14 +149,14 @@ export function HomePage({ products }: { products: Product[] }) {
           </div>
           <div className={`page-shell ${styles.hydraTeaserCopy}`}>
             <Reveal>
-              <p className={styles.hydraTeaserBrand}>Hydra</p>
+              <p className={styles.hydraTeaserBrand}>MATRIX</p>
               <h2 className="display display-lg">
                 The routing matrix for the modern Mac studio.
               </h2>
               <p className={styles.hydraTeaserLede}>
-                Leave Quadra for a moment — Hydra has its own world.
+                Virtual bridges, a gainful patchbay, and monitor control — built for Mac.
               </p>
-              <span className={styles.hydraTeaserCta}>Explore Hydra</span>
+              <span className={styles.hydraTeaserCta}>Explore MATRIX</span>
             </Reveal>
           </div>
         </Link>
