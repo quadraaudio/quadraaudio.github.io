@@ -1,30 +1,32 @@
 .shell {
-  --hydra-ink: #000000;
-  --hydra-ink-soft: #0c0f14;
-  --hydra-panel: #12161d;
-  --hydra-steel: #a1a1a6;
-  --hydra-snow: #f5f5f7;
-  --hydra-accent: #2997ff;
-  --hydra-line: rgba(255, 255, 255, 0.12);
+  --hydra-ink: #0e1218;
+  --hydra-ink-soft: #121820;
+  --hydra-panel: #1c242e;
+  --hydra-steel: #8b95a5;
+  --hydra-snow: #f7f9fb;
+  --hydra-accent: #00a3a0;
+  --hydra-accent-deep: #007e7c;
+  --hydra-line: rgba(255, 255, 255, 0.1);
 
-  /* Make Quadra GlobalNav inherit Hydra dark chrome */
-  --theme-bg: #000000;
-  --theme-bg-elevated: #1d1d1f;
-  --theme-bg-muted: #16161a;
-  --theme-bg-inverse: #f5f5f7;
-  --theme-text: #f5f5f7;
-  --theme-text-muted: #a1a1a6;
-  --theme-text-faint: #6e6e73;
-  --theme-text-inverse: #000000;
-  --theme-border: rgba(255, 255, 255, 0.14);
-  --theme-accent: #2997ff;
-  --theme-accent-hover: #0077ed;
+  /* GlobalNav inherits Matrix dark chrome + Quadra teal */
+  --theme-bg: #0e1218;
+  --theme-bg-elevated: #1c242e;
+  --theme-bg-muted: #121820;
+  --theme-bg-inverse: #fbfcfd;
+  --theme-text: #f7f9fb;
+  --theme-text-muted: #8b95a5;
+  --theme-text-faint: #6a7382;
+  --theme-text-inverse: #0e1218;
+  --theme-border: rgba(255, 255, 255, 0.12);
+  --theme-accent: #00a3a0;
+  --theme-accent-hover: #007e7c;
 
   min-height: 100vh;
   background: var(--hydra-ink);
   color: var(--hydra-snow);
   font-family: var(--font-body);
-  animation: hydraEnter 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+  /* Match Matrix RootShell fadeIn (0.55s) */
+  animation: hydraEnter 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes hydraEnter {
@@ -50,6 +52,6 @@
 .shell :global(footer) {
   margin-top: 0;
   background:
-    radial-gradient(80% 60% at 10% 0%, rgba(41, 151, 255, 0.1), transparent 55%),
-    #0c0f14;
+    radial-gradient(80% 60% at 10% 0%, rgba(0, 163, 160, 0.12), transparent 55%),
+    #121820;
 }

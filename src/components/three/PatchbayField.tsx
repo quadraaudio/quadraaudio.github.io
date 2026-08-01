@@ -70,7 +70,7 @@ export function PatchbayField({
       const ink = new THREE.Color("#06080c");
       const steel = new THREE.Color("#6e7b8c");
       const hot = new THREE.Color("#7eb6ff");
-      const accent = new THREE.Color("#2997ff");
+      const accent = new THREE.Color("#00a3a0");
 
       const spanX = 16.5;
       const spanY = 9.4;

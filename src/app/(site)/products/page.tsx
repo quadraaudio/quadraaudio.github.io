@@ -26,7 +26,7 @@ export default async function ProductsPage() {
         <Link href="/products/matrix" className={styles.hydraFeature}>
           <div className={styles.hydraMedia}>
             <Image
-              src="/hydra/hero-studio.png"
+              src={HYDRA.brandMark}
               alt=""
               fill
               sizes="(max-width: 860px) 100vw, 60vw"
@@ -34,9 +34,9 @@ export default async function ProductsPage() {
             />
           </div>
           <div className={styles.hydraCopy}>
-            <p className={styles.hydraEyebrow}>Featured</p>
-            <h2>{HYDRA.name}</h2>
-            <p>{HYDRA.headline}</p>
+            <p className={styles.hydraEyebrow}>Start 1.0</p>
+            <h2>{HYDRA.brandLine}</h2>
+            <p>{HYDRA.lede}</p>
             <span className={styles.hydraLink}>Enter MATRIX</span>
           </div>
         </Link>

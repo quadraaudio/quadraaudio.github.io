@@ -13,13 +13,14 @@
   margin-bottom: var(--space-3xl);
   overflow: hidden;
   border-radius: var(--radius-lg);
-  background: #06080c;
-  color: #f4f6f8;
-  transition: transform 0.35s var(--ease-out);
+  background: #121820;
+  color: #f7f9fb;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .hydraFeature:hover {
-  transform: translateY(-2px);
+  border-color: rgba(0, 163, 160, 0.45);
 }
 
 .hydraMedia {
@@ -52,7 +53,7 @@
 
 .hydraEyebrow {
   margin: 0 0 var(--space-xs);
-  color: #7eb6c9;
+  color: #00a3a0;
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.1em;

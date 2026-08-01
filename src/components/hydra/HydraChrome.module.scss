@@ -4,15 +4,16 @@
   z-index: 35;
   height: 48px;
   border-bottom: 1px solid transparent;
-  background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: saturate(160%) blur(20px);
-  -webkit-backdrop-filter: saturate(160%) blur(20px);
-  transition: border-color 0.3s var(--ease-out), background 0.3s var(--ease-out);
+  background: rgba(18, 24, 32, 0.88);
+  backdrop-filter: saturate(140%) blur(18px);
+  -webkit-backdrop-filter: saturate(140%) blur(18px);
+  transition: border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .scrolled {
   border-bottom-color: rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.88);
+  background: rgba(14, 18, 24, 0.94);
 }
 
 .inner {
@@ -27,9 +28,9 @@
 .wordmark {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.05rem;
-  letter-spacing: -0.03em;
-  color: #f5f5f7;
+  font-size: 0.85rem;
+  letter-spacing: 0.16em;
+  color: #00a3a0;
   flex-shrink: 0;
 }
 
@@ -48,20 +49,20 @@
 
   a {
     padding: 6px 10px;
-    color: rgba(245, 245, 247, 0.55);
+    color: #8b95a5;
     font-size: 0.72rem;
     font-weight: 500;
     white-space: nowrap;
-    transition: color 0.2s var(--ease-out);
+    transition: color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   a:hover {
-    color: #f5f5f7;
+    color: #f7f9fb;
   }
 }
 
 .active {
-  color: #f5f5f7 !important;
+  color: #f7f9fb !important;
 }
 
 .actions {
@@ -74,31 +75,20 @@
   justify-content: center;
   min-height: 28px;
   padding: 0 12px;
-  border-radius: 980px;
-  background: var(--hydra-accent, #2997ff);
+  border-radius: 999px;
+  background: var(--hydra-accent, #00a3a0);
   color: #fff;
   font-size: 0.75rem;
   font-weight: 600;
-  transition: transform 0.25s var(--ease-out), filter 0.25s var(--ease-out);
+  transition: background 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .cta:hover {
-  transform: scale(1.04);
-  filter: brightness(1.08);
+  background: #007e7c;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 860px) {
   .nav {
     display: flex;
-  }
-
-  .actions {
-    margin-left: 4px;
-  }
-}
-
-@media (max-width: 899px) {
-  .actions {
-    margin-left: auto;
   }
 }

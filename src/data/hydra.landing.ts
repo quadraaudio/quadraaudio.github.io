@@ -1,25 +1,26 @@
 /**
- * MATRIX marketing content — Apple product-page rhythm.
- * Media paths under /public/hydra/ are replaceable slots (legacy asset folder).
- * Store SKU slug remains `quadra-matrix` for licensing compatibility.
+ * Quadra Matrix — Start 1.0 marketing content.
+ * Media paths under /public/hydra/ are legacy slots (replace with app UI stills when ready).
+ * Store SKU slug remains `quadra-matrix` for licensing.
  */
 import { MATRIX_PRODUCT_SLUG } from "@/data/products.seed";
 
 export const HYDRA = {
   name: "MATRIX",
-  version: "2.1.19",
-  platform: "macOS 26.0+",
-  sourceUrl: "https://github.com/quadraaudio/hydra",
+  brandLine: "QUADRA MATRIX",
+  version: "1.0",
+  edition: "Start",
+  platform: "macOS 14+",
   storeSlug: MATRIX_PRODUCT_SLUG,
   storeHref: `/store/${MATRIX_PRODUCT_SLUG}`,
-  /** Hero product line — short, like Apple. */
-  headline: "Route everything.",
-  lede: "A virtual hub, public bridges, and a gainful patchbay for the Mac studio.",
+  brandMark: "/matrix/brand-mark.png",
+  headline: "Patch. Monitor. Route.",
+  lede: "A software patch matrix and control-room monitor for Mac — with Matrix Bridge virtual devices you activate when you need them.",
   ctaPrimary: { href: `/store/${MATRIX_PRODUCT_SLUG}`, label: "Buy MATRIX" },
-  ctaSecondary: { href: "/support", label: "License & support" },
+  ctaSecondary: { href: "/activate", label: "Start trial" },
   heroMedia: {
     src: "/hydra/hero-studio.png",
-    alt: "MATRIX hero — replace with product UI or campaign still",
+    alt: "Quadra Matrix — patch field and monitor",
     slot: "hero",
   },
 } as const;
@@ -29,22 +30,20 @@ export const MATRIX = HYDRA;
 
 export const HYDRA_NAV = [
   { href: "#overview", label: "Overview" },
-  { href: "#matrix", label: "Matrix" },
+  { href: "#matrix", label: "Patch" },
   { href: "#bridges", label: "Bridges" },
-  { href: "#network", label: "Network" },
-  { href: "#strips", label: "Strips" },
-  { href: "#control", label: "Control" },
+  { href: "#control", label: "Monitor" },
+  { href: "#guard", label: "Guard" },
   { href: "#specs", label: "Tech Specs" },
 ] as const;
 
-/** Top highlight rail under hero — Apple “feature chips” pattern. */
+/** Highlight rail under hero — Start 1.0 surfaces only. */
 export const HYDRA_HIGHLIGHTS = [
-  { href: "#matrix", title: "Patch matrix", body: "Gainful cross-points and scenes." },
-  { href: "#bridges", title: "Engine & bridges", body: "256-ch hub. Public I/O devices." },
-  { href: "#network", title: "Capture & network", body: "Devices, apps, AES67, NDI." },
-  { href: "#strips", title: "Channel strips", body: "VST3 inserts. Isolated host." },
-  { href: "#control", title: "Control room", body: "Dim, mono, mute, talkback." },
-  { href: "#specs", title: "Built for Mac", body: "macOS 26.0+. Version 2.1.19." },
+  { href: "#matrix", title: "Patch field", body: "Grid and list. Gainful routes. Scenes A/B/C." },
+  { href: "#bridges", title: "Matrix Bridge", body: "2A…128 ch HAL devices. Activate from the app." },
+  { href: "#control", title: "Control room", body: "Dim, mono, mute, talkback, cue — real devices." },
+  { href: "#guard", title: "Quadra Guard", body: "14-day web trial. Activate with Quadra ID." },
+  { href: "#specs", title: "Start 1.0", body: "macOS 14+. Clean-room HAL. SIP on." },
 ] as const;
 
 export type HydraMediaSlot = {
@@ -71,15 +70,19 @@ export type HydraChapter = {
 export const HYDRA_CHAPTERS: HydraChapter[] = [
   {
     id: "matrix",
-    eyebrow: "Patch matrix",
+    eyebrow: "Patch field",
     title: "Every cross-point. With gain.",
-    body: "Connect any source to any destination. Label channels. Save scenes. Recall the room exactly as you left it.",
+    body: "Route any Tx to any Rx in Grid or List. Paint connections, label channels, and recall scenes A, B, and C.",
     media: {
       src: "/hydra/chapter-matrix.png",
-      alt: "MATRIX patch matrix — replace with real UI",
+      alt: "Quadra Matrix patch field",
       slot: "chapter-matrix",
     },
     subfeatures: [
+      {
+        title: "Grid & List",
+        body: "Dante-style matrix grid or multi-select Tx/Rx tables — same patch graph.",
+      },
       {
         title: "Gainful routes",
         body: "Every connection carries precise gain — not just on or off.",
@@ -88,84 +91,30 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
         title: "Scenes",
         body: "Store and apply whole patch graphs for tracking, mix, or playback.",
       },
-      {
-        title: "Labels",
-        body: "Name channels so complex rooms stay readable across sessions.",
-      },
     ],
   },
   {
     id: "bridges",
-    eyebrow: "Engine & bridges",
-    title: "A hidden hub. Public bridges.",
-    body: "MATRIX Engine is a 256-channel CoreAudio hub. Bridge devices from 2 to 128 channels appear as ordinary interfaces to every DAW.",
+    eyebrow: "Matrix Bridge",
+    title: "Virtual devices. Real Core Audio.",
+    body: "Matrix Bridge HAL devices appear in Audio MIDI Setup only when you acquire them in Settings — from 2A to 128 channels.",
     media: {
       src: "/hydra/chapter-bridges.png",
-      alt: "MATRIX bridges — replace with real UI",
+      alt: "Matrix Bridge devices",
       slot: "chapter-bridges",
     },
     subfeatures: [
-      {
-        title: "MATRIX Engine",
-        body: "A hidden 256-channel backplane your DAWs never have to manage.",
-      },
       {
         title: "Bridge catalog",
         body: "2A, 2B, 4, 8, 16, 32, 64, and 128 — pick the width you need.",
       },
       {
-        title: "Standard CoreAudio",
-        body: "No custom driver gymnastics in the session. Just devices.",
-      },
-    ],
-  },
-  {
-    id: "network",
-    eyebrow: "Capture & network",
-    title: "Local. Apps. Streams.",
-    body: "Hardware, process taps, AES67, and NDI share one matrix — sources and destinations in the same patch surface.",
-    media: {
-      src: "/hydra/chapter-network.png",
-      alt: "MATRIX network routing — replace with real UI",
-      slot: "chapter-network",
-    },
-    subfeatures: [
-      {
-        title: "Devices & apps",
-        body: "CoreAudio hardware and running-app capture into the same graph.",
+        title: "Activate in-app",
+        body: "Nothing shows in AMS until you enable a bridge in Quadra Matrix.",
       },
       {
-        title: "AES67",
-        body: "Discover and subscribe via SAP/SDP. Send when you need to.",
-      },
-      {
-        title: "NDI",
-        body: "Receive and transmit through a runtime shim — no proprietary link required at build time.",
-      },
-    ],
-  },
-  {
-    id: "strips",
-    eyebrow: "Channel strips",
-    title: "Inserts that stay out of the way.",
-    body: "Build strips with VST3. Run in-process, or isolate chains so a bad plugin cannot take down the session.",
-    media: {
-      src: "/hydra/chapter-control.png",
-      alt: "MATRIX channel strips — replace with real UI",
-      slot: "chapter-strips",
-    },
-    subfeatures: [
-      {
-        title: "VST3 inserts",
-        body: "Put processing on the route, not only in the DAW.",
-      },
-      {
-        title: "Out-of-process host",
-        body: "hydra-plugin-host keeps unstable plugins off the engine thread.",
-      },
-      {
-        title: "Safe scanning",
-        body: "Bundle scans run in an isolated worker before they ever touch the room.",
+        title: "Clean-room HAL",
+        body: "Own driver under SIP. No BlackHole. Manufacturer Quadra.",
       },
     ],
   },
@@ -173,46 +122,70 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
     id: "control",
     eyebrow: "Control room",
     title: "Monitor like a console.",
-    body: "Dim, mono, swap, master mute, and talkback — with monitor and talkback device routing in the engine.",
+    body: "Dim, mono, mute, talkback, and cue on your real speakers and headphones — separate from the patch matrix.",
     media: {
       src: "/hydra/hero-studio.png",
-      alt: "MATRIX control room — replace with real UI",
+      alt: "Quadra Matrix control-room monitor",
       slot: "chapter-control",
     },
     subfeatures: [
       {
         title: "Monitor section",
-        body: "Dim and talkback ducking in dB. Mono and L-R swap when you need them.",
+        body: "L/R meters, volume, Dim, Mono, Mute, Talk, and Cue soft pads.",
       },
       {
-        title: "Talkback",
-        body: "Route talkback to the right device without leaving the matrix.",
+        title: "Real I/O",
+        body: "Pick speakers, headphones, talk mic, and source — control-room path, not matrix taps alone.",
       },
       {
-        title: "Master mute",
-        body: "One control when the room needs silence — instantly.",
+        title: "Capture taps",
+        body: "Main and Cue capture from Matrix Bridge into the room when you need them.",
+      },
+    ],
+  },
+  {
+    id: "guard",
+    eyebrow: "Quadra Guard",
+    title: "Authorize on the web. Work offline.",
+    body: "Start a 14-day full trial or activate a seat with your Quadra ID. The Mac receives a signed license — same as offline .qkey.",
+    media: {
+      src: "/matrix/brand-mark.png",
+      alt: "Quadra Matrix brand mark",
+      slot: "chapter-guard",
+    },
+    subfeatures: [
+      {
+        title: "Web trial",
+        body: "One full trial per account and per Mac — started from Authorization in the app.",
+      },
+      {
+        title: "Two seats",
+        body: "Bind up to two Macs per license. Manage seats on quadraaudio.com/account.",
+      },
+      {
+        title: "Offline .qkey",
+        body: "Import a signed license file when the room has no network.",
       },
     ],
   },
 ];
 
 export const HYDRA_SPECS = [
-  { label: "Version", value: "2.1.19" },
-  { label: "Platform", value: "macOS 26.0+" },
-  { label: "Hub", value: "MATRIX Engine · 256 channels" },
-  { label: "Bridges", value: "2A, 2B, 4, 8, 16, 32, 64, 128" },
-  { label: "Formats", value: "CoreAudio HAL · VST3 inserts" },
-  { label: "Network", value: "AES67 · NDI" },
-  { label: "Licensing", value: "Hardware-bound activation" },
-  { label: "Control", value: "Local WebSocket on loopback" },
+  { label: "Edition", value: "Start 1.0" },
+  { label: "Platform", value: "macOS 14+" },
+  { label: "Architecture", value: "Apple Silicon & Intel" },
+  { label: "Bridges", value: "Matrix Bridge 2A…128 (HAL)" },
+  { label: "Patch", value: "NxN grid + list · gain · scenes" },
+  { label: "Monitor", value: "Dim · mono · mute · talk · cue" },
+  { label: "Licensing", value: "Quadra Guard · 14-day trial · 2 seats" },
+  { label: "Price", value: "$179 perpetual · $11.90 × 18 RTO" },
 ] as const;
 
-/** Drop final files into public/hydra/ using these names. */
+/** Drop final files into public/hydra/ (or public/matrix/) using these names. */
 export const HYDRA_MEDIA_CONTRACT = [
-  "hero-studio.png|mp4 — Overview hero",
-  "chapter-matrix.png|mp4 — Patch matrix",
-  "chapter-bridges.png|mp4 — Engine & bridges",
-  "chapter-network.png|mp4 — Capture & network",
-  "chapter-strips.png|mp4 — Channel strips (currently chapter-control.png)",
+  "hero-studio.png|mp4 — Overview hero (app UI preferred)",
+  "chapter-matrix.png|mp4 — Patch field",
+  "chapter-bridges.png|mp4 — Matrix Bridge",
   "chapter-control.png|mp4 — Control room",
+  "/matrix/brand-mark.png — Guard / brand",
 ] as const;
