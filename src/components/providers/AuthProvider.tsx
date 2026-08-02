@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -59,81 +60,102 @@ function persistUser(next: AuthUser | null) {
 
 function tokenStillValid(user: AuthUser | null) {
   if (!user?.accessToken) return false;
-  if (!user.expiresAt) return false;
+  // Legacy sessions without expiresAt: treat as usable until an API rejects them.
+  if (!user.expiresAt) return true;
   return user.expiresAt > Date.now();
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const userRef = useRef<AuthUser | null>(null);
+  const refreshInFlight = useRef<Promise<string> | null>(null);
 
   useEffect(() => {
-    setUser(loadUser());
+    const loaded = loadUser();
+    userRef.current = loaded;
+    setUser(loaded);
     setIsLoading(false);
   }, []);
 
   const login = useCallback((next: AuthUser) => {
+    userRef.current = next;
     setUser(next);
     persistUser(next);
   }, []);
 
   const logout = useCallback(() => {
+    userRef.current = null;
     setUser(null);
     persistUser(null);
   }, []);
 
   const refresh = useCallback(async () => {
-    setUser(loadUser());
+    const loaded = loadUser();
+    userRef.current = loaded;
+    setUser(loaded);
   }, []);
 
   const ensureAccessToken = useCallback(async () => {
-    const current = loadUser();
+    const current = loadUser() || userRef.current;
     if (tokenStillValid(current) && current?.accessToken) {
-      if (current !== user) setUser(current);
+      if (current !== userRef.current) {
+        userRef.current = current;
+        setUser(current);
+      }
       return current.accessToken;
     }
 
-    const token = await requestGoogleAccessToken({ interactive: true });
-    const base = current || user;
-    if (!base?.id || !base?.email) {
-      // Token refresh succeeded but we lost profile — fetch it.
-      const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-        headers: { Authorization: `Bearer ${token.accessToken}` },
-      });
-      if (!res.ok) {
-        throw new Error("Google session expired. Sign in again.");
+    if (refreshInFlight.current) return refreshInFlight.current;
+
+    refreshInFlight.current = (async () => {
+      const token = await requestGoogleAccessToken({ interactive: true });
+      const base = loadUser() || userRef.current;
+      if (!base?.id || !base?.email) {
+        const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+          headers: { Authorization: `Bearer ${token.accessToken}` },
+        });
+        if (!res.ok) {
+          throw new Error("Google session expired. Sign in again.");
+        }
+        const profile = (await res.json()) as {
+          sub?: string;
+          email?: string;
+          name?: string;
+          picture?: string;
+        };
+        if (!profile.sub || !profile.email) {
+          throw new Error("Google profile incomplete");
+        }
+        const next: AuthUser = {
+          id: profile.sub,
+          email: profile.email,
+          name: profile.name || null,
+          picture: profile.picture || null,
+          accessToken: token.accessToken,
+          expiresAt: token.expiresAt,
+        };
+        userRef.current = next;
+        setUser(next);
+        persistUser(next);
+        return next.accessToken!;
       }
-      const profile = (await res.json()) as {
-        sub?: string;
-        email?: string;
-        name?: string;
-        picture?: string;
-      };
-      if (!profile.sub || !profile.email) {
-        throw new Error("Google profile incomplete");
-      }
+
       const next: AuthUser = {
-        id: profile.sub,
-        email: profile.email,
-        name: profile.name || null,
-        picture: profile.picture || null,
+        ...base,
         accessToken: token.accessToken,
         expiresAt: token.expiresAt,
       };
+      userRef.current = next;
       setUser(next);
       persistUser(next);
-      return next.accessToken!;
-    }
+      return token.accessToken;
+    })().finally(() => {
+      refreshInFlight.current = null;
+    });
 
-    const next: AuthUser = {
-      ...base,
-      accessToken: token.accessToken,
-      expiresAt: token.expiresAt,
-    };
-    setUser(next);
-    persistUser(next);
-    return token.accessToken;
-  }, [user]);
+    return refreshInFlight.current;
+  }, []);
 
   const value = useMemo(
     () => ({

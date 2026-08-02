@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { getSeedProduct } from "@/data/products.seed";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { callEdgeFunction } from "@/lib/edgeApi";
@@ -12,8 +14,12 @@ function productName(slug: string) {
   return getSeedProduct(slug)?.name || slug;
 }
 
-export default function AccountPage() {
+function AccountInner() {
   const { user, isLoading, ensureAccessToken } = useAuth();
+  const searchParams = useSearchParams();
+  const purchased = searchParams.get("purchased") === "1";
+  const orderRef = searchParams.get("order");
+
   const [orders, setOrders] = useState<
     Array<{
       order_number: string;
@@ -26,38 +32,48 @@ export default function AccountPage() {
   const [licenses, setLicenses] = useState<
     Array<{ product_slug: string; status: string; issued_at: string }>
   >([]);
-  const [loadError, setLoadError] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [loadingAccount, setLoadingAccount] = useState(false);
 
   useEffect(() => {
-    if (!user) {
+    if (!user?.id) {
       setOrders([]);
       setLicenses([]);
+      setLoadingAccount(false);
       return;
     }
+
     let cancelled = false;
     setLoadingAccount(true);
-    setLoadError(false);
+    setLoadError(null);
+
     (async () => {
       try {
         const accessToken = await ensureAccessToken();
         const data = await callEdgeFunction<{
           orders?: typeof orders;
           licenses?: typeof licenses;
+          error?: string;
         }>("store-account", { googleAccessToken: accessToken }, accessToken);
         if (cancelled) return;
         setOrders(data.orders || []);
         setLicenses(data.licenses || []);
-      } catch {
-        if (!cancelled) setLoadError(true);
+      } catch (err) {
+        if (cancelled) return;
+        setLoadError(
+          err instanceof Error ? err.message : "Could not load account data"
+        );
       } finally {
         if (!cancelled) setLoadingAccount(false);
       }
     })();
+
     return () => {
       cancelled = true;
     };
-  }, [user?.id, ensureAccessToken]);
+    // ensureAccessToken is stable; only reload when the signed-in user changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
 
   if (isLoading) {
     return (
@@ -92,10 +108,18 @@ export default function AccountPage() {
         </h1>
         <p className={styles.email}>{user.email}</p>
 
+        {purchased ? (
+          <div className={styles.banner} role="status">
+            Purchase complete
+            {orderRef ? ` — order ${orderRef}` : ""}. Your licenses are listed
+            below.
+          </div>
+        ) : null}
+
         {loadError ? (
           <div className={styles.banner} role="status">
-            Order history is temporarily unavailable. Try signing in again or
-            contact support if a payment just completed.
+            {loadError}. Try refreshing the page or{" "}
+            <a href="/login?returnTo=/account">sign in again</a>.
           </div>
         ) : null}
 
@@ -136,8 +160,11 @@ export default function AccountPage() {
                 <li key={order.order_number}>
                   <strong>{order.order_number}</strong>
                   <span>
-                    {formatPrice(Number(order.total_amount), order.currency || "USD")} ·{" "}
-                    {order.status}
+                    {formatPrice(
+                      Number(order.total_amount),
+                      order.currency || "USD"
+                    )}{" "}
+                    · {order.status}
                   </span>
                 </li>
               ))}
@@ -146,5 +173,21 @@ export default function AccountPage() {
         </section>
       </div>
     </main>
+  );
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className={styles.page}>
+          <div className="page-shell">
+            <p>Loading account…</p>
+          </div>
+        </main>
+      }
+    >
+      <AccountInner />
+    </Suspense>
   );
 }

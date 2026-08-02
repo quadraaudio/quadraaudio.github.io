@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { useCart } from "@/components/providers/CartProvider";
@@ -25,15 +25,17 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
   const [claimError, setClaimError] = useState<string | null>(null);
   const [claiming, setClaiming] = useState(false);
   const [pending, startTransition] = useTransition();
+  const completingRef = useRef(false);
 
   useEffect(() => {
     if (!hydrated) return;
+    if (completingRef.current || claiming) return;
     if (!items.length) {
       startTransition(() => {
         router.replace("/store/bag");
       });
     }
-  }, [hydrated, items.length, router]);
+  }, [hydrated, items.length, claiming, router]);
 
   const pricedLines = useMemo(() => {
     return items.map((item) => {
@@ -104,14 +106,15 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
       if (!data.persisted) {
         throw new Error(data.error || "Could not claim license");
       }
+      completingRef.current = true;
       clear();
-      router.push(
-        `/store/success/?status=ok&order=${encodeURIComponent(data.orderNumber || "")}`
+      router.replace(
+        `/account?purchased=1&order=${encodeURIComponent(data.orderNumber || "")}`
       );
     } catch (err) {
       const message = err instanceof Error ? err.message : "Claim failed";
       setClaimError(
-        /unauthorized/i.test(message)
+        /unauthorized|expired/i.test(message)
           ? "Google session expired. Click Claim again to refresh sign-in."
           : message
       );
@@ -119,7 +122,7 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
     }
   }
 
-  if (!hydrated || pending || !items.length) {
+  if (!hydrated || (pending && !completingRef.current) || (!items.length && !completingRef.current && !claiming)) {
     return (
       <p className={styles.priceNoteBlock} role="status">
         Loading checkout…

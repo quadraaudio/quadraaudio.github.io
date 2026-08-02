@@ -25,6 +25,7 @@ declare global {
 
 const GSI_SRC = "https://accounts.google.com/gsi/client";
 const SCOPE = "email profile openid";
+const TOKEN_TIMEOUT_MS = 12_000;
 
 let gsiLoading: Promise<void> | null = null;
 
@@ -46,7 +47,6 @@ function loadGsi(): Promise<void> {
         () => reject(new Error("Failed to load Google sign-in")),
         { once: true }
       );
-      // Already loaded before listeners attached
       if (window.google?.accounts?.oauth2) resolve();
       return;
     }
@@ -71,6 +71,24 @@ export type GoogleAccessTokenResult = {
   expiresAt: number;
 };
 
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = window.setTimeout(() => {
+      reject(new Error(`${label} timed out. Try again.`));
+    }, ms);
+    promise.then(
+      (value) => {
+        window.clearTimeout(timer);
+        resolve(value);
+      },
+      (err) => {
+        window.clearTimeout(timer);
+        reject(err);
+      }
+    );
+  });
+}
+
 /**
  * Request a fresh Google OAuth access token via GIS.
  * Tries silent refresh first; falls back to interactive consent if needed.
@@ -89,41 +107,43 @@ export async function requestGoogleAccessToken(
   }
 
   const attempt = (prompt?: string) =>
-    new Promise<GoogleAccessTokenResult>((resolve, reject) => {
-      const client = oauth2.initTokenClient({
-        client_id: GOOGLE_CLIENT_ID,
-        scope: SCOPE,
-        callback: (response) => {
-          if (response.error || !response.access_token) {
+    withTimeout(
+      new Promise<GoogleAccessTokenResult>((resolve, reject) => {
+        const client = oauth2.initTokenClient({
+          client_id: GOOGLE_CLIENT_ID,
+          scope: SCOPE,
+          callback: (response) => {
+            if (response.error || !response.access_token) {
+              reject(
+                new Error(
+                  response.error === "access_denied"
+                    ? "Google sign-in was cancelled."
+                    : "Could not refresh Google session."
+                )
+              );
+              return;
+            }
+            const ttlSec = Number(response.expires_in) || 3600;
+            resolve({
+              accessToken: response.access_token,
+              expiresAt: Date.now() + Math.max(60, ttlSec - 60) * 1000,
+            });
+          },
+          error_callback: (error) => {
             reject(
-              new Error(
-                response.error === "access_denied"
-                  ? "Google sign-in was cancelled."
-                  : "Could not refresh Google session."
-              )
+              new Error(error.message || error.type || "Google sign-in failed")
             );
-            return;
-          }
-          const ttlSec = Number(response.expires_in) || 3600;
-          resolve({
-            accessToken: response.access_token,
-            // Refresh a minute early so checkout never races expiry.
-            expiresAt: Date.now() + Math.max(60, ttlSec - 60) * 1000,
-          });
-        },
-        error_callback: (error) => {
-          reject(
-            new Error(error.message || error.type || "Google sign-in failed")
-          );
-        },
-      });
-      client.requestAccessToken(
-        prompt === undefined ? undefined : { prompt }
-      );
-    });
+          },
+        });
+        client.requestAccessToken(
+          prompt === undefined ? undefined : { prompt }
+        );
+      }),
+      TOKEN_TIMEOUT_MS,
+      "Google sign-in"
+    );
 
   try {
-    // Prefer silent refresh when the Google session is still warm.
     return await attempt("");
   } catch (silentErr) {
     if (options.interactive === false) throw silentErr;

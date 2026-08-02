@@ -110,8 +110,8 @@ export function PayPalCheckout({ couponCode, disabled }: Props) {
                 return;
               }
               clear();
-              router.push(
-                `/store/success/?status=ok&order=${encodeURIComponent(json.orderNumber || "")}`
+              router.replace(
+                `/account?purchased=1&order=${encodeURIComponent(json.orderNumber || "")}`
               );
             } catch (err) {
               setError(err instanceof Error ? err.message : "Payment failed");
