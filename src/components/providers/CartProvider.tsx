@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import type { Product } from "@/data/products.seed";
+import { useCatalog } from "@/components/providers/CatalogProvider";
 
 export type BagItem = {
   slug: string;
@@ -47,6 +48,7 @@ function loadItems(): BagItem[] {
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const { products, loading: catalogLoading } = useCatalog();
   const [items, setItems] = useState<BagItem[]>([]);
   const [hydrated, setHydrated] = useState(false);
 
@@ -55,18 +57,58 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setHydrated(true);
   }, []);
 
+  // Reprice / drop bag lines from the live Supabase catalog.
+  useEffect(() => {
+    if (!hydrated || catalogLoading) return;
+    setItems((prev) => {
+      const next = prev
+        .map((item) => {
+          const live = products.find((p) => p.slug === item.slug);
+          if (!live) return null;
+          if (live.availabilityStatus !== "available") return null;
+          return {
+            ...item,
+            name: live.name,
+            price: live.price,
+            currency: live.currency,
+            cardGradient: live.cardGradient,
+          };
+        })
+        .filter((item): item is BagItem => item !== null);
+
+      const same =
+        next.length === prev.length &&
+        next.every(
+          (item, i) =>
+            item.slug === prev[i].slug &&
+            item.price === prev[i].price &&
+            item.name === prev[i].name &&
+            item.quantity === prev[i].quantity
+        );
+      return same ? prev : next;
+    });
+  }, [hydrated, catalogLoading, products]);
+
   useEffect(() => {
     if (!hydrated) return;
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   }, [items, hydrated]);
 
   const addProduct = useCallback((product: Product) => {
+    if (product.availabilityStatus !== "available") return;
     setItems((prev) => {
       const existing = prev.find((item) => item.slug === product.slug);
       if (existing) {
         return prev.map((item) =>
           item.slug === product.slug
-            ? { ...item, quantity: item.quantity + 1 }
+            ? {
+                ...item,
+                quantity: item.quantity + 1,
+                price: product.price,
+                name: product.name,
+                currency: product.currency,
+                cardGradient: product.cardGradient,
+              }
             : item
         );
       }
@@ -101,19 +143,30 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const clear = useCallback(() => setItems([]), []);
 
   const value = useMemo<CartContextValue>(() => {
-    const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const subtotal = items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
     const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
     return {
       items,
       itemCount,
       subtotal,
-      hydrated,
+      hydrated: hydrated && !catalogLoading,
       addProduct,
       removeItem,
       setQuantity,
       clear,
     };
-  }, [items, hydrated, addProduct, removeItem, setQuantity, clear]);
+  }, [
+    items,
+    hydrated,
+    catalogLoading,
+    addProduct,
+    removeItem,
+    setQuantity,
+    clear,
+  ]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

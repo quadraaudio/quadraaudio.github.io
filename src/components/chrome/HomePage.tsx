@@ -7,7 +7,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { HeroParticles } from "@/components/three/HeroParticles";
 import { SpectrumCascade } from "@/components/three/SpectrumCascade";
 import { LogoMark } from "@/components/chrome/LogoMark";
-import type { Product } from "@/data/products.seed";
+import { useCatalog } from "@/components/providers/CatalogProvider";
 import { formatPrice } from "@/lib/products";
 import styles from "./HomePage.module.scss";
 
@@ -41,7 +41,8 @@ const AUDIENCES = [
   },
 ];
 
-export function HomePage({ products }: { products: Product[] }) {
+export function HomePage() {
+  const { products, loading } = useCatalog();
   const [modalOpen, setModalOpen] = useState(false);
   const [audience, setAudience] = useState(0);
 
@@ -120,7 +121,12 @@ export function HomePage({ products }: { products: Product[] }) {
             <h2 className="display display-lg">Tools that earn a permanent slot.</h2>
           </Reveal>
           <div className={styles.productGrid}>
-            {products.map((product) => (
+            {loading ? (
+              <p className="lede" role="status">
+                Loading catalog…
+              </p>
+            ) : (
+              products.map((product) => (
               <Reveal key={product.slug}>
                 <Link href={`/store/${product.slug}`} className={styles.productCard}>
                   <div
@@ -135,7 +141,8 @@ export function HomePage({ products }: { products: Product[] }) {
                   </div>
                 </Link>
               </Reveal>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </section>

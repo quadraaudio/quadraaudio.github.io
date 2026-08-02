@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/components/providers/AuthProvider";
+import { useCatalog } from "@/components/providers/CatalogProvider";
 import { callEdgeFunction } from "@/lib/edgeApi";
 import { formatPrice } from "@/lib/products";
 import styles from "./admin.module.scss";
@@ -40,7 +41,8 @@ const EMPTY: DbProduct = {
 };
 
 export default function AdminProductsPage() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, ensureAccessToken } = useAuth();
+  const { refresh: refreshCatalog } = useCatalog();
   const [products, setProducts] = useState<DbProduct[]>([]);
   const [editing, setEditing] = useState<DbProduct | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -48,14 +50,15 @@ export default function AdminProductsPage() {
   const [loaded, setLoaded] = useState(false);
 
   const load = useCallback(async () => {
-    if (!user?.accessToken) return;
+    if (!user) return;
     setBusy(true);
     setError(null);
     try {
+      const accessToken = await ensureAccessToken();
       const data = await callEdgeFunction<{ products: DbProduct[] }>(
         "store-admin-products",
-        { action: "list", googleAccessToken: user.accessToken },
-        user.accessToken
+        { action: "list", googleAccessToken: accessToken },
+        accessToken
       );
       setProducts(data.products || []);
       setLoaded(true);
@@ -65,24 +68,25 @@ export default function AdminProductsPage() {
     } finally {
       setBusy(false);
     }
-  }, [user?.accessToken]);
+  }, [user, ensureAccessToken]);
 
   useEffect(() => {
     void load();
   }, [load]);
 
   async function save() {
-    if (!user?.accessToken || !editing) return;
+    if (!user || !editing) return;
     setBusy(true);
     setError(null);
     try {
+      const accessToken = await ensureAccessToken();
       const features = editing.features.filter((f) => f.title.trim());
       const reqs = editing.system_requirements.filter((r) => r.trim());
       await callEdgeFunction(
         "store-admin-products",
         {
           action: "upsert",
-          googleAccessToken: user.accessToken,
+          googleAccessToken: accessToken,
           product: {
             ...editing,
             features,
@@ -92,10 +96,11 @@ export default function AdminProductsPage() {
             description: editing.description || null,
           },
         },
-        user.accessToken
+        accessToken
       );
       setEditing(null);
       await load();
+      await refreshCatalog();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Save failed");
     } finally {
@@ -104,21 +109,23 @@ export default function AdminProductsPage() {
   }
 
   async function remove(slug: string) {
-    if (!user?.accessToken) return;
+    if (!user) return;
     if (!window.confirm(`Delete product “${slug}”?`)) return;
     setBusy(true);
     setError(null);
     try {
+      const accessToken = await ensureAccessToken();
       await callEdgeFunction(
         "store-admin-products",
         {
           action: "delete",
-          googleAccessToken: user.accessToken,
+          googleAccessToken: accessToken,
           slug,
         },
-        user.accessToken
+        accessToken
       );
       await load();
+      await refreshCatalog();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Delete failed");
     } finally {

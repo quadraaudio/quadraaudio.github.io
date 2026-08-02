@@ -17,8 +17,9 @@ export interface Product {
 }
 
 /**
- * Offline fallback catalog when Supabase is unavailable.
- * Live storefront reads from the `products` table — edit there (or /admin/products).
+ * Offline fallback only when Supabase is unreachable.
+ * Live price / availability / copy always come from the `products` table
+ * (edit in Supabase or /admin/products) via CatalogProvider.
  */
 export const PRODUCTS_SEED: Product[] = [
   {

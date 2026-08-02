@@ -6,19 +6,20 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { getSeedProduct } from "@/data/products.seed";
 import { useAuth } from "@/components/providers/AuthProvider";
+import { useCatalog } from "@/components/providers/CatalogProvider";
 import { callEdgeFunction } from "@/lib/edgeApi";
 import { formatPrice } from "@/lib/products";
 import styles from "./account.module.scss";
 
-function productName(slug: string) {
-  return getSeedProduct(slug)?.name || slug;
-}
-
 function AccountInner() {
   const { user, isLoading, ensureAccessToken } = useAuth();
+  const { getBySlug } = useCatalog();
   const searchParams = useSearchParams();
   const purchased = searchParams.get("purchased") === "1";
   const orderRef = searchParams.get("order");
+
+  const productName = (slug: string) =>
+    getBySlug(slug)?.name || getSeedProduct(slug)?.name || slug;
 
   const [orders, setOrders] = useState<
     Array<{

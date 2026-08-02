@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { Product } from "@/data/products.seed";
-import { formatPrice } from "@/lib/products";
+import { availabilityLabel, formatPrice } from "@/lib/products";
 import styles from "./ProductCard.module.scss";
 
 export function ProductCard({ product }: { product: Product }) {
@@ -15,7 +15,9 @@ export function ProductCard({ product }: { product: Product }) {
         <p>{product.tagline}</p>
         <div className={styles.meta}>
           <span>{formatPrice(product.price, product.currency)}</span>
-          <span className={styles.status}>{product.availabilityStatus.replace("_", " ")}</span>
+          <span className={styles.status}>
+            {availabilityLabel(product.availabilityStatus)}
+          </span>
         </div>
       </div>
     </Link>

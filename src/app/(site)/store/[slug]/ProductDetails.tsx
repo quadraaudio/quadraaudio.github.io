@@ -42,7 +42,9 @@ export function ProductDetails({ product }: { product: Product }) {
                 ? "Added — opening bag…"
                 : product.availabilityStatus === "available"
                   ? "Buy now"
-                  : "Unavailable"}
+                  : product.availabilityStatus === "coming_soon"
+                    ? "Coming soon"
+                    : "Sold out"}
             </button>
             <Link href="/products/matrix" className="btn btn-secondary">
               Product overview

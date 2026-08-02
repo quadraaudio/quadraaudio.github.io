@@ -1,10 +1,10 @@
-import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
-import { getSupabaseBrowser } from "@/lib/supabase";
 import {
   PRODUCTS_SEED,
   type Product,
   getSeedProduct,
 } from "@/data/products.seed";
+import { getSupabaseBrowser } from "@/lib/supabase";
+import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 type DbProduct = {
   slug: string;
@@ -44,16 +44,27 @@ export function mapDbProduct(row: DbProduct): Product {
 
 function sortProducts(products: Product[]) {
   return [...products].sort(
-    (a, b) => (a.sortOrder ?? 100) - (b.sortOrder ?? 100) || a.name.localeCompare(b.name)
+    (a, b) =>
+      (a.sortOrder ?? 100) - (b.sortOrder ?? 100) ||
+      a.name.localeCompare(b.name)
   );
 }
 
-/** Storefront catalog — Supabase `products` table, seed as offline fallback. */
+function storeClient() {
+  return getSupabaseAdmin() || getSupabaseBrowser();
+}
+
+/**
+ * Live catalog from Supabase `products`.
+ * Seed is only used when the database client is missing or the request fails —
+ * never when the table simply has zero "available" rows.
+ */
 export async function listProducts(options?: {
+  /** When false, only `available` rows. Default true so admin status changes show. */
   includeUnavailable?: boolean;
 }): Promise<Product[]> {
-  const admin = getSupabaseAdmin();
-  const client = admin || getSupabaseBrowser();
+  const includeUnavailable = options?.includeUnavailable ?? true;
+  const client = storeClient();
   if (!client) return sortProducts(PRODUCTS_SEED);
 
   try {
@@ -61,14 +72,13 @@ export async function listProducts(options?: {
       ascending: true,
     });
 
-    if (!options?.includeUnavailable) {
+    if (!includeUnavailable) {
       query = query.eq("availability_status", "available");
     }
 
     const { data, error } = await query;
-
-    if (error || !data?.length) return sortProducts(PRODUCTS_SEED);
-    return sortProducts(data.map((row) => mapDbProduct(row as DbProduct)));
+    if (error) throw error;
+    return sortProducts((data || []).map((row) => mapDbProduct(row as DbProduct)));
   } catch {
     return sortProducts(PRODUCTS_SEED);
   }
@@ -77,8 +87,7 @@ export async function listProducts(options?: {
 export async function getProductBySlug(
   slug: string
 ): Promise<Product | undefined> {
-  const admin = getSupabaseAdmin();
-  const client = admin || getSupabaseBrowser();
+  const client = storeClient();
   if (!client) return getSeedProduct(slug);
 
   try {
@@ -88,7 +97,8 @@ export async function getProductBySlug(
       .eq("slug", slug)
       .maybeSingle();
 
-    if (error || !data) return getSeedProduct(slug);
+    if (error) throw error;
+    if (!data) return undefined;
     return mapDbProduct(data as DbProduct);
   } catch {
     return getSeedProduct(slug);
@@ -119,4 +129,15 @@ export function productToDbPayload(product: Partial<Product> & { slug: string })
     sort_order: product.sortOrder ?? 100,
     updated_at: new Date().toISOString(),
   };
+}
+
+export function availabilityLabel(status: Product["availabilityStatus"]) {
+  switch (status) {
+    case "coming_soon":
+      return "Coming soon";
+    case "sold_out":
+      return "Sold out";
+    default:
+      return "Available";
+  }
 }

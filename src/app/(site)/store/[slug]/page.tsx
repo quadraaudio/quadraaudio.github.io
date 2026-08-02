@@ -1,10 +1,14 @@
-import { notFound } from "next/navigation";
+import { PRODUCTS_SEED } from "@/data/products.seed";
 import { getProductBySlug, listProducts } from "@/lib/products";
-import { ProductDetails } from "./ProductDetails";
+import { ProductDetailsLoader } from "./ProductDetailsLoader";
 
 export async function generateStaticParams() {
-  const products = await listProducts();
-  return products.map((product) => ({ slug: product.slug }));
+  const fromDb = await listProducts({ includeUnavailable: true });
+  const slugs = new Set([
+    ...PRODUCTS_SEED.map((p) => p.slug),
+    ...fromDb.map((p) => p.slug),
+  ]);
+  return [...slugs].map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -14,20 +18,19 @@ export async function generateMetadata({
 }) {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
-  if (!product) return { title: "Product" };
+  if (!product) {
+    const seed = PRODUCTS_SEED.find((p) => p.slug === slug);
+    return {
+      title: seed?.name || "Product",
+      description: seed?.tagline,
+    };
+  }
   return {
     title: product.name,
     description: product.tagline,
   };
 }
 
-export default async function ProductPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  const product = await getProductBySlug(slug);
-  if (!product) notFound();
-  return <ProductDetails product={product} />;
+export default function ProductPage() {
+  return <ProductDetailsLoader />;
 }
