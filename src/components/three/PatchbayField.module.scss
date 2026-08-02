@@ -1,28 +1,123 @@
-.canvas {
+.root {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
+}
+
+/* Always-on CSS motion (teal matrix field) */
+.cssField {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   pointer-events: none;
-  opacity: 0.92;
+}
+
+.cssGrid {
+  position: absolute;
+  inset: -10%;
+  background-image:
+    linear-gradient(rgba(0, 163, 160, 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 163, 160, 0.14) 1px, transparent 1px);
+  background-size: 48px 48px;
+  animation: gridDrift 22s linear infinite;
+  opacity: 0.7;
+}
+
+.cssPulse {
+  position: absolute;
+  inset: 15% 20%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(0, 163, 160, 0.35),
+    transparent 68%
+  );
+  filter: blur(24px);
+  animation: pulse 4.5s ease-in-out infinite;
+}
+
+.cssSweep {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(94, 224, 220, 0.12) 50%,
+    transparent 65%
+  );
+  background-size: 220% 100%;
+  animation: sweep 7s ease-in-out infinite;
+}
+
+.bootStill {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.28;
+  filter: saturate(0.85) brightness(0.45);
+  pointer-events: none;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 .canvas :global(canvas) {
   width: 100% !important;
   height: 100% !important;
-}
-
-.fallback {
-  position: absolute;
-  inset: 0;
-}
-
-.fallbackImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
   display: block;
-  opacity: 0.5;
-  filter: saturate(0.9) brightness(0.5);
+}
+
+@keyframes gridDrift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-48px, -48px, 0);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes sweep {
+  0%,
+  100% {
+    background-position: 100% 0;
+  }
+  50% {
+    background-position: 0% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cssGrid,
+  .cssPulse,
+  .cssSweep {
+    animation: none;
+  }
+
+  .cssPulse {
+    opacity: 0.55;
+  }
 }
