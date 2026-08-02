@@ -1,6 +1,7 @@
 .page {
   padding-block: var(--space-3xl) var(--space-5xl);
-  animation: pageEnter 0.85s var(--ease-out) both;
+  opacity: 1;
+  animation: pageEnter 0.85s var(--ease-out);
 }
 
 @keyframes pageEnter {

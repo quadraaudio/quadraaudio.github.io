@@ -1,5 +1,6 @@
 .page {
-  animation: pageEnter 0.85s var(--ease-out) both;
+  opacity: 1;
+  animation: pageEnter 0.85s var(--ease-out);
 }
 
 @keyframes pageEnter {

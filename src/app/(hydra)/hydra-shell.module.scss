@@ -25,8 +25,9 @@
   background: var(--hydra-ink);
   color: var(--hydra-snow);
   font-family: var(--font-body);
-  /* Match Matrix RootShell fadeIn (0.55s) */
-  animation: hydraEnter 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  opacity: 1;
+  /* Match Matrix RootShell fadeIn (0.55s) — no fill-mode both (avoids stuck opacity 0) */
+  animation: hydraEnter 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes hydraEnter {

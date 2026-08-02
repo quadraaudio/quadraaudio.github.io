@@ -36,7 +36,15 @@ export function MatrixFade({
       { rootMargin: "0px 0px -8% 0px", threshold: 0.12 }
     );
     io.observe(el);
-    return () => io.disconnect();
+    // If IntersectionObserver never fires (odd layouts / iframe), still reveal.
+    const failsafe = window.setTimeout(() => {
+      el.classList.add(styles.on);
+      io.disconnect();
+    }, 2500);
+    return () => {
+      window.clearTimeout(failsafe);
+      io.disconnect();
+    };
   }, []);
 
   return (

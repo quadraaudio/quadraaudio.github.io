@@ -1,5 +1,8 @@
 .pageEnter {
-  animation: pageEnter 0.85s var(--ease-out) both;
+  /* Visible by default — never leave the page stuck at opacity 0 if the
+     animation is interrupted or fill-mode applies "from" without running. */
+  opacity: 1;
+  animation: pageEnter 0.85s var(--ease-out);
 }
 
 @keyframes pageEnter {

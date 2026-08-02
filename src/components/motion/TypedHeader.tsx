@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import styles from "./TypedHeader.module.scss";
 
+/**
+ * Hero headline. Kept as a component for call sites; typing was removed so the
+ * first paint always shows the full title (no blank/cursor-only stuck state).
+ */
 export function TypedHeader({
   text,
   className = "",
@@ -10,33 +13,5 @@ export function TypedHeader({
   text: string;
   className?: string;
 }) {
-  const [shown, setShown] = useState("");
-  const reduced = useRef(false);
-
-  useEffect(() => {
-    reduced.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced.current) {
-      setShown(text);
-      return;
-    }
-
-    let i = 0;
-    const id = window.setInterval(() => {
-      i += 1;
-      setShown(text.slice(0, i));
-      if (i >= text.length) window.clearInterval(id);
-    }, 28);
-
-    return () => window.clearInterval(id);
-  }, [text]);
-
-  return (
-    <span className={`${styles.wrap} ${className}`}>
-      <span className="sr-only">{text}</span>
-      <span aria-hidden className={styles.visible}>
-        {shown}
-        <span className={styles.cursor} />
-      </span>
-    </span>
-  );
+  return <span className={`${styles.wrap} ${className}`}>{text}</span>;
 }

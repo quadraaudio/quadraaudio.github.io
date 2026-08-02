@@ -20,7 +20,11 @@ export function HydraHero() {
       return;
     }
     const t = window.setTimeout(() => setRevealed(true), 80);
-    return () => window.clearTimeout(t);
+    const failsafe = window.setTimeout(() => setRevealed(true), 1200);
+    return () => {
+      window.clearTimeout(t);
+      window.clearTimeout(failsafe);
+    };
   }, []);
 
   return (
