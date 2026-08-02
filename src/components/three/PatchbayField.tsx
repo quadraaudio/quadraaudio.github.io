@@ -67,9 +67,9 @@ export function PatchbayField({
       renderer.setSize(w, h);
       mount.appendChild(renderer.domElement);
 
-      const ink = new THREE.Color("#06080c");
-      const steel = new THREE.Color("#6e7b8c");
-      const hot = new THREE.Color("#7eb6ff");
+      const ink = new THREE.Color("#0e1218");
+      const steel = new THREE.Color("#8b95a5");
+      const hot = new THREE.Color("#00a3a0");
       const accent = new THREE.Color("#00a3a0");
 
       const spanX = 16.5;

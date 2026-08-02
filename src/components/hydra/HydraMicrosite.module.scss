@@ -168,14 +168,6 @@
   margin-inline: auto;
 }
 
-.mediaWell {
-  border-radius: var(--mx-radius);
-  overflow: hidden;
-  border: 1px solid var(--mx-line);
-  background: var(--mx-raised);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.28);
-}
-
 .subGrid {
   margin-top: clamp(28px, 5vh, 48px);
   display: grid;

@@ -48,9 +48,7 @@ export function HydraMicrosite() {
             </MatrixFade>
 
             <MatrixFade delay={60}>
-              <div className={styles.mediaWell}>
-                <HydraMedia media={chapter.media} large />
-              </div>
+              <HydraMedia media={chapter.media} />
             </MatrixFade>
 
             <div className={styles.subGrid}>

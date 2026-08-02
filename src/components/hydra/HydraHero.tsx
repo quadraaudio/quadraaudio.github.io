@@ -3,12 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { PatchbayField } from "@/components/three/PatchbayField";
 import { HYDRA } from "@/data/hydra.landing";
 import styles from "./HydraHero.module.scss";
 
 /**
- * Matrix dark hero — generic studio still + visible staggered fade/rise
- * (RootShell easing, longer so the motion reads).
+ * Matrix dark hero — living PatchbayField + staggered copy enter.
  */
 export function HydraHero() {
   const [revealed, setRevealed] = useState(false);
@@ -27,14 +27,12 @@ export function HydraHero() {
     <section id="overview" className={styles.hero}>
       <div className={styles.atmosphere} aria-hidden>
         <div className={styles.glow} />
-        <Image
-          src={HYDRA.heroMedia.src}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className={styles.heroStill}
-        />
+        <div className={styles.patchLayer}>
+          <PatchbayField
+            fallbackSrc={HYDRA.heroMedia.src}
+            fallbackAlt={HYDRA.heroMedia.alt}
+          />
+        </div>
         <div className={styles.shade} />
       </div>
 

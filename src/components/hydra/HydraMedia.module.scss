@@ -1,28 +1,28 @@
-.frame {
-  position: relative;
+/* No frame — image owns its geometry */
+
+.bleed {
+  margin: 0;
+  padding: 0;
   width: 100%;
-  /* Native hydra assets are 1536×1024 (3:2) — do not force 16:9 crop */
-  aspect-ratio: 3 / 2;
-  overflow: hidden;
-  border-radius: 16px;
-  background: #1c242e;
+  background: none;
   border: none;
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
 }
 
-.large {
-  border-radius: 16px;
-  aspect-ratio: 3 / 2;
-}
-
-.image,
-.video {
-  object-fit: cover;
-  object-position: center;
-}
-
-.video {
-  position: absolute;
-  inset: 0;
+.image {
+  display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
+  vertical-align: top;
+  border-radius: 0;
+  object-fit: unset;
+}
+
+.video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
 }

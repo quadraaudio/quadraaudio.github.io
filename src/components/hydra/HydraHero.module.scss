@@ -1,4 +1,4 @@
-/* Matrix dark hero — fascia atmosphere + visible enter motion */
+/* Matrix dark hero — PatchbayField atmosphere + staggered enter */
 
 .hero {
   --mx-ink: #0e1218;
@@ -42,10 +42,11 @@
   z-index: 1;
 }
 
-.heroStill {
-  object-fit: cover;
-  object-position: center 40%;
-  opacity: 0.42;
+.patchLayer {
+  position: absolute;
+  inset: -4% -10vw -6%;
+  z-index: 0;
+  opacity: 0.85;
 }
 
 .shade {
@@ -53,8 +54,8 @@
   inset: 0;
   z-index: 2;
   background:
-    radial-gradient(55% 50% at 50% 40%, transparent 0%, rgba(14, 18, 24, 0.55) 100%),
-    linear-gradient(180deg, rgba(14, 18, 24, 0.35) 0%, rgba(14, 18, 24, 0.88) 100%);
+    radial-gradient(55% 50% at 50% 40%, transparent 0%, rgba(14, 18, 24, 0.45) 100%),
+    linear-gradient(180deg, rgba(14, 18, 24, 0.25) 0%, rgba(14, 18, 24, 0.82) 100%);
 }
 
 .copy {
@@ -77,7 +78,7 @@
   height: 72px;
   border-radius: 16px;
   object-fit: contain;
-  background: var(--mx-raised);
+  background: transparent;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 }
 
@@ -150,7 +151,6 @@
   border-color: rgba(0, 163, 160, 0.45);
 }
 
-/* Staggered enter — only runs when .revealed is on */
 .in1,
 .in2,
 .in3,
