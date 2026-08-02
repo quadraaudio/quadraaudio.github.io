@@ -11,6 +11,10 @@
   --mx-fade: cubic-bezier(0.22, 1, 0.36, 1);
   --mx-radius: 28px;
   --mx-radius-md: 16px;
+  /* One screen under Quadra nav + MATRIX chrome — matches hero */
+  --mx-panel-height: calc(
+    100svh - var(--nav-height) - var(--matrix-chrome-height)
+  );
 
   background: var(--mx-ink);
   color: var(--mx-text);
@@ -128,11 +132,27 @@
 
 .chapter,
 .chapterAlt {
-  padding: clamp(64px, 10vh, 100px) 0;
+  box-sizing: border-box;
+  height: var(--mx-panel-height);
+  min-height: var(--mx-panel-height);
+  max-height: var(--mx-panel-height);
+  padding: clamp(16px, 2.5vh, 28px) 0;
   border-top: 1px solid var(--mx-line);
-  scroll-margin-top: calc(
-    var(--nav-height) + var(--matrix-chrome-height) + 12px
-  );
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  scroll-margin-top: calc(var(--nav-height) + var(--matrix-chrome-height));
+}
+
+.chapter > .shell,
+.chapterAlt > .shell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(12px, 2vh, 20px);
+  min-height: 0;
+  max-height: 100%;
 }
 
 .chapter {
@@ -145,7 +165,8 @@
 
 .chapterHeader {
   text-align: center;
-  margin-bottom: clamp(24px, 4vh, 40px);
+  margin-bottom: 0;
+  flex-shrink: 0;
 }
 
 .eyebrow {
@@ -158,10 +179,10 @@
 }
 
 .chapterTitle {
-  margin: 0 0 12px;
+  margin: 0 0 8px;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(1.75rem, 4vw, 2.6rem);
+  font-size: clamp(1.45rem, 3.2vw, 2.15rem);
   letter-spacing: -0.03em;
   line-height: 1.12;
   color: var(--mx-text);
@@ -169,24 +190,54 @@
 
 .chapterHeader .chapterBody {
   margin-inline: auto;
+  font-size: 0.92rem;
+}
+
+.chapterMediaWrap {
+  flex: 0 1 auto;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  max-height: min(38vh, 360px);
+}
+
+.chapterMedia {
+  flex: 0 1 auto;
+  min-height: 0;
+  max-height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+
+  :global(img),
+  :global(video) {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: min(38vh, 360px);
+    object-fit: contain;
+  }
 }
 
 .subGrid {
-  margin-top: clamp(28px, 5vh, 48px);
+  margin-top: 0;
   display: grid;
-  gap: 12px;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
 .subCard {
-  padding: 18px 16px;
+  padding: 12px 14px;
   border-radius: var(--mx-radius-md);
   background: var(--mx-raised);
   border: 1px solid var(--mx-line);
 
   h3 {
-    margin: 0 0 8px;
+    margin: 0 0 4px;
     font-family: var(--font-display);
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     letter-spacing: -0.02em;
     color: var(--mx-text);
   }
@@ -194,37 +245,53 @@
   p {
     margin: 0;
     color: var(--mx-mist);
-    font-size: 0.92rem;
-    line-height: 1.45;
+    font-size: 0.82rem;
+    line-height: 1.4;
     max-width: 36ch;
   }
 }
 
 .specs {
-  padding: clamp(64px, 10vh, 100px) 0;
+  box-sizing: border-box;
+  height: var(--mx-panel-height);
+  min-height: var(--mx-panel-height);
+  max-height: var(--mx-panel-height);
+  padding: clamp(16px, 2.5vh, 28px) 0;
   border-top: 1px solid var(--mx-line);
   background: var(--mx-ink);
   text-align: center;
-  scroll-margin-top: calc(
-    var(--nav-height) + var(--matrix-chrome-height) + 12px
-  );
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  scroll-margin-top: calc(var(--nav-height) + var(--matrix-chrome-height));
+}
+
+.specs > .shellNarrow {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+  max-height: 100%;
 }
 
 .specList {
-  margin: 36px 0 0;
+  margin: 20px 0 0;
   padding: 0;
   text-align: left;
   border-radius: var(--mx-radius-md);
   background: var(--mx-raised);
   border: 1px solid var(--mx-line);
-  overflow: hidden;
+  overflow: auto;
+  min-height: 0;
+  max-height: min(52vh, 420px);
 }
 
 .specRow {
   display: grid;
   grid-template-columns: minmax(110px, 160px) 1fr;
   gap: 12px;
-  padding: 16px 18px;
+  padding: 12px 16px;
   border-top: 1px solid var(--mx-line);
 
   &:first-child {
@@ -277,7 +344,7 @@
 
   .subGrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
+    gap: 10px;
   }
 }
 
@@ -288,6 +355,37 @@
 
   .highlightGrid > :last-child:nth-child(5) {
     grid-column: span 1;
+  }
+}
+
+/* On short / narrow viewports, allow natural height so content isn’t clipped */
+@media (max-width: 720px), (max-height: 720px) {
+  .chapter,
+  .chapterAlt,
+  .specs {
+    height: auto;
+    max-height: none;
+    min-height: var(--mx-panel-height);
+    overflow: visible;
+    padding: clamp(28px, 5vh, 48px) 0;
+  }
+
+  .chapterMediaWrap {
+    max-height: none;
+  }
+
+  .chapterMedia {
+    max-height: none;
+
+    :global(img),
+    :global(video) {
+      max-height: min(42vh, 320px);
+    }
+  }
+
+  .specList {
+    max-height: none;
+    overflow: hidden;
   }
 }
 

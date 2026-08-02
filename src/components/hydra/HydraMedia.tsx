@@ -12,15 +12,17 @@ export function HydraMedia({
   media,
   videoSrc,
   priority = false,
+  className = "",
 }: {
   media: HydraMediaSlot;
   videoSrc?: string;
   priority?: boolean;
+  className?: string;
   /** @deprecated ignored — no framed large variant */
   large?: boolean;
 }) {
   return (
-    <figure className={styles.bleed}>
+    <figure className={`${styles.bleed} ${className}`.trim()}>
       {videoSrc ? (
         <video
           className={styles.video}

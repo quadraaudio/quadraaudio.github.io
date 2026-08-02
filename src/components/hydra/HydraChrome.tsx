@@ -10,7 +10,7 @@ function stickyOffsetPx() {
   const nav = parseFloat(root.getPropertyValue("--nav-height")) || 64;
   const chrome =
     parseFloat(root.getPropertyValue("--matrix-chrome-height")) || 48;
-  return nav + chrome + 12;
+  return nav + chrome;
 }
 
 function scrollToId(id: string, behavior: ScrollBehavior = "smooth") {
@@ -36,7 +36,7 @@ export function HydraChrome() {
     const html = document.documentElement;
     const previous = html.style.scrollPaddingTop;
     html.style.scrollPaddingTop =
-      "calc(var(--nav-height) + var(--matrix-chrome-height) + 12px)";
+      "calc(var(--nav-height) + var(--matrix-chrome-height))";
     return () => {
       html.style.scrollPaddingTop = previous;
     };

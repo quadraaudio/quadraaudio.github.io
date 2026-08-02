@@ -16,9 +16,7 @@
   text-align: center;
   overflow: hidden;
   background: var(--mx-ink);
-  scroll-margin-top: calc(
-    var(--nav-height) + var(--matrix-chrome-height) + 12px
-  );
+  scroll-margin-top: calc(var(--nav-height) + var(--matrix-chrome-height));
 }
 
 .atmosphere {
