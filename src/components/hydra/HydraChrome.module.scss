@@ -7,13 +7,19 @@
   background: rgba(18, 24, 32, 0.88);
   backdrop-filter: saturate(140%) blur(18px);
   -webkit-backdrop-filter: saturate(140%) blur(18px);
-  transition: border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
     background 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
-.scrolled {
-  border-bottom-color: rgba(255, 255, 255, 0.1);
-  background: rgba(14, 18, 24, 0.94);
+.away {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  border-bottom-color: transparent;
 }
 
 .inner {
@@ -90,5 +96,11 @@
 @media (min-width: 860px) {
   .nav {
     display: flex;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    transition: none;
   }
 }
