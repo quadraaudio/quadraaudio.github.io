@@ -1,19 +1,17 @@
-/* Matrix dark hero — PatchbayField atmosphere + staggered enter */
+/* Logic-inspired hero — statement first, product stage second */
 
 .hero {
-  --mx-ink: #0e1218;
-  --mx-raised: #1c242e;
-  --mx-text: #f7f9fb;
-  --mx-mist: #8b95a5;
+  --mx-ink: #000000;
+  --mx-text: #f5f5f7;
+  --mx-mist: #a1a1a6;
   --mx-accent: #00a3a0;
   --mx-fade: cubic-bezier(0.22, 1, 0.36, 1);
 
   position: relative;
-  min-height: calc(100svh - var(--nav-height) - var(--matrix-chrome-height));
-  display: grid;
-  place-items: center;
-  padding: clamp(48px, 8vh, 88px) 0 clamp(72px, 12vh, 120px);
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(48px, 10vh, 96px) 0 0;
   overflow: hidden;
   background: var(--mx-ink);
   scroll-margin-top: calc(var(--nav-height) + var(--matrix-chrome-height));
@@ -24,168 +22,162 @@
   inset: 0;
   pointer-events: none;
   z-index: 0;
-}
-
-.glow {
-  position: absolute;
-  top: -12%;
-  right: -8%;
-  width: min(72vw, 640px);
-  height: min(56vw, 520px);
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(0, 163, 160, 0.22),
-    transparent 68%
-  );
-  filter: blur(8px);
-  animation: glowPulse 5.5s ease-in-out infinite;
-  z-index: 1;
+  opacity: 0.45;
 }
 
 .patchLayer {
   position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
+  inset: -8% -4%;
+  width: 108%;
+  height: 108%;
 }
 
 .shade {
   position: absolute;
   inset: 0;
-  z-index: 2;
   background:
-    radial-gradient(55% 50% at 50% 42%, transparent 0%, rgba(14, 18, 24, 0.28) 100%),
-    linear-gradient(180deg, rgba(14, 18, 24, 0.1) 0%, rgba(14, 18, 24, 0.55) 72%, var(--mx-ink) 100%);
-  pointer-events: none;
+    radial-gradient(60% 50% at 50% 20%, transparent 0%, rgba(0, 0, 0, 0.55) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, #000 92%);
 }
 
-.copy {
+.masthead {
   position: relative;
-  z-index: 3;
-  width: min(100% - 40px, 520px);
-  margin-inline: auto;
-}
-
-.brandRow {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 20px;
-}
-
-.brandMark {
-  width: 72px;
-  height: 72px;
-  border-radius: 16px;
-  object-fit: contain;
-  background: transparent;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  z-index: 2;
+  width: min(100% - 40px, 820px);
+  margin: 0 auto;
+  text-align: center;
+  padding-bottom: clamp(40px, 7vh, 72px);
 }
 
 .productName {
-  margin: 0;
+  margin: 0 0 18px;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(1.1rem, 2vw, 1.35rem);
-  letter-spacing: 0.22em;
-  color: var(--mx-accent);
+  font-size: clamp(1.25rem, 2.2vw, 1.55rem);
+  letter-spacing: 0.28em;
+  color: var(--mx-text);
 }
 
 .headline {
-  margin: 0 0 14px;
+  margin: 0 0 20px;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(1.85rem, 4.5vw, 2.75rem);
-  letter-spacing: -0.03em;
-  line-height: 1.12;
+  font-size: clamp(3.25rem, 9vw, 6.5rem);
+  letter-spacing: -0.045em;
+  line-height: 0.95;
   color: var(--mx-text);
 }
 
 .lede {
   margin: 0 auto 28px;
-  max-width: 38ch;
+  max-width: 34em;
   color: var(--mx-mist);
-  font-size: 0.98rem;
-  line-height: 1.5;
+  font-size: clamp(1.125rem, 2vw, 1.35rem);
+  line-height: 1.4;
   font-weight: 500;
 }
 
 .ctaRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 8px 28px;
   justify-content: center;
-}
-
-.btnPrimary,
-.btnGhost {
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-height: 36px;
-  padding: 0 22px;
-  border-radius: 999px;
-  font-size: 0.9rem;
-  font-weight: 600;
+}
+
+.ctaBuy,
+.ctaTrial {
+  font-size: 1.125rem;
+  font-weight: 500;
   letter-spacing: -0.01em;
-  transition: background 0.35s var(--mx-fade), border-color 0.35s var(--mx-fade);
+  transition: opacity 0.25s var(--mx-fade);
 }
 
-.btnPrimary {
-  background: var(--mx-accent);
-  color: #fff;
-  border: 1px solid transparent;
+.ctaBuy {
+  color: var(--mx-accent);
 }
 
-.btnPrimary:hover {
-  background: #007e7c;
+.ctaBuy::after {
+  content: " ›";
 }
 
-.btnGhost {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: var(--mx-raised);
-  color: var(--mx-text);
+.ctaTrial {
+  color: var(--mx-accent);
 }
 
-.btnGhost:hover {
-  border-color: rgba(0, 163, 160, 0.45);
+.ctaTrial::after {
+  content: " ›";
+}
+
+.ctaBuy:hover,
+.ctaTrial:hover {
+  opacity: 0.72;
+}
+
+/* Product screenshot as the hero’s visual plane */
+.productStage {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 0 clamp(12px, 3vw, 40px);
+  margin-bottom: -4vw;
+}
+
+.stageFrame {
+  width: min(100%, 1180px);
+  margin: 0 auto;
+  border-radius: 18px 18px 0 0;
+  overflow: hidden;
+  background: #0a0c10;
+  box-shadow:
+    0 -1px 0 rgba(255, 255, 255, 0.08),
+    0 40px 100px rgba(0, 0, 0, 0.65);
+}
+
+.stageImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  vertical-align: top;
 }
 
 .in1,
 .in2,
 .in3,
-.in4 {
+.in4,
+.in5 {
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(20px);
 }
 
 .revealed .in1,
 .revealed .in2,
 .revealed .in3,
-.revealed .in4 {
-  animation: matrixEnter 0.85s var(--mx-fade) both;
+.revealed .in4,
+.revealed .in5 {
+  animation: enter 0.9s var(--mx-fade) both;
 }
 
 .revealed .in1 {
-  animation-delay: 0.05s;
+  animation-delay: 0.04s;
 }
 .revealed .in2 {
-  animation-delay: 0.16s;
+  animation-delay: 0.12s;
 }
 .revealed .in3 {
-  animation-delay: 0.28s;
+  animation-delay: 0.22s;
 }
 .revealed .in4 {
-  animation-delay: 0.4s;
+  animation-delay: 0.32s;
+}
+.revealed .in5 {
+  animation-delay: 0.42s;
 }
 
-@keyframes matrixEnter {
+@keyframes enter {
   from {
     opacity: 0;
-    transform: translateY(28px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -193,29 +185,14 @@
   }
 }
 
-@keyframes glowPulse {
-  0%,
-  100% {
-    opacity: 0.45;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.1);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .in1,
   .in2,
   .in3,
-  .in4 {
+  .in4,
+  .in5 {
     opacity: 1;
     transform: none;
     animation: none !important;
-  }
-
-  .glow {
-    animation: none;
   }
 }

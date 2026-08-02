@@ -1,7 +1,6 @@
 /**
- * MATRIX — Start 1.0 marketing content.
- * Media paths under /public/hydra/ are legacy slots (replace with app UI stills when ready).
- * Store SKU slug remains `quadra-matrix` for licensing.
+ * MATRIX — Start 1.0 marketing content (Logic-scale storytelling).
+ * Media under /public/hydra/. Store SKU slug remains `quadra-matrix`.
  */
 import { MATRIX_PRODUCT_SLUG } from "@/data/products.seed";
 
@@ -14,18 +13,18 @@ export const HYDRA = {
   storeSlug: MATRIX_PRODUCT_SLUG,
   storeHref: `/store/${MATRIX_PRODUCT_SLUG}`,
   brandMark: "/matrix/brand-mark.png",
-  headline: "Patch. Monitor. Route.",
-  lede: "A software patch matrix and control-room monitor for Mac — with Matrix Bridge virtual devices you activate when you need them.",
-  ctaPrimary: { href: `/store/${MATRIX_PRODUCT_SLUG}`, label: "Buy MATRIX" },
-  ctaSecondary: { href: "/activate", label: "Start trial" },
+  /** Apple-scale hero statement */
+  headline: "Route everything.",
+  lede: "A software patch matrix and control-room monitor for Mac — with Matrix Bridge devices you bring online only when the session needs them.",
+  ctaPrimary: { href: `/store/${MATRIX_PRODUCT_SLUG}`, label: "Buy" },
+  ctaSecondary: { href: "/activate", label: "Start free trial" },
   heroMedia: {
     src: "/hydra/hero-studio.png",
-    alt: "MATRIX — patch field and monitor",
+    alt: "MATRIX patch field and monitor",
     slot: "hero",
   },
 } as const;
 
-/** Preferred export name after product rename. */
 export const MATRIX = HYDRA;
 
 export const HYDRA_NAV = [
@@ -37,19 +36,25 @@ export const HYDRA_NAV = [
   { href: "#specs", label: "Tech Specs" },
 ] as const;
 
-/** Highlight rail under hero — Start 1.0 surfaces only. */
-export const HYDRA_HIGHLIGHTS = [
-  { href: "#matrix", title: "Patch field", body: "Grid and list. Gainful routes. Scenes A/B/C." },
-  { href: "#bridges", title: "Matrix Bridge", body: "2A…128 ch HAL devices. Activate from the app." },
-  { href: "#control", title: "Control room", body: "Dim, mono, mute, talkback, cue — real devices." },
-  { href: "#guard", title: "Quadra Guard", body: "14-day web trial. Activate with Quadra ID." },
-  { href: "#specs", title: "Start 1.0", body: "macOS 14+. Clean-room HAL. SIP on." },
+/** Capability strip under hero — typography only, Logic-style. */
+export const HYDRA_CAPABILITIES = [
+  { href: "#matrix", label: "Patch field" },
+  { href: "#bridges", label: "Matrix Bridge" },
+  { href: "#control", label: "Control room" },
+  { href: "#guard", label: "Quadra Guard" },
+  { href: "#specs", label: "Start 1.0" },
 ] as const;
+
+/** @deprecated use HYDRA_CAPABILITIES */
+export const HYDRA_HIGHLIGHTS = HYDRA_CAPABILITIES.map((c) => ({
+  href: c.href,
+  title: c.label,
+  body: "",
+}));
 
 export type HydraMediaSlot = {
   src: string;
   alt: string;
-  /** Filename contract for replacement assets. */
   slot: string;
 };
 
@@ -58,11 +63,15 @@ export type HydraSubfeature = {
   body: string;
 };
 
+export type HydraChapterLayout = "stage" | "split" | "invert";
+
 export type HydraChapter = {
   id: string;
   eyebrow: string;
+  /** Short Logic-style statement */
   title: string;
   body: string;
+  layout: HydraChapterLayout;
   media: HydraMediaSlot;
   subfeatures: HydraSubfeature[];
 };
@@ -71,8 +80,9 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
   {
     id: "matrix",
     eyebrow: "Patch field",
-    title: "Every cross-point. With gain.",
+    title: "Every cross-point.\nWith gain.",
     body: "Route any Tx to any Rx in Grid or List. Paint connections, label channels, and recall scenes A, B, and C.",
+    layout: "stage",
     media: {
       src: "/hydra/chapter-matrix.png",
       alt: "MATRIX patch field",
@@ -96,8 +106,9 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
   {
     id: "bridges",
     eyebrow: "Matrix Bridge",
-    title: "Virtual devices. Real Core Audio.",
-    body: "Matrix Bridge HAL devices appear in Audio MIDI Setup only when you acquire them in Settings — from 2A to 128 channels.",
+    title: "Virtual devices.\nReal Core Audio.",
+    body: "HAL devices appear in Audio MIDI Setup only when you acquire them — from 2A to 128 channels.",
+    layout: "split",
     media: {
       src: "/hydra/chapter-bridges.png",
       alt: "Matrix Bridge devices",
@@ -121,8 +132,9 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
   {
     id: "control",
     eyebrow: "Control room",
-    title: "Monitor like a console.",
+    title: "Monitor like\na console.",
     body: "Dim, mono, mute, talkback, and cue on your real speakers and headphones — separate from the patch matrix.",
+    layout: "invert",
     media: {
       src: "/hydra/chapter-control.png",
       alt: "MATRIX control-room monitor",
@@ -135,7 +147,7 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
       },
       {
         title: "Real I/O",
-        body: "Pick speakers, headphones, talk mic, and source — control-room path, not matrix taps alone.",
+        body: "Speakers, headphones, talk mic, and source — control-room path, not matrix taps alone.",
       },
       {
         title: "Capture taps",
@@ -146,11 +158,12 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
   {
     id: "guard",
     eyebrow: "Quadra Guard",
-    title: "Authorize on the web. Work offline.",
+    title: "Authorize once.\nWork offline.",
     body: "Start a 14-day full trial or activate a seat with your Quadra ID. The Mac receives a signed license — same as offline .qkey.",
+    layout: "stage",
     media: {
       src: "/hydra/chapter-network.png",
-      alt: "MATRIX authorization and studio routing",
+      alt: "MATRIX authorization",
       slot: "chapter-guard",
     },
     subfeatures: [
@@ -160,7 +173,7 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
       },
       {
         title: "Two seats",
-        body: "Bind up to two Macs per license. Manage seats on quadraaudio.com/account.",
+        body: "Bind up to two Macs per license. Manage seats on your Quadra account.",
       },
       {
         title: "Offline .qkey",
@@ -181,7 +194,6 @@ export const HYDRA_SPECS = [
   { label: "Price", value: "$179 perpetual · $11.90 × 18 RTO" },
 ] as const;
 
-/** Drop final files into public/hydra/ using these names (1536×1024). */
 export const HYDRA_MEDIA_CONTRACT = [
   "hero-studio.png — Overview hero",
   "chapter-matrix.png — Patch field",

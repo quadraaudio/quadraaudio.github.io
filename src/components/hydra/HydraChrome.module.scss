@@ -4,9 +4,9 @@
   z-index: 35;
   height: var(--matrix-chrome-height);
   border-bottom: 1px solid transparent;
-  background: rgba(18, 24, 32, 0.88);
-  backdrop-filter: saturate(140%) blur(18px);
-  -webkit-backdrop-filter: saturate(140%) blur(18px);
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: saturate(140%) blur(20px);
+  -webkit-backdrop-filter: saturate(140%) blur(20px);
   transition:
     transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1),
