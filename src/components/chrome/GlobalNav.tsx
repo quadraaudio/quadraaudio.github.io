@@ -13,7 +13,6 @@ import styles from "./GlobalNav.module.scss";
 const NAV_LINKS = [
   { href: "/store", label: "Store" },
   { href: "/products/matrix", label: "MATRIX" },
-  { href: "/store/quadra-matrix", label: "Buy" },
   { href: "/support", label: "Support" },
 ];
 
@@ -65,7 +64,7 @@ export function GlobalNav() {
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
       <div className={`page-shell ${styles.inner}`}>
         <Link href="/" className={styles.logo} aria-label="Quadra home">
-          <LogoMark withWordmark size="md" />
+          <LogoMark size="md" />
         </Link>
 
         <nav className={styles.nav} aria-label="Primary">

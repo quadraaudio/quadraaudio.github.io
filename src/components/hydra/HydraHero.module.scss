@@ -9,13 +9,16 @@
   --mx-fade: cubic-bezier(0.22, 1, 0.36, 1);
 
   position: relative;
-  min-height: calc(100svh - var(--nav-height) - 48px);
+  min-height: calc(100svh - var(--nav-height) - var(--matrix-chrome-height));
   display: grid;
   place-items: center;
   padding: clamp(48px, 8vh, 88px) 0 clamp(56px, 9vh, 96px);
   text-align: center;
   overflow: hidden;
   background: var(--mx-ink);
+  scroll-margin-top: calc(
+    var(--nav-height) + var(--matrix-chrome-height) + 12px
+  );
 }
 
 .atmosphere {

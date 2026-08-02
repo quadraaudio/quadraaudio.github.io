@@ -1,5 +1,5 @@
 /**
- * Quadra Matrix — Start 1.0 marketing content.
+ * MATRIX — Start 1.0 marketing content.
  * Media paths under /public/hydra/ are legacy slots (replace with app UI stills when ready).
  * Store SKU slug remains `quadra-matrix` for licensing.
  */
@@ -7,7 +7,7 @@ import { MATRIX_PRODUCT_SLUG } from "@/data/products.seed";
 
 export const HYDRA = {
   name: "MATRIX",
-  brandLine: "QUADRA MATRIX",
+  brandLine: "MATRIX",
   version: "1.0",
   edition: "Start",
   platform: "macOS 14+",
@@ -20,7 +20,7 @@ export const HYDRA = {
   ctaSecondary: { href: "/activate", label: "Start trial" },
   heroMedia: {
     src: "/hydra/hero-studio.png",
-    alt: "Quadra Matrix — patch field and monitor",
+    alt: "MATRIX — patch field and monitor",
     slot: "hero",
   },
 } as const;
@@ -75,7 +75,7 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
     body: "Route any Tx to any Rx in Grid or List. Paint connections, label channels, and recall scenes A, B, and C.",
     media: {
       src: "/hydra/chapter-matrix.png",
-      alt: "Quadra Matrix patch field",
+      alt: "MATRIX patch field",
       slot: "chapter-matrix",
     },
     subfeatures: [
@@ -110,7 +110,7 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
       },
       {
         title: "Activate in-app",
-        body: "Nothing shows in AMS until you enable a bridge in Quadra Matrix.",
+        body: "Nothing shows in AMS until you enable a bridge in MATRIX.",
       },
       {
         title: "Clean-room HAL",
@@ -125,7 +125,7 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
     body: "Dim, mono, mute, talkback, and cue on your real speakers and headphones — separate from the patch matrix.",
     media: {
       src: "/hydra/chapter-control.png",
-      alt: "Quadra Matrix control-room monitor",
+      alt: "MATRIX control-room monitor",
       slot: "chapter-control",
     },
     subfeatures: [
@@ -150,7 +150,7 @@ export const HYDRA_CHAPTERS: HydraChapter[] = [
     body: "Start a 14-day full trial or activate a seat with your Quadra ID. The Mac receives a signed license — same as offline .qkey.",
     media: {
       src: "/hydra/chapter-network.png",
-      alt: "Quadra Matrix authorization and studio routing",
+      alt: "MATRIX authorization and studio routing",
       slot: "chapter-guard",
     },
     subfeatures: [

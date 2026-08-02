@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   },
   description: HYDRA.lede,
   openGraph: {
-    title: "QUADRA MATRIX",
+    title: "MATRIX",
     description: HYDRA.lede,
     url: "https://quadraaudio.com/products/matrix/",
     siteName: "Quadra",

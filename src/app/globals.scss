@@ -8,6 +8,8 @@
 
 html {
   scroll-behavior: auto;
+  /* Keep in-page anchors clear of the sticky Quadra header */
+  scroll-padding-top: calc(var(--nav-height) + 12px);
 }
 
 html,

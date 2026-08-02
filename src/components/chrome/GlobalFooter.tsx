@@ -7,7 +7,7 @@ export function GlobalFooter() {
     <footer className={styles.footer}>
       <div className={`page-shell ${styles.inner}`}>
         <div className={styles.brand}>
-          <LogoMark withWordmark size="lg" />
+          <LogoMark size="lg" />
           <p className={styles.tag}>
             Professional audio software for studios, producers, and engineers.
           </p>

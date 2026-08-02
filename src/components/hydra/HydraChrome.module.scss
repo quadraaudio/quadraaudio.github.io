@@ -2,7 +2,7 @@
   position: sticky;
   top: var(--nav-height);
   z-index: 35;
-  height: 48px;
+  height: var(--matrix-chrome-height);
   border-bottom: 1px solid transparent;
   background: rgba(18, 24, 32, 0.88);
   backdrop-filter: saturate(140%) blur(18px);

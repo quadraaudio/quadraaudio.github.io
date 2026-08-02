@@ -130,6 +130,9 @@
 .chapterAlt {
   padding: clamp(64px, 10vh, 100px) 0;
   border-top: 1px solid var(--mx-line);
+  scroll-margin-top: calc(
+    var(--nav-height) + var(--matrix-chrome-height) + 12px
+  );
 }
 
 .chapter {
@@ -202,6 +205,9 @@
   border-top: 1px solid var(--mx-line);
   background: var(--mx-ink);
   text-align: center;
+  scroll-margin-top: calc(
+    var(--nav-height) + var(--matrix-chrome-height) + 12px
+  );
 }
 
 .specList {

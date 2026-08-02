@@ -69,7 +69,7 @@ function ActivateInner() {
       <main className={styles.page}>
         <div className="page-shell">
           <p className="eyebrow">Activate</p>
-          <h1 className="display display-lg">Open this page from Quadra Matrix.</h1>
+          <h1 className="display display-lg">Open this page from MATRIX.</h1>
           <p className={styles.lead}>
             The app sends your Mac hardware ID so we can bind a seat or trial securely.
             Start from <strong>Authorization</strong> in the app.
@@ -99,7 +99,7 @@ function ActivateInner() {
   return (
     <main className={styles.page}>
       <div className="page-shell">
-        <p className="eyebrow">Quadra Matrix</p>
+        <p className="eyebrow">MATRIX</p>
         <h1 className="display display-lg">{title}</h1>
         <p className={styles.lead}>
           Signed in as <strong>{user.email}</strong>. {lead}
@@ -110,7 +110,7 @@ function ActivateInner() {
 
         {error ? <p className={styles.error}>{error}</p> : null}
         {done ? (
-          <p className={styles.ok}>Returning to Quadra Matrix…</p>
+          <p className={styles.ok}>Returning to MATRIX…</p>
         ) : (
           <button
             type="button"
