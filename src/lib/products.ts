@@ -56,8 +56,7 @@ function storeClient() {
 
 /**
  * Live catalog from Supabase `products`.
- * Seed is only used when the database client is missing or the request fails —
- * never when the table simply has zero "available" rows.
+ * Prefer CatalogProvider in the browser (static export). Seed is last resort only.
  */
 export async function listProducts(options?: {
   /** When false, only `available` rows. Default true so admin status changes show. */
@@ -80,6 +79,8 @@ export async function listProducts(options?: {
     if (error) throw error;
     return sortProducts((data || []).map((row) => mapDbProduct(row as DbProduct)));
   } catch {
+    // Build-time / offline only — never pretend seed is live admin state.
+    if (typeof window !== "undefined") throw new Error("Catalog unavailable");
     return sortProducts(PRODUCTS_SEED);
   }
 }
