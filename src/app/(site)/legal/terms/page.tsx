@@ -35,8 +35,10 @@ export default function TermsPage() {
             </section>
           ))}
           <p className={styles.footnote}>
-            This document governs use of Quadra products and services. It is not a
-            substitute for independent legal advice for your jurisdiction.
+            Version {TERMS_VERSION}. Related policies:{" "}
+            <a href="/legal/privacy">Privacy Policy</a>
+            {" · "}
+            <a href="/legal/refunds">Refund Policy</a>.
           </p>
         </div>
       </div>
