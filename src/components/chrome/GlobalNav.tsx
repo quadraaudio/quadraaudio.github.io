@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { useCart } from "@/components/providers/CartProvider";
 import { LogoMark } from "@/components/chrome/LogoMark";
 import { BagIcon } from "@/components/chrome/BagIcon";
+import { scrollToTop } from "@/lib/smoothScroll";
 import styles from "./GlobalNav.module.scss";
 
 /** After logo: Store first, products, Support last before actions. */
@@ -15,6 +16,8 @@ const NAV_LINKS = [
   { href: "/products/matrix", label: "MATRIX" },
   { href: "/support", label: "Support" },
 ];
+
+const MATRIX_HREF = "/products/matrix";
 
 type Props = {
   /** MATRIX page: slide Quadra away so product chrome can own the top slot. */
@@ -53,6 +56,18 @@ export function GlobalNav({ swapHidden = false }: Props) {
   // isLoading kept for mobile account gate consistency
   void isLoading;
 
+  const onMatrixPage =
+    pathname === MATRIX_HREF || pathname.startsWith(`${MATRIX_HREF}/`);
+
+  function goToMatrixTop(event: MouseEvent<HTMLAnchorElement>) {
+    // Same-route click (or leftover hash on Matrix) would otherwise keep mid/end scroll.
+    if (!onMatrixPage) return;
+    event.preventDefault();
+    history.replaceState(null, "", MATRIX_HREF);
+    scrollToTop(true);
+    setMobileOpen(false);
+  }
+
   function isActive(href: string) {
     if (href === "/store") {
       return (
@@ -85,6 +100,7 @@ export function GlobalNav({ swapHidden = false }: Props) {
               key={link.href}
               href={link.href}
               className={`${styles.link} ${isActive(link.href) ? styles.linkActive : ""}`}
+              onClick={link.href === MATRIX_HREF ? goToMatrixTop : undefined}
             >
               {link.label}
             </Link>
@@ -129,7 +145,11 @@ export function GlobalNav({ swapHidden = false }: Props) {
             <Link
               key={link.href}
               href={link.href}
-              onClick={() => setMobileOpen(false)}
+              onClick={
+                link.href === MATRIX_HREF
+                  ? goToMatrixTop
+                  : () => setMobileOpen(false)
+              }
               className={isActive(link.href) ? styles.mobileActive : undefined}
             >
               {link.label}

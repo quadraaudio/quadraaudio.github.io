@@ -3,23 +3,28 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HYDRA, HYDRA_NAV } from "@/data/hydra.landing";
+import { scrollToElement, scrollToTop } from "@/lib/smoothScroll";
 import styles from "./HydraChrome.module.scss";
 
-function stickyOffsetPx() {
-  const root = getComputedStyle(document.documentElement);
-  const raw = root.getPropertyValue("--matrix-sticky-offset").trim();
-  const parsed = parseFloat(raw);
-  if (!Number.isNaN(parsed) && parsed > 0) return parsed;
-  return parseFloat(root.getPropertyValue("--matrix-chrome-height")) || 48;
+function chromeHeightPx() {
+  return (
+    parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue(
+        "--matrix-chrome-height",
+      ),
+    ) || 48
+  );
 }
 
-function scrollToId(id: string, behavior: ScrollBehavior = "smooth") {
-  const el = document.getElementById(id);
-  if (!el) return false;
-  const top =
-    el.getBoundingClientRect().top + window.scrollY - stickyOffsetPx();
-  window.scrollTo({ top: Math.max(0, top), behavior });
-  return true;
+/** MATRIX chrome is fixed, so section jumps always clear that bar. */
+function scrollToSection(id: string, immediate = false) {
+  if (id === "overview") {
+    scrollToTop(immediate);
+    return true;
+  }
+  // Prefer fixed chrome height so we don't lag one frame behind swap state.
+  const offset = chromeHeightPx();
+  return scrollToElement(id, { offset, immediate });
 }
 
 type Props = {
@@ -69,7 +74,7 @@ export function HydraChrome({ visible }: Props) {
       event.preventDefault();
       history.pushState(null, "", hash);
       setActive(hash);
-      scrollToId(id);
+      scrollToSection(id);
     };
 
     document.addEventListener("click", onClick);
@@ -80,9 +85,10 @@ export function HydraChrome({ visible }: Props) {
     const hash = window.location.hash;
     if (!hash || hash.length < 2) return;
     const id = hash.slice(1);
+    if (!document.getElementById(id)) return;
     const t = window.setTimeout(() => {
-      scrollToId(id, "auto");
-    }, 50);
+      scrollToSection(id, true);
+    }, 80);
     return () => window.clearTimeout(t);
   }, []);
 
