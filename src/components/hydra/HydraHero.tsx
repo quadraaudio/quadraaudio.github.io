@@ -9,7 +9,7 @@ import styles from "./HydraHero.module.scss";
 
 /**
  * Logic-style hero: statement typography over living field,
- * then the product UI as the dominant stage.
+ * then the product UI as the dominant stage below the first view.
  */
 export function HydraHero() {
   const [revealed, setRevealed] = useState(false);
@@ -30,27 +30,29 @@ export function HydraHero() {
 
   return (
     <section id="overview" className={styles.hero}>
-      <div className={styles.atmosphere} aria-hidden>
-        <div className={styles.patchLayer}>
-          <PatchbayField
-            fallbackSrc={HYDRA.heroMedia.src}
-            fallbackAlt={HYDRA.heroMedia.alt}
-          />
+      <div className={styles.firstView}>
+        <div className={styles.atmosphere} aria-hidden>
+          <div className={styles.patchLayer}>
+            <PatchbayField
+              fallbackSrc={HYDRA.heroMedia.src}
+              fallbackAlt={HYDRA.heroMedia.alt}
+            />
+          </div>
+          <div className={styles.shade} />
         </div>
-        <div className={styles.shade} />
-      </div>
 
-      <div className={`${styles.masthead} ${revealed ? styles.revealed : ""}`}>
-        <p className={`${styles.productName} ${styles.in1}`}>{HYDRA.brandLine}</p>
-        <h1 className={`${styles.headline} ${styles.in2}`}>{HYDRA.headline}</h1>
-        <p className={`${styles.lede} ${styles.in3}`}>{HYDRA.lede}</p>
-        <div className={`${styles.ctaRow} ${styles.in4}`}>
-          <Link href={HYDRA.ctaPrimary.href} className={styles.ctaBuy}>
-            {HYDRA.ctaPrimary.label}
-          </Link>
-          <Link href={HYDRA.ctaSecondary.href} className={styles.ctaTrial}>
-            {HYDRA.ctaSecondary.label}
-          </Link>
+        <div className={`${styles.masthead} ${revealed ? styles.revealed : ""}`}>
+          <p className={`${styles.productName} ${styles.in1}`}>{HYDRA.brandLine}</p>
+          <h1 className={`${styles.headline} ${styles.in2}`}>{HYDRA.headline}</h1>
+          <p className={`${styles.lede} ${styles.in3}`}>{HYDRA.lede}</p>
+          <div className={`${styles.ctaRow} ${styles.in4}`}>
+            <Link href={HYDRA.ctaPrimary.href} className={styles.ctaBuy}>
+              {HYDRA.ctaPrimary.label}
+            </Link>
+            <Link href={HYDRA.ctaSecondary.href} className={styles.ctaTrial}>
+              {HYDRA.ctaSecondary.label}
+            </Link>
+          </div>
         </div>
       </div>
 
