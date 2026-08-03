@@ -34,7 +34,11 @@
 
 .cta:disabled {
   opacity: 0.55;
-  cursor: wait;
+  cursor: not-allowed;
+}
+
+.page :global(.btn-secondary) {
+  margin: 0 0 var(--space-md);
 }
 
 .error {

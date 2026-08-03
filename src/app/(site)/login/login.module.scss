@@ -11,6 +11,16 @@
 }
 
 .googleBtn {
+  margin-top: var(--space-md);
+}
+
+.termsOk {
+  margin: var(--space-2xl) 0 0;
+  color: var(--quadra-success, #1f7a4c);
+  font-size: 0.95rem;
+}
+
+.shell :global(.btn-secondary) {
   margin-top: var(--space-2xl);
 }
 

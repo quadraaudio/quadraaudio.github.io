@@ -6,20 +6,29 @@ import { useState } from "react";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { useCart } from "@/components/providers/CartProvider";
 import { callEdgeFunction } from "@/lib/edgeApi";
+import { hasAcceptedCurrentTerms } from "@/lib/termsAcceptance";
 import styles from "./PayPalCheckout.module.scss";
 
 type Props = {
   couponCode?: string;
   disabled?: boolean;
+  /** When true, PayPal stays off until current Terms are accepted. */
+  requireTermsAccepted?: boolean;
 };
 
-export function PayPalCheckout({ couponCode, disabled }: Props) {
+export function PayPalCheckout({
+  couponCode,
+  disabled,
+  requireTermsAccepted,
+}: Props) {
   const { user, ensureAccessToken } = useAuth();
   const { items, clear } = useCart();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [capturing, setCapturing] = useState(false);
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+  const termsBlocked =
+    Boolean(requireTermsAccepted) && !hasAcceptedCurrentTerms();
 
   if (!clientId) {
     return (
@@ -33,6 +42,14 @@ export function PayPalCheckout({ couponCode, disabled }: Props) {
     return (
       <p className={styles.notice}>
         This order totals $0 — use Claim license instead of PayPal.
+      </p>
+    );
+  }
+
+  if (termsBlocked) {
+    return (
+      <p className={styles.notice}>
+        Accept the Terms of Use to enable PayPal checkout.
       </p>
     );
   }
@@ -53,13 +70,16 @@ export function PayPalCheckout({ couponCode, disabled }: Props) {
       >
         <PayPalButtons
           style={{ layout: "vertical", color: "black", shape: "rect", label: "pay" }}
-          disabled={capturing || !user}
+          disabled={capturing || !user || termsBlocked}
           onCancel={() => {
             setCapturing(false);
             setError("PayPal checkout was cancelled. Your bag is unchanged.");
           }}
           createOrder={async () => {
             if (!user) throw new Error("Sign in with Google first");
+            if (requireTermsAccepted && !hasAcceptedCurrentTerms()) {
+              throw new Error("Accept the Terms of Use before paying");
+            }
             setError(null);
             const accessToken = await ensureAccessToken();
             const data = await callEdgeFunction<{ id?: string; error?: string }>(

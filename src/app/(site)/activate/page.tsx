@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState } from "react";
+import { TermsAcceptModal } from "@/components/legal/TermsAcceptModal";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { callEdgeFunction } from "@/lib/edgeApi";
+import { hasAcceptedCurrentTerms } from "@/lib/termsAcceptance";
 import styles from "./activate.module.scss";
 
 function ActivateInner() {
@@ -20,9 +22,20 @@ function ActivateInner() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
+  const [termsOk, setTermsOk] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+
+  useEffect(() => {
+    setTermsOk(hasAcceptedCurrentTerms());
+  }, []);
 
   const issueAndReturn = useCallback(async () => {
     if (!user?.accessToken || !hwid) return;
+    if (!hasAcceptedCurrentTerms()) {
+      setShowTerms(true);
+      setError("Accept the Terms of Use before activating.");
+      return;
+    }
     setBusy(true);
     setError("");
     try {
@@ -108,6 +121,18 @@ function ActivateInner() {
           Hardware ID <code>{hwid.slice(0, 8)}…{hwid.slice(-4)}</code>
         </p>
 
+        {!termsOk ? (
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => setShowTerms(true)}
+          >
+            Review &amp; accept Terms
+          </button>
+        ) : (
+          <p className={styles.ok}>Terms accepted for this browser.</p>
+        )}
+
         {error ? <p className={styles.error}>{error}</p> : null}
         {done ? (
           <p className={styles.ok}>Returning to MATRIX…</p>
@@ -115,7 +140,7 @@ function ActivateInner() {
           <button
             type="button"
             className={styles.cta}
-            disabled={busy}
+            disabled={busy || !termsOk}
             onClick={() => void issueAndReturn()}
           >
             {cta}
@@ -139,6 +164,16 @@ function ActivateInner() {
           )}
         </p>
       </div>
+
+      <TermsAcceptModal
+        open={showTerms}
+        onAccepted={() => {
+          setTermsOk(true);
+          setShowTerms(false);
+          setError("");
+        }}
+        onDismiss={() => setShowTerms(false)}
+      />
     </main>
   );
 }

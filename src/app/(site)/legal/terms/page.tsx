@@ -1,7 +1,16 @@
 import styles from "../legal.module.scss";
+import {
+  TERMS_EFFECTIVE_DATE,
+  TERMS_INTRO,
+  TERMS_SECTIONS,
+  TERMS_TITLE,
+  TERMS_VERSION,
+} from "@/data/terms.eula";
 
 export const metadata = {
   title: "Terms of Use",
+  description:
+    "Quadra Audio Terms of Use and End User License Agreement for all Quadra software and services.",
 };
 
 export default function TermsPage() {
@@ -9,23 +18,26 @@ export default function TermsPage() {
     <main className={styles.page}>
       <div className={`page-shell ${styles.narrow}`}>
         <p className="eyebrow">Legal</p>
-        <h1 className="display display-md">Terms of Use &amp; EULA</h1>
+        <h1 className="display display-md">{TERMS_TITLE}</h1>
+        <p className={styles.meta}>
+          Version {TERMS_VERSION} · Effective {TERMS_EFFECTIVE_DATE}
+        </p>
         <div className={styles.prose}>
-          <p>
-            By purchasing or using Quadra software, you agree to a limited,
-            non-exclusive, non-transferable license for personal or professional
-            use on machines you own or control.
+          {TERMS_INTRO.map((paragraph, index) => (
+            <p key={`intro-${index}`}>{paragraph}</p>
+          ))}
+          {TERMS_SECTIONS.map((section) => (
+            <section key={section.id} id={section.id} className={styles.section}>
+              <h2>{section.heading}</h2>
+              {section.paragraphs.map((paragraph, index) => (
+                <p key={`${section.id}-${index}`}>{paragraph}</p>
+              ))}
+            </section>
+          ))}
+          <p className={styles.footnote}>
+            This document governs use of Quadra products and services. It is not a
+            substitute for independent legal advice for your jurisdiction.
           </p>
-          <p>
-            Licenses are tied to your Quadra account. You may not reverse
-            engineer, redistribute, or rent Quadra software except as allowed by
-            applicable law.
-          </p>
-          <p>
-            Software is provided as-is within the limits of consumer protection
-            laws. See the refunds page for purchase policies.
-          </p>
-          <p>This is a placeholder EULA for the rebuild launch.</p>
         </div>
       </div>
     </main>

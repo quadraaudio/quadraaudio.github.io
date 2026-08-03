@@ -111,6 +111,13 @@
   line-height: 1.5;
 }
 
+.termsBlock {
+  display: grid;
+  gap: var(--space-md);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--theme-border);
+}
+
 @media (min-width: 900px) {
   .layout {
     grid-template-columns: 1.1fr 0.9fr;

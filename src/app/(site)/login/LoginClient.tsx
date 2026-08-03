@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { TermsAcceptModal } from "@/components/legal/TermsAcceptModal";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { requestGoogleAccessToken } from "@/lib/googleToken";
+import { hasAcceptedCurrentTerms } from "@/lib/termsAcceptance";
 import styles from "./login.module.scss";
 
 export default function LoginClient() {
@@ -18,8 +20,18 @@ export default function LoginClient() {
 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [termsOk, setTermsOk] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+
+  useEffect(() => {
+    setTermsOk(hasAcceptedCurrentTerms());
+  }, []);
 
   async function continueWithGoogle() {
+    if (!hasAcceptedCurrentTerms()) {
+      setShowTerms(true);
+      return;
+    }
     setBusy(true);
     setError(null);
     try {
@@ -58,14 +70,29 @@ export default function LoginClient() {
         <p className="eyebrow">Quadra ID</p>
         <h1 className="display display-lg">Sign in with Google.</h1>
         <p className="lede">
-          Use the same Google login already set up for quadraaudio.com.
+          Use the same Google login already set up for quadraaudio.com. You must
+          review and accept the Terms of Use before continuing.
         </p>
+
+        {!termsOk ? (
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => setShowTerms(true)}
+          >
+            Review &amp; accept Terms
+          </button>
+        ) : (
+          <p className={styles.termsOk} role="status">
+            Terms accepted for this browser.
+          </p>
+        )}
 
         <button
           type="button"
           className={`btn btn-primary ${styles.googleBtn}`}
           onClick={() => void continueWithGoogle()}
-          disabled={busy}
+          disabled={busy || !termsOk}
         >
           {busy ? "Connecting to Google…" : "Continue with Google"}
         </button>
@@ -83,6 +110,15 @@ export default function LoginClient() {
           Back to store
         </Link>
       </div>
+
+      <TermsAcceptModal
+        open={showTerms}
+        onAccepted={() => {
+          setTermsOk(true);
+          setShowTerms(false);
+        }}
+        onDismiss={() => setShowTerms(false)}
+      />
     </main>
   );
 }

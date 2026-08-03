@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { TermsAcceptModal } from "@/components/legal/TermsAcceptModal";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { useCart } from "@/components/providers/CartProvider";
 import { PayPalCheckout } from "@/components/store/PayPalCheckout";
@@ -12,6 +13,7 @@ import {
   type ResolvedCoupon,
 } from "@/lib/coupons";
 import { formatPrice } from "@/lib/products";
+import { hasAcceptedCurrentTerms } from "@/lib/termsAcceptance";
 import styles from "./checkout.module.scss";
 
 export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
@@ -26,6 +28,12 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
   const [claiming, setClaiming] = useState(false);
   const [pending, startTransition] = useTransition();
   const completingRef = useRef(false);
+  const [termsOk, setTermsOk] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+
+  useEffect(() => {
+    setTermsOk(hasAcceptedCurrentTerms());
+  }, []);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -78,6 +86,11 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
   }
 
   async function claimFree() {
+    if (!hasAcceptedCurrentTerms()) {
+      setShowTerms(true);
+      setClaimError("Accept the Terms of Use before claiming a license.");
+      return;
+    }
     if (!user) {
       setClaimError("Sign in with Google again, then claim.");
       return;
@@ -189,6 +202,27 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
       </section>
 
       <section className={styles.panel}>
+        <div className={styles.termsBlock}>
+          <h2>Terms of Use</h2>
+          <p className={styles.freeCopy}>
+            You must scroll through and accept the Quadra Terms of Use &amp;
+            EULA before purchasing or claiming a license.
+          </p>
+          {termsOk ? (
+            <p className={styles.ok} role="status">
+              Terms accepted. You may complete your order.
+            </p>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setShowTerms(true)}
+            >
+              Review &amp; accept Terms
+            </button>
+          )}
+        </div>
+
         {isFree ? (
           <>
             <h2>Claim your license</h2>
@@ -200,7 +234,7 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
               type="button"
               className="btn btn-primary"
               onClick={() => void claimFree()}
-              disabled={claiming}
+              disabled={claiming || !termsOk}
             >
               {claiming ? "Claiming…" : "Claim license"}
             </button>
@@ -213,17 +247,34 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
         ) : (
           <>
             <h2>Pay with PayPal</h2>
-            {!paypalClientId ? (
+            {!termsOk ? (
+              <p className={styles.priceNoteBlock}>
+                Accept the Terms above to enable PayPal.
+              </p>
+            ) : !paypalClientId ? (
               <p className={styles.priceNoteBlock}>
                 PayPal is not configured yet. Use a 100% promo code (for example{" "}
                 <code>FREE100</code> or <code>VIP100</code>) to claim a license.
               </p>
             ) : (
-              <PayPalCheckout couponCode={applied?.code} />
+              <PayPalCheckout
+                couponCode={applied?.code}
+                requireTermsAccepted
+              />
             )}
           </>
         )}
       </section>
+
+      <TermsAcceptModal
+        open={showTerms}
+        onAccepted={() => {
+          setTermsOk(true);
+          setShowTerms(false);
+          setClaimError(null);
+        }}
+        onDismiss={() => setShowTerms(false)}
+      />
     </div>
   );
 }

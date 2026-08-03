@@ -191,7 +191,10 @@ export const HYDRA_SPECS = [
   { label: "Patch", value: "NxN grid + list · gain · scenes" },
   { label: "Monitor", value: "Dim · mono · mute · talk · cue" },
   { label: "Licensing", value: "Quadra Guard · 14-day trial · 2 seats" },
-  { label: "Price", value: "$179 perpetual · $11.90 × 18 RTO" },
+  {
+    label: "Price",
+    value: "$179 perpetual · updates 12 mo · $11.90 × 18 RTO",
+  },
 ] as const;
 
 export const HYDRA_MEDIA_CONTRACT = [
