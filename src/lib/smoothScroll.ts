@@ -28,9 +28,10 @@ export function scrollToElement(
     immediate = false,
   }: { offset?: number; immediate?: boolean } = {},
 ) {
-  const el =
+  const found =
     typeof target === "string" ? document.getElementById(target) : target;
-  if (!el) return false;
+  if (!found || !(found instanceof HTMLElement)) return false;
+  const el = found;
 
   const lenis = lenisInstance;
   if (lenis) {
