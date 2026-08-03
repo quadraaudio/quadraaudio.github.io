@@ -1,8 +1,16 @@
 import styles from "../legal.module.scss";
+import {
+  REFUNDS_EFFECTIVE_DATE,
+  REFUNDS_INTRO,
+  REFUNDS_SECTIONS,
+  REFUNDS_TITLE,
+  REFUNDS_VERSION,
+} from "@/data/refunds.policy";
 
 export const metadata = {
   title: "Refunds",
-  description: "Quadra Audio refund policy for digital software purchases.",
+  description:
+    "Quadra Audio Refund & Returns Policy for digital software licenses, subscriptions, and store purchases.",
 };
 
 export default function RefundsPage() {
@@ -10,24 +18,27 @@ export default function RefundsPage() {
     <main className={styles.page}>
       <div className={`page-shell ${styles.narrow}`}>
         <p className="eyebrow">Legal</p>
-        <h1 className="display display-md">Refund Policy</h1>
+        <h1 className="display display-md">{REFUNDS_TITLE}</h1>
+        <p className={styles.meta}>
+          Version {REFUNDS_VERSION} · Effective {REFUNDS_EFFECTIVE_DATE}
+        </p>
         <div className={styles.prose}>
-          <p>
-            Digital software purchases are generally final once a license has been
-            issued to your Quadra account. By completing checkout you also accept
-            our Terms of Use &amp; EULA.
-          </p>
-          <p>
-            If a technical issue attributable to Quadra prevents you from using the
-            software you purchased on a supported configuration, contact{" "}
-            <a href="mailto:support@quadraaudio.com">support@quadraaudio.com</a>{" "}
-            within 14 days of purchase. We may offer repair guidance, a replacement
-            download, or a refund at our discretion.
-          </p>
-          <p>
-            Approved refunds are processed through the original PayPal payment
-            method. Mandatory consumer rights in your jurisdiction are not limited
-            by this policy where those rights cannot be waived.
+          {REFUNDS_INTRO.map((paragraph, index) => (
+            <p key={`intro-${index}`}>{paragraph}</p>
+          ))}
+          {REFUNDS_SECTIONS.map((section) => (
+            <section key={section.id} id={section.id} className={styles.section}>
+              <h2>{section.heading}</h2>
+              {section.paragraphs.map((paragraph, index) => (
+                <p key={`${section.id}-${index}`}>{paragraph}</p>
+              ))}
+            </section>
+          ))}
+          <p className={styles.footnote}>
+            Version {REFUNDS_VERSION}. Related policies:{" "}
+            <a href="/legal/terms">Terms of Use</a>
+            {" · "}
+            <a href="/legal/privacy">Privacy Policy</a>.
           </p>
         </div>
       </div>

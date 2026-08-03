@@ -1,7 +1,16 @@
 import styles from "../legal.module.scss";
+import {
+  PRIVACY_EFFECTIVE_DATE,
+  PRIVACY_INTRO,
+  PRIVACY_SECTIONS,
+  PRIVACY_TITLE,
+  PRIVACY_VERSION,
+} from "@/data/privacy.policy";
 
 export const metadata = {
   title: "Privacy Policy",
+  description:
+    "Quadra Audio Privacy Policy explaining how we collect, use, and protect personal data across our software and services.",
 };
 
 export default function PrivacyPage() {
@@ -9,23 +18,28 @@ export default function PrivacyPage() {
     <main className={styles.page}>
       <div className={`page-shell ${styles.narrow}`}>
         <p className="eyebrow">Legal</p>
-        <h1 className="display display-md">Privacy Policy</h1>
+        <h1 className="display display-md">{PRIVACY_TITLE}</h1>
+        <p className={styles.meta}>
+          Version {PRIVACY_VERSION} · Effective {PRIVACY_EFFECTIVE_DATE}
+        </p>
         <div className={styles.prose}>
-          <p>
-            Quadra Audio (&quot;Quadra&quot;) collects account information required to
-            provide software licenses, store checkout, and support. When you sign
-            in with Google, we receive your name and email address.
+          {PRIVACY_INTRO.map((paragraph, index) => (
+            <p key={`intro-${index}`}>{paragraph}</p>
+          ))}
+          {PRIVACY_SECTIONS.map((section) => (
+            <section key={section.id} id={section.id} className={styles.section}>
+              <h2>{section.heading}</h2>
+              {section.paragraphs.map((paragraph, index) => (
+                <p key={`${section.id}-${index}`}>{paragraph}</p>
+              ))}
+            </section>
+          ))}
+          <p className={styles.footnote}>
+            Version {PRIVACY_VERSION}. Related policies:{" "}
+            <a href="/legal/terms">Terms of Use</a>
+            {" · "}
+            <a href="/legal/refunds">Refund Policy</a>.
           </p>
-          <p>
-            Payment details are processed by PayPal. Quadra does not store full
-            payment card numbers on its servers.
-          </p>
-          <p>
-            Order and license records are stored in our database to deliver
-            purchases and manage entitlements. Contact support@quadraaudio.com
-            for privacy requests.
-          </p>
-          <p>This is a placeholder policy for the rebuild launch.</p>
         </div>
       </div>
     </main>
