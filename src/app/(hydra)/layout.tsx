@@ -1,6 +1,5 @@
-import { GlobalNav } from "@/components/chrome/GlobalNav";
 import { GlobalFooter } from "@/components/chrome/GlobalFooter";
-import { HydraChrome } from "@/components/hydra/HydraChrome";
+import { HydraNavSwap } from "@/components/hydra/HydraNavSwap";
 import styles from "./hydra-shell.module.scss";
 
 export default function HydraLayout({
@@ -10,8 +9,7 @@ export default function HydraLayout({
 }>) {
   return (
     <div className={styles.shell}>
-      <GlobalNav />
-      <HydraChrome />
+      <HydraNavSwap />
       {children}
       <GlobalFooter />
     </div>

@@ -1,7 +1,9 @@
 .bar {
-  position: sticky;
-  top: var(--nav-height);
-  z-index: 35;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 55;
   height: var(--matrix-chrome-height);
   border-bottom: 1px solid transparent;
   background: rgba(0, 0, 0, 0.72);

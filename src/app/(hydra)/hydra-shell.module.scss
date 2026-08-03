@@ -26,7 +26,8 @@
   color: var(--hydra-snow);
   font-family: var(--font-body);
   opacity: 1;
-  scroll-padding-top: calc(var(--nav-height) + var(--matrix-chrome-height));
+  --matrix-sticky-offset: var(--nav-height);
+  scroll-padding-top: var(--matrix-sticky-offset);
   /* Match Matrix RootShell fadeIn (0.55s) — no fill-mode both (avoids stuck opacity 0) */
   animation: hydraEnter 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }

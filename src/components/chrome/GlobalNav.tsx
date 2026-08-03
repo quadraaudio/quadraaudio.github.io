@@ -16,7 +16,12 @@ const NAV_LINKS = [
   { href: "/support", label: "Support" },
 ];
 
-export function GlobalNav() {
+type Props = {
+  /** MATRIX page: slide Quadra away so product chrome can own the top slot. */
+  swapHidden?: boolean;
+};
+
+export function GlobalNav({ swapHidden = false }: Props) {
   const { user, isLoading } = useAuth();
   const { itemCount } = useCart();
   const pathname = usePathname() || "/";
@@ -29,6 +34,10 @@ export function GlobalNav() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    if (swapHidden) setMobileOpen(false);
+  }, [swapHidden]);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -61,7 +70,10 @@ export function GlobalNav() {
   }
 
   return (
-    <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
+    <header
+      className={`${styles.header} ${scrolled ? styles.scrolled : ""} ${swapHidden ? styles.swapAway : ""}`}
+      aria-hidden={swapHidden || undefined}
+    >
       <div className={`page-shell ${styles.inner}`}>
         <Link href="/" className={styles.logo} aria-label="Quadra home">
           <LogoMark size="md" />

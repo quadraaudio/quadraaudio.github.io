@@ -14,7 +14,7 @@
   padding: clamp(48px, 10vh, 96px) 0 0;
   overflow: hidden;
   background: var(--mx-ink);
-  scroll-margin-top: calc(var(--nav-height) + var(--matrix-chrome-height));
+  scroll-margin-top: var(--matrix-sticky-offset, var(--nav-height));
 }
 
 .atmosphere {

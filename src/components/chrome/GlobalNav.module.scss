@@ -6,7 +6,18 @@
   backdrop-filter: blur(16px);
   background: color-mix(in srgb, var(--theme-bg) 82%, transparent);
   border-bottom: 1px solid transparent;
-  transition: border-color 0.3s var(--ease-out), background 0.3s var(--ease-out);
+  transition:
+    border-color 0.3s var(--ease-out),
+    background 0.3s var(--ease-out),
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.swapAway {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .scrolled {
@@ -155,6 +166,18 @@
   .menuBtn,
   .mobile {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header {
+    transition:
+      border-color 0.3s var(--ease-out),
+      background 0.3s var(--ease-out);
+  }
+
+  .swapAway {
+    transition: none;
   }
 }
 

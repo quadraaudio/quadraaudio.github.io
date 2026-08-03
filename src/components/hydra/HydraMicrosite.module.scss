@@ -92,7 +92,7 @@
 
 .chapter {
   padding: clamp(80px, 14vh, 160px) 0 clamp(24px, 4vh, 48px);
-  scroll-margin-top: calc(var(--nav-height) + var(--matrix-chrome-height));
+  scroll-margin-top: var(--matrix-sticky-offset, var(--matrix-chrome-height));
 }
 
 .statement {
@@ -239,7 +239,7 @@
 .specs {
   padding: clamp(96px, 16vh, 168px) var(--mx-gutter);
   text-align: center;
-  scroll-margin-top: calc(var(--nav-height) + var(--matrix-chrome-height));
+  scroll-margin-top: var(--matrix-sticky-offset, var(--matrix-chrome-height));
 }
 
 .specList {
