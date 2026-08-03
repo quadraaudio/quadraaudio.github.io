@@ -6,7 +6,6 @@ import { TypedHeader } from "@/components/motion/TypedHeader";
 import { Reveal } from "@/components/motion/Reveal";
 import { HeroParticles } from "@/components/three/HeroParticles";
 import { SpectrumCascade } from "@/components/three/SpectrumCascade";
-import { LogoMark } from "@/components/chrome/LogoMark";
 import { useCatalog } from "@/components/providers/CatalogProvider";
 import { formatPrice } from "@/lib/products";
 import styles from "./HomePage.module.scss";
@@ -54,7 +53,6 @@ export function HomePage() {
           <HeroParticles />
         </div>
         <div className={`page-shell ${styles.heroContent}`}>
-          <LogoMark size="hero" className={styles.brandMark} />
           <h1 className={`display display-xl ${styles.headline}`}>
             <TypedHeader text="Professional audio software for the modern studio." />
           </h1>
