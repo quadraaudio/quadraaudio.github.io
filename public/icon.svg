@@ -1,18 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Quadra">
-  <defs>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Syne:wght@800&amp;display=swap");
-    </style>
-  </defs>
-  <!-- Thick Syne Q — primary brand mark for favicon -->
-  <text
-    x="32"
-    y="50"
-    text-anchor="middle"
-    font-family="Syne, Avenir Next, Helvetica Neue, sans-serif"
-    font-weight="800"
-    font-size="58"
-    letter-spacing="-0.06em"
-    fill="#0E1218"
-  >Q</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Quadra">
+  <!-- Light squircle -->
+  <rect width="512" height="512" rx="115" fill="#FBFCFD"/>
+  <!-- Ink Q mark (official geometric wordmark glyph) -->
+  <g transform="translate(106 106) scale(3)" fill="#0E1218">
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M0 25A25 25 0 0 1 25 0h50a25 25 0 0 1 25 25v75H25A25 25 0 0 1 0 75V25Zm35 18a8 8 0 0 1 8-8h14a8 8 0 0 1 8 8v22H43a8 8 0 0 1-8-8V43Z"
+    />
+  </g>
 </svg>

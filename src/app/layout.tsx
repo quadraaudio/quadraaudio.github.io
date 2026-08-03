@@ -34,8 +34,12 @@ export const metadata: Metadata = {
   description:
     "Quadra builds professional audio software for studios, producers, and engineers.",
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/apple-touch-icon.png" }],
+    icon: [
+      { url: "/favicon.ico?v=20260803", sizes: "any" },
+      { url: "/icon.svg?v=20260803", type: "image/svg+xml" },
+      { url: "/icon.png?v=20260803", type: "image/png", sizes: "32x32" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png?v=20260803", sizes: "180x180" }],
   },
   openGraph: {
     title: "Quadra — Professional Audio Software",
