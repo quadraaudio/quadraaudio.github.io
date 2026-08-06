@@ -2,7 +2,8 @@ import { ProductsCatalog } from "./ProductsCatalog";
 
 export const metadata = {
   title: "Products",
-  description: "Professional audio software from Quadra.",
+  description:
+    "Starting with MATRIX — software patchbay and monitor control for Mac from Quadra.",
 };
 
 export default function ProductsPage() {

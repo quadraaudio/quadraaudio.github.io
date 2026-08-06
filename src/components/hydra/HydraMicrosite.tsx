@@ -120,10 +120,7 @@ export function HydraMicrosite() {
         <MatrixFade>
           <p className={styles.closeProduct}>{HYDRA.brandLine}</p>
           <DisplayTitle title={"Authorize. Patch.\nMonitor."} />
-          <p className={styles.lede}>
-            14-day full trial on the web. Activate this Mac with your Quadra ID —
-            or import a signed .qkey offline.
-          </p>
+          <p className={styles.lede}>{HYDRA.closeLede}</p>
           <div className={styles.closeCtas}>
             <Link href={HYDRA.ctaPrimary.href} className={styles.ctaBuy}>
               {HYDRA.ctaPrimary.label}

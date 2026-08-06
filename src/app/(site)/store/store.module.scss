@@ -4,7 +4,20 @@
 
 .page :global(.lede) {
   margin-top: var(--space-md);
-  margin-bottom: var(--space-3xl);
+  margin-bottom: var(--space-md);
+}
+
+.hint {
+  margin: 0 0 var(--space-3xl);
+  color: var(--theme-text-muted);
+  line-height: 1.5;
+  max-width: 40em;
+
+  a {
+    color: var(--theme-accent-hover);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
 }
 
 .grid {

@@ -5,6 +5,11 @@ import Image from "next/image";
 import { ProductCard } from "@/components/store/ProductCard";
 import { useCatalog } from "@/components/providers/CatalogProvider";
 import { HYDRA } from "@/data/hydra.landing";
+import {
+  MATRIX_GLOSS,
+  QUADRA_BRAND,
+  QUADRA_CTAS,
+} from "@/data/brand.messaging";
 import styles from "./products.module.scss";
 
 export function ProductsCatalog() {
@@ -14,10 +19,9 @@ export function ProductsCatalog() {
     <main className={styles.page}>
       <div className="page-shell">
         <p className="eyebrow">Products</p>
-        <h1 className="display display-lg">Software built for working rooms.</h1>
+        <h1 className="display display-lg">Starting with MATRIX.</h1>
         <p className="lede">
-          Quadra develops professional audio software for studios, producers, and
-          engineers — processors you can trust on real sessions.
+          {QUADRA_BRAND.purpose} {MATRIX_GLOSS.oneLiner}
         </p>
 
         <Link href="/products/matrix" className={styles.hydraFeature}>
@@ -31,10 +35,12 @@ export function ProductsCatalog() {
             />
           </div>
           <div className={styles.hydraCopy}>
-            <p className={styles.hydraEyebrow}>Start 1.0</p>
+            <p className={styles.hydraEyebrow}>Start 1.0 · Mac</p>
             <h2>{HYDRA.brandLine}</h2>
             <p>{HYDRA.lede}</p>
-            <span className={styles.hydraLink}>Enter MATRIX</span>
+            <span className={styles.hydraLink}>
+              {QUADRA_CTAS.exploreMatrix.label}
+            </span>
           </div>
         </Link>
 
@@ -54,8 +60,11 @@ export function ProductsCatalog() {
           </div>
         )}
         <div className={styles.cta}>
-          <Link href="/store" className="btn btn-primary">
-            Shop all software
+          <Link href={QUADRA_CTAS.buyMatrix.href} className="btn btn-primary">
+            {QUADRA_CTAS.buyMatrix.label}
+          </Link>
+          <Link href={QUADRA_CTAS.exploreMatrix.href} className="btn btn-secondary">
+            See how MATRIX works
           </Link>
         </div>
       </div>

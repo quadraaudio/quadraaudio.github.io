@@ -92,6 +92,9 @@
 
 .cta {
   margin-top: var(--space-3xl);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 @media (min-width: 860px) {

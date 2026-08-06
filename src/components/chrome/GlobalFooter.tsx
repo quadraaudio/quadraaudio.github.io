@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LogoMark } from "@/components/chrome/LogoMark";
+import { QUADRA_BRAND, QUADRA_CTAS } from "@/data/brand.messaging";
 import styles from "./GlobalFooter.module.scss";
 
 export function GlobalFooter() {
@@ -8,16 +9,14 @@ export function GlobalFooter() {
       <div className={`page-shell ${styles.inner}`}>
         <div className={styles.brand}>
           <LogoMark size="lg" />
-          <p className={styles.tag}>
-            Professional audio software for studios, producers, and engineers.
-          </p>
+          <p className={styles.tag}>{QUADRA_BRAND.tagline}</p>
         </div>
 
         <div className={styles.cols}>
           <div>
             <p className={styles.label}>Product</p>
-            <Link href="/products/matrix">MATRIX</Link>
-            <Link href="/store/quadra-matrix">Buy MATRIX</Link>
+            <Link href={QUADRA_CTAS.exploreMatrix.href}>MATRIX</Link>
+            <Link href={QUADRA_CTAS.buyMatrix.href}>Buy MATRIX</Link>
             <Link href="/products">Products</Link>
             <Link href="/store">Store</Link>
             <Link href="/about">About</Link>
@@ -29,7 +28,6 @@ export function GlobalFooter() {
             <Link href="/support/article/troubleshooting">Troubleshooting</Link>
             <Link href="/contact">Contact</Link>
             <Link href="/account">Account</Link>
-            <Link href="/admin/products">Store admin</Link>
           </div>
           <div>
             <p className={styles.label}>Legal</p>
