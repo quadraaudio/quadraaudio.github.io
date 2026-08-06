@@ -54,7 +54,7 @@ export default function AdminProductsPage() {
     setBusy(true);
     setError(null);
     try {
-      const accessToken = await ensureAccessToken();
+      const accessToken = await ensureAccessToken({ interactive: false });
       const data = await callEdgeFunction<{ products: DbProduct[] }>(
         "store-admin-products",
         { action: "list", googleAccessToken: accessToken },
@@ -79,7 +79,7 @@ export default function AdminProductsPage() {
     setBusy(true);
     setError(null);
     try {
-      const accessToken = await ensureAccessToken();
+      const accessToken = await ensureAccessToken({ interactive: true });
       const features = editing.features.filter((f) => f.title.trim());
       const reqs = editing.system_requirements.filter((r) => r.trim());
       await callEdgeFunction(
@@ -114,7 +114,7 @@ export default function AdminProductsPage() {
     setBusy(true);
     setError(null);
     try {
-      const accessToken = await ensureAccessToken();
+      const accessToken = await ensureAccessToken({ interactive: true });
       await callEdgeFunction(
         "store-admin-products",
         {

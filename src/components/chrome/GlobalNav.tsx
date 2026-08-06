@@ -24,8 +24,18 @@ type Props = {
   swapHidden?: boolean;
 };
 
+function accountLabel(user: { name?: string | null; email: string } | null) {
+  if (!user) return "Sign in";
+  const name = user.name?.trim();
+  if (name) {
+    const first = name.split(/\s+/)[0];
+    return first || name;
+  }
+  return user.email.split("@")[0] || "Account";
+}
+
 export function GlobalNav({ swapHidden = false }: Props) {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, logout, needsReauth } = useAuth();
   const { itemCount } = useCart();
   const pathname = usePathname() || "/";
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -49,18 +59,16 @@ export function GlobalNav({ swapHidden = false }: Props) {
     };
   }, [mobileOpen]);
 
-  const accountHref = user
+  const signedIn = Boolean(user);
+  const accountHref = signedIn
     ? "/account"
     : `/login?returnTo=${encodeURIComponent(pathname)}`;
-
-  // isLoading kept for mobile account gate consistency
-  void isLoading;
+  const label = isLoading ? "Account" : accountLabel(user);
 
   const onMatrixPage =
     pathname === MATRIX_HREF || pathname.startsWith(`${MATRIX_HREF}/`);
 
   function goToMatrixTop(event: MouseEvent<HTMLAnchorElement>) {
-    // Same-route click (or leftover hash on Matrix) would otherwise keep mid/end scroll.
     if (!onMatrixPage) return;
     event.preventDefault();
     history.replaceState(null, "", MATRIX_HREF);
@@ -110,9 +118,42 @@ export function GlobalNav({ swapHidden = false }: Props) {
         <div className={styles.actions}>
           <Link
             href={accountHref}
-            className={`${styles.link} ${pathname.startsWith("/account") || pathname.startsWith("/login") ? styles.linkActive : ""}`}
+            className={`${styles.account} ${
+              signedIn ? styles.accountOn : styles.accountOff
+            } ${
+              pathname.startsWith("/account") || pathname.startsWith("/login")
+                ? styles.linkActive
+                : ""
+            }`}
+            aria-label={
+              signedIn
+                ? `Signed in as ${user?.email}${needsReauth ? " (session needs refresh)" : ""}`
+                : "Sign in to your Quadra account"
+            }
+            title={signedIn ? user?.email || "Account" : "Sign in"}
           >
-            Account
+            {signedIn && user?.picture ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={user.picture}
+                alt=""
+                className={styles.avatar}
+                width={22}
+                height={22}
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <span
+                className={`${styles.avatarFallback} ${signedIn ? styles.avatarOn : ""}`}
+                aria-hidden
+              >
+                {signedIn ? (label.slice(0, 1) || "Q").toUpperCase() : "?"}
+              </span>
+            )}
+            <span className={styles.accountText}>
+              {signedIn ? label : "Sign in"}
+            </span>
+            {needsReauth ? <span className={styles.reauthDot} aria-hidden /> : null}
           </Link>
           <Link
             href="/store/bag"
@@ -165,10 +206,33 @@ export function GlobalNav({ swapHidden = false }: Props) {
             Contact
           </Link>
           {!isLoading && (
-            <Link href={accountHref} onClick={() => setMobileOpen(false)}>
-              Account
+            <Link
+              href={accountHref}
+              onClick={() => setMobileOpen(false)}
+              className={styles.mobileAccount}
+            >
+              {signedIn ? (
+                <>
+                  <span className={styles.mobileAccountLabel}>Signed in</span>
+                  <span>{user?.email}</span>
+                </>
+              ) : (
+                "Sign in"
+              )}
             </Link>
           )}
+          {signedIn ? (
+            <button
+              type="button"
+              className={styles.mobileSignOut}
+              onClick={() => {
+                logout();
+                setMobileOpen(false);
+              }}
+            >
+              Sign out
+            </button>
+          ) : null}
           <Link
             href="/store/bag"
             className={styles.mobileBag}

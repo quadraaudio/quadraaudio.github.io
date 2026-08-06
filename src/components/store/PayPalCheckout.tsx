@@ -81,7 +81,7 @@ export function PayPalCheckout({
               throw new Error("Accept the Terms of Use before paying");
             }
             setError(null);
-            const accessToken = await ensureAccessToken();
+            const accessToken = await ensureAccessToken({ interactive: true });
             const data = await callEdgeFunction<{ id?: string; error?: string }>(
               "store-paypal-create",
               {
@@ -102,7 +102,7 @@ export function PayPalCheckout({
             setCapturing(true);
             setError(null);
             try {
-              const accessToken = await ensureAccessToken();
+              const accessToken = await ensureAccessToken({ interactive: true });
               const json = await callEdgeFunction<{
                 persisted?: boolean;
                 code?: string;

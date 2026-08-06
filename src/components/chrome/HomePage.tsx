@@ -6,6 +6,7 @@ import { TypedHeader } from "@/components/motion/TypedHeader";
 import { Reveal } from "@/components/motion/Reveal";
 import { HeroParticles } from "@/components/three/HeroParticles";
 import { SpectrumCascade } from "@/components/three/SpectrumCascade";
+import { ScrollCue } from "@/components/chrome/ScrollCue";
 import { useCatalog } from "@/components/providers/CatalogProvider";
 import { formatPrice } from "@/lib/products";
 import styles from "./HomePage.module.scss";
@@ -69,6 +70,7 @@ export function HomePage() {
             </Link>
           </div>
         </div>
+        <ScrollCue label="Scroll" />
       </section>
 
       <section className={styles.videoSection}>

@@ -214,32 +214,128 @@ function createMatrix(el: HTMLElement, isMobile: boolean): SceneApi | null {
   };
 }
 
-/** Bridges: device slabs materialize left→right with scroll. */
+/** Bridges: MATRIX grid where channel-width bridge bands light up (2A…128). */
 function createBridges(el: HTMLElement, isMobile: boolean): SceneApi | null {
   const bootstrapped = boot(el, isMobile);
   if (!bootstrapped) return null;
   const { scene, camera, renderer } = bootstrapped;
-  camera.position.set(0, 0.3, 14.5);
+  camera.position.set(0, 0.05, 13.4);
 
   const steel = new THREE.Color("#8b95a5");
   const accent = new THREE.Color("#00a3a0");
   const hot = new THREE.Color("#5ee0dc");
-  const widths = [2, 2, 4, 8, 16, 32, 64, 128];
-  const geo = new THREE.BoxGeometry(1, 0.48, 0.2);
-  const devices = widths.map((w, i) => {
-    const mat = new THREE.MeshBasicMaterial({
-      color: steel.clone().multiplyScalar(0.25),
+  const ink = new THREE.Color("#0e1218");
+
+  // Same language as the patch matrix — nodes + crosspoints.
+  const cols = isMobile ? 16 : 24;
+  const rows = isMobile ? 10 : 14;
+  const spanX = 15.2;
+  const spanY = 8.4;
+  const nodeCount = cols * rows;
+  const nodePos = new Float32Array(nodeCount * 3);
+  const nodeCol = new Float32Array(nodeCount * 3);
+  const nodeBase: { x: number; y: number; c: number; r: number }[] = [];
+
+  let ni = 0;
+  for (let r = 0; r < rows; r += 1) {
+    for (let c = 0; c < cols; c += 1) {
+      const x = (c / (cols - 1) - 0.5) * spanX;
+      const y = (0.5 - r / (rows - 1)) * spanY;
+      nodeBase.push({ x, y, c, r });
+      const ix = ni * 3;
+      nodePos[ix] = x;
+      nodePos[ix + 1] = y;
+      nodeCol[ix] = steel.r * 0.28;
+      nodeCol[ix + 1] = steel.g * 0.28;
+      nodeCol[ix + 2] = steel.b * 0.28;
+      ni += 1;
+    }
+  }
+
+  const nodeGeo = new THREE.BufferGeometry();
+  nodeGeo.setAttribute("position", new THREE.BufferAttribute(nodePos, 3));
+  nodeGeo.setAttribute("color", new THREE.BufferAttribute(nodeCol, 3));
+  const nodes = new THREE.Points(
+    nodeGeo,
+    new THREE.PointsMaterial({
+      size: isMobile ? 0.12 : 0.09,
+      vertexColors: true,
       transparent: true,
-      opacity: 0,
+      opacity: 0.95,
+      depthWrite: false,
+      sizeAttenuation: true,
+    }),
+  );
+  scene.add(nodes);
+
+  // Bridge catalog as contiguous column bands on the grid (channel widths).
+  const catalog = [2, 2, 4, 8, 16, 32, 64, 128];
+  const totalCh = catalog.reduce((a, b) => a + b, 0);
+  type Band = { startCol: number; endCol: number; width: number; index: number };
+  const bands: Band[] = [];
+  let cursor = 0;
+  catalog.forEach((width, index) => {
+    const startCol = Math.floor((cursor / totalCh) * cols);
+    cursor += width;
+    const endCol = Math.min(cols - 1, Math.floor((cursor / totalCh) * cols) - 1);
+    bands.push({
+      startCol,
+      endCol: Math.max(startCol, endCol),
+      width,
+      index,
     });
-    const mesh = new THREE.Mesh(geo, mat);
-    const scaleX = 1.05 + Math.log2(w) * 0.5;
-    mesh.scale.set(scaleX, 1, 1);
-    const col = i % 4;
-    const row = Math.floor(i / 4);
-    mesh.position.set((col - 1.5) * 3.35, (0.9 - row * 2.2) * (isMobile ? 0.85 : 1), 0);
+  });
+
+  // Vertical bridge spines (Tx→Rx through the matrix)
+  const spineSegs = rows;
+  const spines = bands.map((band) => {
+    const positions = new Float32Array((spineSegs + 1) * 3);
+    const colors = new Float32Array((spineSegs + 1) * 3);
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    const mesh = new THREE.Line(
+      geo,
+      new THREE.LineBasicMaterial({
+        vertexColors: true,
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+      }),
+    );
     scene.add(mesh);
-    return { mesh, mat, scaleX, i };
+    return { band, positions, colors, geo, mesh };
+  });
+
+  // Cross-routes from each active bridge band into the field
+  const routeCount = isMobile ? 6 : 10;
+  const routes = Array.from({ length: routeCount }, (_, i) => {
+    const segs = isMobile ? 18 : 28;
+    const positions = new Float32Array((segs + 1) * 3);
+    const colors = new Float32Array((segs + 1) * 3);
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    const mesh = new THREE.Line(
+      geo,
+      new THREE.LineBasicMaterial({
+        vertexColors: true,
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+      }),
+    );
+    scene.add(mesh);
+    return {
+      bandIndex: i % bands.length,
+      segs,
+      positions,
+      colors,
+      geo,
+      mesh,
+      rowFrom: 1 + (i % Math.max(1, rows - 2)),
+      rowTo: Math.min(rows - 2, 3 + ((i * 3) % Math.max(1, rows - 3))),
+    };
   });
 
   let progress = 0;
@@ -250,16 +346,94 @@ function createBridges(el: HTMLElement, isMobile: boolean): SceneApi | null {
       progress = p;
     },
     render: () => {
-      const n = devices.length;
-      devices.forEach((d) => {
-        const local = Math.min(1, Math.max(0, progress * n - d.i));
-        d.mat.opacity = local * 0.9;
-        tmp.copy(steel).multiplyScalar(0.28).lerp(accent, local).lerp(hot, local * 0.35);
-        d.mat.color.copy(tmp);
-        d.mesh.scale.set(d.scaleX * (0.75 + local * 0.25), 0.75 + local * 0.25, 1);
-        d.mesh.position.z = local * 0.35;
+      const activeBands = progress * bands.length;
+      const litCol = new Float32Array(cols);
+
+      spines.forEach((spine) => {
+        const local = Math.min(1, Math.max(0, activeBands - spine.band.index));
+        (spine.mesh.material as THREE.LineBasicMaterial).opacity = local * 0.9;
+        const midCol =
+          (spine.band.startCol + spine.band.endCol) * 0.5 / Math.max(1, cols - 1);
+        const x = (midCol - 0.5) * spanX;
+        for (let s = 0; s <= spineSegs; s += 1) {
+          const u = s / spineSegs;
+          const drawU = Math.min(u, local);
+          const ix = s * 3;
+          spine.positions[ix] = x;
+          spine.positions[ix + 1] = (0.5 - drawU) * spanY;
+          spine.positions[ix + 2] = 0.15;
+          tmp.copy(ink).lerp(accent, 0.55).lerp(hot, u * local);
+          spine.colors[ix] = tmp.r;
+          spine.colors[ix + 1] = tmp.g;
+          spine.colors[ix + 2] = tmp.b;
+        }
+        (spine.geo.attributes.position as THREE.BufferAttribute).needsUpdate = true;
+        (spine.geo.attributes.color as THREE.BufferAttribute).needsUpdate = true;
+
+        if (local > 0.05) {
+          for (let c = spine.band.startCol; c <= spine.band.endCol; c += 1) {
+            litCol[c] = Math.max(litCol[c], local);
+          }
+        }
       });
-      camera.position.x = (progress - 0.5) * 0.6;
+
+      routes.forEach((route, ri) => {
+        const band = bands[route.bandIndex];
+        const bandLocal = Math.min(1, Math.max(0, activeBands - band.index));
+        const local = Math.max(0, (bandLocal - 0.35) / 0.65);
+        (route.mesh.material as THREE.LineBasicMaterial).opacity = local * 0.85;
+        if (local <= 0.001) return;
+
+        const c0 = Math.round((band.startCol + band.endCol) / 2);
+        const a = nodeBase[route.rowFrom * cols + Math.min(cols - 1, c0)];
+        const destC = Math.min(
+          cols - 1,
+          Math.max(0, c0 + (ri % 2 === 0 ? 4 : -4)),
+        );
+        const b = nodeBase[route.rowTo * cols + destC];
+        if (!a || !b) return;
+
+        const midX = (a.x + b.x) * 0.5;
+        const midY = (a.y + b.y) * 0.5;
+        for (let s = 0; s <= route.segs; s += 1) {
+          const u = s / route.segs;
+          const drawU = Math.min(u, local);
+          const omu = 1 - drawU;
+          const ix = s * 3;
+          route.positions[ix] =
+            omu * omu * a.x + 2 * omu * drawU * midX + drawU * drawU * b.x;
+          route.positions[ix + 1] =
+            omu * omu * a.y + 2 * omu * drawU * midY + drawU * drawU * b.y;
+          route.positions[ix + 2] = 2 * omu * drawU * 0.45;
+          const head = u <= local ? Math.exp(-Math.abs(u - local) * 14) : 0;
+          tmp.copy(steel).lerp(accent, 0.4).lerp(hot, head);
+          route.colors[ix] = tmp.r;
+          route.colors[ix + 1] = tmp.g;
+          route.colors[ix + 2] = tmp.b;
+        }
+        (route.geo.attributes.position as THREE.BufferAttribute).needsUpdate =
+          true;
+        (route.geo.attributes.color as THREE.BufferAttribute).needsUpdate = true;
+      });
+
+      const nCols = (nodeGeo.attributes.color as THREE.BufferAttribute)
+        .array as Float32Array;
+      for (let i = 0; i < nodeCount; i += 1) {
+        const n = nodeBase[i];
+        const glow = litCol[n.c] || 0.06 * progress;
+        const ix = i * 3;
+        tmp
+          .copy(steel)
+          .multiplyScalar(0.28)
+          .lerp(accent, glow * 0.85)
+          .lerp(hot, glow * 0.35);
+        nCols[ix] = tmp.r;
+        nCols[ix + 1] = tmp.g;
+        nCols[ix + 2] = tmp.b;
+      }
+      (nodeGeo.attributes.color as THREE.BufferAttribute).needsUpdate = true;
+
+      camera.position.z = 14.1 - progress * 1.2;
       camera.lookAt(0, 0, 0);
       renderer.render(scene, camera);
     },
@@ -271,8 +445,16 @@ function createBridges(el: HTMLElement, isMobile: boolean): SceneApi | null {
       renderer.setSize(rw, rh);
     },
     dispose: () => {
-      geo.dispose();
-      for (const d of devices) d.mat.dispose();
+      nodeGeo.dispose();
+      (nodes.material as THREE.Material).dispose();
+      for (const s of spines) {
+        s.geo.dispose();
+        (s.mesh.material as THREE.Material).dispose();
+      }
+      for (const r of routes) {
+        r.geo.dispose();
+        (r.mesh.material as THREE.Material).dispose();
+      }
       const canvas = renderer.domElement;
       renderer.dispose();
       if (canvas.parentElement === el) el.removeChild(canvas);
