@@ -30,37 +30,267 @@
 
 .section {
   margin-bottom: var(--space-3xl);
+  max-width: 44rem;
 }
 
 .section h2 {
-  margin: 0 0 var(--space-md);
+  margin: 0 0 var(--space-sm);
   font-family: var(--font-display);
   font-size: 1.5rem;
   letter-spacing: -0.02em;
 }
 
-.list {
+.sectionLede {
+  margin: 0 0 var(--space-lg);
+  color: var(--theme-text-muted);
+  line-height: 1.5;
+}
+
+.cardList {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 0.65rem;
+  gap: 1rem;
 }
 
-.list li {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.9rem 1rem;
+.cardList > li {
+  padding: 1.15rem 1.2rem;
   border: 1px solid var(--theme-border);
   border-radius: 12px;
   background: var(--theme-bg-elevated);
+  display: grid;
+  gap: 1rem;
+}
+
+.cardHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.cardHead h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+}
+
+.meta {
+  margin: 0.35rem 0 0;
+  color: var(--theme-text-muted);
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.badge {
+  flex-shrink: 0;
+  align-self: flex-start;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  background: var(--theme-bg-muted);
+  color: var(--theme-text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.badgeOk {
+  background: rgba(0, 163, 160, 0.12);
+  color: #0b6e6c;
+}
+
+.totalPaid {
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 1rem;
+  margin: 0;
+}
+
+.facts dt {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--theme-text-muted);
+}
+
+.facts dd {
+  margin: 0.2rem 0 0;
+}
+
+.facts code {
+  font-size: 0.85rem;
+}
+
+.seatsLabel {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--theme-text-muted);
+}
+
+.seatList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.seatList li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  background: var(--theme-bg);
+  border: 1px solid var(--theme-border);
+}
+
+.seatList li > div {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.seatList code {
+  font-size: 0.85rem;
+}
+
+.seatList span {
+  color: var(--theme-text-muted);
+  font-size: 0.85rem;
+}
+
+.ghostBtn {
+  appearance: none;
+  border: 1px solid var(--theme-border);
+  background: transparent;
+  border-radius: 8px;
+  padding: 0.4rem 0.7rem;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ghostBtn:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.1rem;
+  align-items: center;
+}
+
+.cardActions a {
+  text-decoration: underline;
+  color: var(--theme-text-muted);
+  font-size: 0.92rem;
+}
+
+.lines {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.lines th,
+.lines td {
+  text-align: left;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--theme-border);
+}
+
+.lines th {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--theme-text-muted);
+  font-weight: 600;
+}
+
+.lines th:last-child,
+.lines td:last-child {
+  text-align: right;
+}
+
+.totals {
+  margin: 0;
+  display: grid;
+  gap: 0.35rem;
+  max-width: 18rem;
+  margin-left: auto;
+}
+
+.totals > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.totals dt {
+  margin: 0;
+  color: var(--theme-text-muted);
+}
+
+.totals dd {
+  margin: 0;
+}
+
+.totalsGrand {
+  margin-top: 0.25rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid var(--theme-border);
+  font-weight: 700;
+}
+
+.taxNote {
+  margin: 0;
+  color: var(--theme-text-muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
 }
 
 .empty {
   color: var(--theme-text-muted);
 }
 
+.emptyInline {
+  margin: 0;
+  color: var(--theme-text-muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
 .empty a {
   text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .facts {
+    grid-template-columns: 1fr;
+  }
+
+  .seatList li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cardHead {
+    flex-direction: column;
+  }
 }

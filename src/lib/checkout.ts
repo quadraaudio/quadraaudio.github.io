@@ -200,11 +200,26 @@ export async function loadAccountForAuth0(auth0Sub: string) {
       currency: string;
       status: string;
       created_at: string;
+      items?: Array<{
+        slug: string;
+        name: string;
+        quantity: number;
+        unitPrice: number;
+        currency?: string;
+      }>;
+      coupon_code?: string | null;
+      paypal_order_id?: string | null;
     }>;
     licenses?: Array<{
+      id: string;
       product_slug: string;
       status: string;
       issued_at: string;
+      expires_at?: string | null;
+      order_number?: string | null;
+      seats_used: number;
+      seats_max: number;
+      activations: Array<{ hardware_id: string; activated_at: string }>;
     }>;
   };
 
