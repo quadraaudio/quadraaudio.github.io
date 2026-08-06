@@ -1,12 +1,12 @@
 .cue {
   position: absolute;
   left: 50%;
-  bottom: clamp(20px, 4vh, 36px);
-  z-index: 3;
+  bottom: clamp(18px, 3.5vh, 32px);
+  z-index: 6;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   transform: translateX(-50%);
   pointer-events: none;
   opacity: 1;
@@ -18,31 +18,37 @@
 }
 
 .label {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(14, 18, 24, 0.72);
+  border: 1px solid rgba(94, 224, 220, 0.35);
+  backdrop-filter: blur(8px);
   font-family: var(--font-body);
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--mx-mist, #8b95a5);
+  color: #f7f9fb;
+  white-space: nowrap;
 }
 
 .chevron {
-  width: 12px;
-  height: 12px;
-  border-right: 1.5px solid var(--mx-hot, #5ee0dc);
-  border-bottom: 1.5px solid var(--mx-hot, #5ee0dc);
+  width: 14px;
+  height: 14px;
+  border-right: 2px solid #5ee0dc;
+  border-bottom: 2px solid #5ee0dc;
   transform: rotate(45deg);
-  animation: bob 1.6s ease-in-out infinite;
+  animation: bob 1.5s ease-in-out infinite;
 }
 
 @keyframes bob {
   0%,
   100% {
     transform: rotate(45deg) translate(0, 0);
-    opacity: 0.45;
+    opacity: 0.55;
   }
   50% {
-    transform: rotate(45deg) translate(3px, 3px);
+    transform: rotate(45deg) translate(4px, 4px);
     opacity: 1;
   }
 }
@@ -50,6 +56,6 @@
 @media (prefers-reduced-motion: reduce) {
   .chevron {
     animation: none;
-    opacity: 0.8;
+    opacity: 0.9;
   }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getLenis } from "@/lib/smoothScroll";
 import styles from "./ScrollCue.module.scss";
 
 type Props = {
@@ -21,10 +22,46 @@ export function ScrollCue({
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setHidden(window.scrollY > hideAfter);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const update = () => {
+      const lenis = getLenis();
+      const y =
+        (typeof lenis?.scroll === "number" ? lenis.scroll : null) ??
+        window.scrollY ??
+        document.documentElement.scrollTop ??
+        0;
+      setHidden(y > hideAfter);
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+
+    let unsub: (() => void) | undefined;
+    let raf = 0;
+    let tries = 0;
+
+    const attachLenis = () => {
+      const lenis = getLenis();
+      if (!lenis) return false;
+      const onScroll = () => update();
+      lenis.on("scroll", onScroll);
+      unsub = () => lenis.off("scroll", onScroll);
+      return true;
+    };
+
+    if (!attachLenis()) {
+      const tick = () => {
+        tries += 1;
+        if (attachLenis() || tries > 90) return;
+        raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+    }
+
+    return () => {
+      window.removeEventListener("scroll", update);
+      cancelAnimationFrame(raf);
+      unsub?.();
+    };
   }, [hideAfter]);
 
   return (
