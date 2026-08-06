@@ -1,11 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PatchbayField } from "@/components/three/PatchbayField";
+import { MatrixChapterVisual } from "@/components/three/MatrixChapterVisual";
 import { HYDRA } from "@/data/hydra.landing";
 import styles from "./HydraHero.module.scss";
 
@@ -13,7 +13,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 /**
  * Full-bleed MATRIX hero: living patch field + brand statement,
- * then product UI plane with scroll-driven scale.
+ * then animated product plane (no stock photography).
  */
 export function HydraHero() {
   const [revealed, setRevealed] = useState(false);
@@ -66,10 +66,7 @@ export function HydraHero() {
       <div className={styles.firstView}>
         <div className={styles.atmosphere} aria-hidden>
           <div className={styles.patchLayer}>
-            <PatchbayField
-              fallbackSrc={HYDRA.heroMedia.src}
-              fallbackAlt={HYDRA.heroMedia.alt}
-            />
+            <PatchbayField />
           </div>
           <div className={styles.shade} />
         </div>
@@ -94,13 +91,9 @@ export function HydraHero() {
         className={`${styles.productStage} ${revealed ? styles.revealed : ""}`}
       >
         <div ref={frameRef} className={`${styles.stageFrame} ${styles.in5}`}>
-          <Image
-            src={HYDRA.heroMedia.src}
-            alt={HYDRA.heroMedia.alt}
-            width={1536}
-            height={1024}
-            priority
-            sizes="100vw"
+          <MatrixChapterVisual
+            variant="matrix"
+            label={HYDRA.heroMedia.alt}
             className={styles.stageImage}
           />
         </div>

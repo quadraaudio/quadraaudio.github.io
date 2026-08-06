@@ -3,8 +3,11 @@
 import Link from "next/link";
 import { MatrixFade } from "@/components/motion/MatrixFade";
 import { HydraHero } from "@/components/hydra/HydraHero";
-import { HydraMedia } from "@/components/hydra/HydraMedia";
 import { MatrixChapterPin } from "@/components/hydra/MatrixChapterPin";
+import {
+  MatrixChapterVisual,
+  type MatrixVisualVariant,
+} from "@/components/three/MatrixChapterVisual";
 import {
   HYDRA,
   HYDRA_CAPABILITIES,
@@ -52,9 +55,14 @@ function MediaStage({
   chapter: HydraChapter;
   className?: string;
 }) {
+  const variant = chapter.id as MatrixVisualVariant;
   return (
     <div className={`${styles.mediaStage} ${className}`.trim()}>
-      <HydraMedia media={chapter.media} className={styles.shot} />
+      <MatrixChapterVisual
+        variant={variant}
+        label={chapter.media.alt}
+        className={styles.shot}
+      />
     </div>
   );
 }
