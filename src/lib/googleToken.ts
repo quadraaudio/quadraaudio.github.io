@@ -93,11 +93,9 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
 }
 
 /**
- * Request a fresh Google OAuth access token via GIS.
- *
- * - `interactive: true` (login button) opens the account picker immediately.
- * - `interactive: false` tries silent only.
- * - default (token refresh) tries silent briefly, then falls back to UI.
+ * - `interactive: true` opens the account picker (user gesture only).
+ * - `interactive: false` tries silent only and throws on failure (no popup).
+ * - default tries silent briefly, then falls back to UI.
  */
 export async function requestGoogleAccessToken(
   options: { interactive?: boolean } = {}

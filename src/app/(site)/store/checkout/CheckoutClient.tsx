@@ -102,7 +102,7 @@ export function CheckoutClient({ paypalClientId }: { paypalClientId: string }) {
     setClaiming(true);
     setClaimError(null);
     try {
-      const accessToken = await ensureAccessToken();
+      const accessToken = await ensureAccessToken({ interactive: true });
       const data = await callEdgeFunction<{
         persisted?: boolean;
         orderNumber?: string;

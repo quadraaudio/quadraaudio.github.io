@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PatchbayField } from "@/components/three/PatchbayField";
+import { ScrollCue } from "@/components/chrome/ScrollCue";
 import { HYDRA } from "@/data/hydra.landing";
 import styles from "./HydraHero.module.scss";
 
@@ -93,6 +94,7 @@ export function HydraHero() {
             </Link>
           </div>
         </div>
+        <ScrollCue label="Scroll to explore" />
       </div>
     </section>
   );

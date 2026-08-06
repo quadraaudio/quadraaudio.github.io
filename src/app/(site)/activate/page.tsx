@@ -10,7 +10,7 @@ import { hasAcceptedCurrentTerms } from "@/lib/termsAcceptance";
 import styles from "./activate.module.scss";
 
 function ActivateInner() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, ensureAccessToken } = useAuth();
   const params = useSearchParams();
   const router = useRouter();
   const hwid = params.get("hwid")?.trim() || "";
@@ -30,7 +30,7 @@ function ActivateInner() {
   }, []);
 
   const issueAndReturn = useCallback(async () => {
-    if (!user?.accessToken || !hwid) return;
+    if (!hwid) return;
     if (!hasAcceptedCurrentTerms()) {
       setShowTerms(true);
       setError("Accept the Terms of Use before activating.");
@@ -39,15 +39,17 @@ function ActivateInner() {
     setBusy(true);
     setError("");
     try {
+      // Refresh on the button click (user gesture) — never rely on a stale token.
+      const accessToken = await ensureAccessToken({ interactive: true });
       const data = await callEdgeFunction<{ code: string }>(
         "license-activate",
         {
           action: mode === "trial" ? "issue-trial" : "issue",
-          googleAccessToken: user.accessToken,
+          googleAccessToken: accessToken,
           hardwareId: hwid,
           productSlug: product,
         },
-        user.accessToken
+        accessToken,
       );
       if (!data.code) throw new Error("No activation code returned.");
       const target = `${returnUrl}${returnUrl.includes("?") ? "&" : "?"}code=${encodeURIComponent(data.code)}`;
@@ -57,7 +59,7 @@ function ActivateInner() {
       setError(e instanceof Error ? e.message : "Activation failed.");
       setBusy(false);
     }
-  }, [user, hwid, product, returnUrl, mode]);
+  }, [hwid, product, returnUrl, mode, ensureAccessToken]);
 
   useEffect(() => {
     if (isLoading) return;

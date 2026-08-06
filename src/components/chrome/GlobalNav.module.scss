@@ -72,6 +72,112 @@
   gap: 0.15rem;
 }
 
+.account {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: 11rem;
+  margin: 0;
+  padding: 0.28rem 0.55rem 0.28rem 0.28rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--theme-text);
+  font-weight: 560;
+  font-size: 0.8125rem;
+  text-decoration: none;
+  cursor: pointer;
+  opacity: 0.92;
+  transition:
+    opacity 0.2s var(--ease-out),
+    color 0.2s var(--ease-out),
+    border-color 0.2s var(--ease-out),
+    background 0.2s var(--ease-out);
+}
+
+.account:hover {
+  opacity: 1;
+}
+
+.accountOn {
+  border-color: color-mix(in srgb, var(--theme-accent) 45%, var(--theme-border));
+  background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
+}
+
+.accountOff {
+  border-color: var(--theme-border);
+}
+
+.accountText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.avatarFallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--theme-text) 12%, transparent);
+  color: var(--theme-text-muted, var(--theme-text));
+}
+
+.avatarOn {
+  background: var(--theme-accent);
+  color: #fff;
+}
+
+.reauthDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--quadra-warm, #e8a54b);
+  flex-shrink: 0;
+}
+
+.mobileAccount {
+  display: grid !important;
+  gap: 0.15rem;
+}
+
+.mobileAccountLabel {
+  font-family: var(--font-body) !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase;
+  color: var(--theme-text-muted, #8b95a5);
+}
+
+.mobileSignOut {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--theme-text-muted, #8b95a5);
+  cursor: pointer;
+}
+
 .bag {
   position: relative;
   display: inline-flex;
@@ -182,7 +288,11 @@
 }
 
 @media (max-width: 959px) {
-  .actions .link {
+  .actions .accountText {
     display: none;
+  }
+
+  .account {
+    padding: 0.28rem;
   }
 }

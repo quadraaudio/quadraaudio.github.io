@@ -5,14 +5,14 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { TermsAcceptModal } from "@/components/legal/TermsAcceptModal";
 import { useAuth } from "@/components/providers/AuthProvider";
-import { requestGoogleAccessToken } from "@/lib/googleToken";
+import { beginGoogleRedirectLogin } from "@/lib/googleOAuthRedirect";
 import { hasAcceptedCurrentTerms } from "@/lib/termsAcceptance";
 import styles from "./login.module.scss";
 
 export default function LoginClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login } = useAuth();
+  const { user, isLoading } = useAuth();
   const returnTo = useMemo(() => {
     const raw = searchParams.get("returnTo") || "/account";
     return raw.startsWith("/") ? raw : "/account";
@@ -27,6 +27,12 @@ export default function LoginClient() {
     setTermsOk(hasAcceptedCurrentTerms());
   }, []);
 
+  // Already signed in — continue to the destination (e.g. MATRIX activate).
+  useEffect(() => {
+    if (isLoading || !user) return;
+    router.replace(returnTo);
+  }, [isLoading, user, returnTo, router]);
+
   async function continueWithGoogle() {
     if (!hasAcceptedCurrentTerms()) {
       setShowTerms(true);
@@ -35,29 +41,8 @@ export default function LoginClient() {
     setBusy(true);
     setError(null);
     try {
-      const token = await requestGoogleAccessToken({ interactive: true });
-      const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-        headers: { Authorization: `Bearer ${token.accessToken}` },
-      });
-      if (!res.ok) throw new Error("Could not read Google profile");
-      const profile = (await res.json()) as {
-        sub?: string;
-        email?: string;
-        name?: string;
-        picture?: string;
-      };
-      if (!profile.sub || !profile.email) {
-        throw new Error("Google profile incomplete");
-      }
-      login({
-        id: profile.sub,
-        email: profile.email,
-        name: profile.name || null,
-        picture: profile.picture || null,
-        accessToken: token.accessToken,
-        expiresAt: token.expiresAt,
-      });
-      router.replace(returnTo);
+      // Full-page redirect (PKCE) — not a popup. Required for MATRIX app browsers.
+      await beginGoogleRedirectLogin(returnTo);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Sign-in failed");
       setBusy(false);
@@ -73,6 +58,11 @@ export default function LoginClient() {
           Use the same Google login already set up for quadraaudio.com. You must
           review and accept the Terms of Use before continuing.
         </p>
+        {returnTo.includes("/activate") ? (
+          <p className={styles.termsOk} role="status">
+            Opened from MATRIX — Google will open in this window (no popup).
+          </p>
+        ) : null}
 
         {!termsOk ? (
           <button
@@ -92,9 +82,9 @@ export default function LoginClient() {
           type="button"
           className={`btn btn-primary ${styles.googleBtn}`}
           onClick={() => void continueWithGoogle()}
-          disabled={busy}
+          disabled={busy || isLoading}
         >
-          {busy ? "Connecting to Google…" : "Continue with Google"}
+          {busy ? "Opening Google…" : "Continue with Google"}
         </button>
 
         {error ? (

@@ -12,7 +12,7 @@ import { formatPrice } from "@/lib/products";
 import styles from "./account.module.scss";
 
 function AccountInner() {
-  const { user, isLoading, ensureAccessToken } = useAuth();
+  const { user, isLoading, ensureAccessToken, needsReauth, logout } = useAuth();
   const { getBySlug } = useCatalog();
   const searchParams = useSearchParams();
   const purchased = searchParams.get("purchased") === "1";
@@ -50,7 +50,7 @@ function AccountInner() {
 
     (async () => {
       try {
-        const accessToken = await ensureAccessToken();
+        const accessToken = await ensureAccessToken({ interactive: false });
         const data = await callEdgeFunction<{
           orders?: typeof orders;
           licenses?: typeof licenses;
@@ -108,6 +108,20 @@ function AccountInner() {
           Hello{user.name ? `, ${user.name}` : ""}.
         </h1>
         <p className={styles.email}>{user.email}</p>
+        {needsReauth ? (
+          <div className={styles.banner} role="status">
+            Your Google session needs a refresh to load licenses.{" "}
+            <a href="/login?returnTo=/account">Sign in again</a>
+            {" · "}
+            <button
+              type="button"
+              className={styles.textBtn}
+              onClick={() => logout()}
+            >
+              Sign out
+            </button>
+          </div>
+        ) : null}
 
         {purchased ? (
           <div className={styles.banner} role="status">
