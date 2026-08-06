@@ -1,25 +1,27 @@
 .shell {
-  --hydra-ink: #000000;
-  --hydra-ink-soft: #0a0a0a;
-  --hydra-panel: #1c1c1e;
-  --hydra-steel: #a1a1a6;
-  --hydra-snow: #f5f5f7;
-  --hydra-accent: #00a3a0;
-  --hydra-accent-deep: #007e7c;
-  --hydra-line: rgba(255, 255, 255, 0.12);
+  /* MATRIX dark mode — graphite fascia + teal (not Apple black) */
+  --hydra-ink: var(--quadra-ink);
+  --hydra-ink-soft: var(--quadra-ink-soft);
+  --hydra-panel: #151b24;
+  --hydra-steel: var(--quadra-mist);
+  --hydra-snow: #f7f9fb;
+  --hydra-hot: #5ee0dc;
+  --hydra-accent: var(--quadra-accent);
+  --hydra-accent-deep: var(--quadra-accent-deep);
+  --hydra-line: rgba(139, 149, 165, 0.22);
 
   /* GlobalNav inherits Matrix dark chrome + Quadra teal */
-  --theme-bg: #000000;
-  --theme-bg-elevated: #1c1c1e;
-  --theme-bg-muted: #0a0a0a;
-  --theme-bg-inverse: #f5f5f7;
-  --theme-text: #f5f5f7;
-  --theme-text-muted: #a1a1a6;
-  --theme-text-faint: #6e6e73;
-  --theme-text-inverse: #000000;
-  --theme-border: rgba(255, 255, 255, 0.14);
-  --theme-accent: #00a3a0;
-  --theme-accent-hover: #007e7c;
+  --theme-bg: var(--quadra-ink);
+  --theme-bg-elevated: var(--hydra-panel);
+  --theme-bg-muted: var(--quadra-ink-soft);
+  --theme-bg-inverse: #f7f9fb;
+  --theme-text: #f7f9fb;
+  --theme-text-muted: var(--quadra-mist);
+  --theme-text-faint: var(--quadra-slate);
+  --theme-text-inverse: var(--quadra-ink);
+  --theme-border: rgba(139, 149, 165, 0.22);
+  --theme-accent: var(--quadra-accent);
+  --theme-accent-hover: var(--quadra-accent-deep);
 
   min-height: 100vh;
   background: var(--hydra-ink);
@@ -55,6 +57,6 @@
 .shell :global(footer) {
   margin-top: 0;
   background:
-    radial-gradient(80% 60% at 10% 0%, rgba(0, 163, 160, 0.1), transparent 55%),
-    #0a0a0a;
+    radial-gradient(80% 60% at 10% 0%, rgba(0, 163, 160, 0.12), transparent 55%),
+    var(--quadra-ink-soft);
 }

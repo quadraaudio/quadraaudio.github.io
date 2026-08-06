@@ -4,6 +4,7 @@ import Link from "next/link";
 import { MatrixFade } from "@/components/motion/MatrixFade";
 import { HydraHero } from "@/components/hydra/HydraHero";
 import { HydraMedia } from "@/components/hydra/HydraMedia";
+import { MatrixChapterPin } from "@/components/hydra/MatrixChapterPin";
 import {
   HYDRA,
   HYDRA_CAPABILITIES,
@@ -34,13 +35,11 @@ function DisplayTitle({
 function FeatureStrip({ chapter }: { chapter: HydraChapter }) {
   return (
     <div className={styles.features}>
-      {chapter.subfeatures.map((sub, si) => (
-        <MatrixFade key={sub.title} delay={si * 50}>
-          <div className={styles.feature}>
-            <h3>{sub.title}</h3>
-            <p>{sub.body}</p>
-          </div>
-        </MatrixFade>
+      {chapter.subfeatures.map((sub) => (
+        <div key={sub.title} className={styles.feature}>
+          <h3>{sub.title}</h3>
+          <p>{sub.body}</p>
+        </div>
       ))}
     </div>
   );
@@ -62,58 +61,77 @@ function MediaStage({
 
 function ChapterStage({ chapter }: { chapter: HydraChapter }) {
   return (
-    <section id={chapter.id} className={`${styles.chapter} ${styles.layoutStage}`}>
-      <div className={styles.statement}>
-        <MatrixFade>
-          <p className={styles.eyebrow}>{chapter.eyebrow}</p>
-          <DisplayTitle title={chapter.title} />
-          <p className={styles.lede}>{chapter.body}</p>
-        </MatrixFade>
-      </div>
-      <MatrixFade delay={90} className={styles.mediaBleed}>
-        <MediaStage chapter={chapter} />
-      </MatrixFade>
-      <FeatureStrip chapter={chapter} />
+    <section
+      id={chapter.id}
+      className={`${styles.chapter} ${styles.chapterPin} ${styles.layoutStage}`}
+    >
+      <MatrixChapterPin>
+        <div data-mx-scene className={styles.pinScene}>
+          <div data-mx-copy className={`${styles.statement} ${styles.pinCopy}`}>
+            <p className={styles.eyebrow}>{chapter.eyebrow}</p>
+            <DisplayTitle title={chapter.title} />
+            <p className={styles.lede}>{chapter.body}</p>
+          </div>
+          <div data-mx-media className={`${styles.mediaBleed} ${styles.pinMedia}`}>
+            <MediaStage chapter={chapter} />
+          </div>
+          <div data-mx-features className={styles.pinFeatures}>
+            <FeatureStrip chapter={chapter} />
+          </div>
+        </div>
+      </MatrixChapterPin>
     </section>
   );
 }
 
 function ChapterSplit({ chapter }: { chapter: HydraChapter }) {
   return (
-    <section id={chapter.id} className={`${styles.chapter} ${styles.layoutSplit}`}>
-      <div className={styles.splitGrid}>
-        <div className={styles.splitCopy}>
-          <MatrixFade>
-            <p className={styles.eyebrow}>{chapter.eyebrow}</p>
-            <DisplayTitle title={chapter.title} />
-            <p className={styles.lede}>{chapter.body}</p>
-          </MatrixFade>
-          <div className={styles.splitFeatures}>
-            <FeatureStrip chapter={chapter} />
+    <section
+      id={chapter.id}
+      className={`${styles.chapter} ${styles.chapterPin} ${styles.layoutSplit}`}
+    >
+      <MatrixChapterPin>
+        <div data-mx-scene className={styles.pinScene}>
+          <div className={styles.splitGrid}>
+            <div data-mx-copy className={`${styles.splitCopy} ${styles.pinCopy}`}>
+              <p className={styles.eyebrow}>{chapter.eyebrow}</p>
+              <DisplayTitle title={chapter.title} />
+              <p className={styles.lede}>{chapter.body}</p>
+              <div data-mx-features className={`${styles.splitFeatures} ${styles.pinFeatures}`}>
+                <FeatureStrip chapter={chapter} />
+              </div>
+            </div>
+            <div data-mx-media className={`${styles.splitMedia} ${styles.pinMedia}`}>
+              <MediaStage chapter={chapter} />
+            </div>
           </div>
         </div>
-        <MatrixFade delay={100} className={styles.splitMedia}>
-          <MediaStage chapter={chapter} />
-        </MatrixFade>
-      </div>
+      </MatrixChapterPin>
     </section>
   );
 }
 
 function ChapterInvert({ chapter }: { chapter: HydraChapter }) {
   return (
-    <section id={chapter.id} className={`${styles.chapter} ${styles.layoutInvert}`}>
-      <MatrixFade className={styles.mediaBleed}>
-        <MediaStage chapter={chapter} />
-      </MatrixFade>
-      <div className={styles.statement}>
-        <MatrixFade delay={80}>
-          <p className={styles.eyebrow}>{chapter.eyebrow}</p>
-          <DisplayTitle title={chapter.title} />
-          <p className={styles.lede}>{chapter.body}</p>
-        </MatrixFade>
-      </div>
-      <FeatureStrip chapter={chapter} />
+    <section
+      id={chapter.id}
+      className={`${styles.chapter} ${styles.chapterPin} ${styles.layoutInvert}`}
+    >
+      <MatrixChapterPin>
+        <div data-mx-scene className={styles.pinScene}>
+          <div data-mx-media className={`${styles.mediaBleed} ${styles.pinMedia}`}>
+            <MediaStage chapter={chapter} />
+          </div>
+          <div data-mx-copy className={`${styles.statement} ${styles.pinCopy}`}>
+            <p className={styles.eyebrow}>{chapter.eyebrow}</p>
+            <DisplayTitle title={chapter.title} />
+            <p className={styles.lede}>{chapter.body}</p>
+          </div>
+          <div data-mx-features className={styles.pinFeatures}>
+            <FeatureStrip chapter={chapter} />
+          </div>
+        </div>
+      </MatrixChapterPin>
     </section>
   );
 }
