@@ -1,18 +1,21 @@
-/* Logic-inspired hero — statement first, product stage second */
+/* MATRIX dark hero — full-bleed patch field + product plane */
 
 .hero {
-  --mx-ink: #000000;
-  --mx-text: #f5f5f7;
-  --mx-mist: #a1a1a6;
-  --mx-accent: #00a3a0;
+  --mx-ink: var(--quadra-ink);
+  --mx-ink-soft: var(--quadra-ink-soft);
+  --mx-text: #f7f9fb;
+  --mx-mist: var(--quadra-mist);
+  --mx-accent: var(--quadra-accent);
+  --mx-hot: #5ee0dc;
   --mx-fade: cubic-bezier(0.22, 1, 0.36, 1);
 
   position: relative;
   background: var(--mx-ink);
   scroll-margin-top: var(--matrix-sticky-offset, var(--nav-height));
+  overflow: clip;
 }
 
-/* First viewport: atmosphere + copy only — product shot stays below the fold */
+/* First viewport: brand + statement over living full-bleed field */
 .firstView {
   position: relative;
   display: flex;
@@ -29,28 +32,38 @@
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.45;
+  opacity: 0.72;
 }
 
 .patchLayer {
   position: absolute;
-  inset: -8% -4%;
-  width: 108%;
-  height: 108%;
+  inset: -6% -3%;
+  width: 106%;
+  height: 106%;
 }
 
 .shade {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(60% 50% at 50% 20%, transparent 0%, rgba(0, 0, 0, 0.55) 100%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, #000 92%);
+    radial-gradient(
+      55% 48% at 50% 28%,
+      rgba(14, 18, 24, 0.15) 0%,
+      rgba(14, 18, 24, 0.72) 72%,
+      var(--mx-ink) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(14, 18, 24, 0.25) 0%,
+      rgba(14, 18, 24, 0.55) 55%,
+      var(--mx-ink) 100%
+    );
 }
 
 .masthead {
   position: relative;
   z-index: 2;
-  width: min(100% - 40px, 820px);
+  width: min(100% - 40px, 860px);
   margin: 0 auto;
   text-align: center;
 }
@@ -59,9 +72,9 @@
   margin: 0 0 18px;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(1.25rem, 2.2vw, 1.55rem);
-  letter-spacing: 0.28em;
-  color: var(--mx-text);
+  font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+  letter-spacing: 0.3em;
+  color: var(--mx-hot);
 }
 
 .headline {
@@ -96,7 +109,7 @@
   font-size: 1.125rem;
   font-weight: 500;
   letter-spacing: -0.01em;
-  transition: opacity 0.25s var(--mx-fade);
+  transition: opacity 0.25s var(--mx-fade), color 0.25s var(--mx-fade);
 }
 
 .ctaBuy {
@@ -117,28 +130,29 @@
 
 .ctaBuy:hover,
 .ctaTrial:hover {
-  opacity: 0.72;
+  opacity: 0.85;
+  color: var(--mx-hot);
 }
 
-/* Product screenshot below the first view */
+/* Product plane — edge-to-edge dominant visual */
 .productStage {
   position: relative;
   z-index: 2;
   width: 100%;
-  padding: 0 clamp(12px, 3vw, 40px);
-  margin-bottom: -4vw;
-  background: var(--mx-ink);
+  padding: 0;
+  margin: 0;
+  background: transparent;
 }
 
 .stageFrame {
-  width: min(100%, 1180px);
-  margin: 0 auto;
-  border-radius: 18px 18px 0 0;
+  width: 100%;
+  margin: 0;
   overflow: hidden;
-  background: #0a0c10;
-  box-shadow:
-    0 -1px 0 rgba(255, 255, 255, 0.08),
-    0 40px 100px rgba(0, 0, 0, 0.65);
+  background: #151b24;
+  border-radius: 0;
+  box-shadow: none;
+  transform-origin: center top;
+  will-change: transform, opacity;
 }
 
 .stageImage {
@@ -154,7 +168,7 @@
 .in4,
 .in5 {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(22px);
 }
 
 .revealed .in1,
@@ -162,7 +176,7 @@
 .revealed .in3,
 .revealed .in4,
 .revealed .in5 {
-  animation: enter 0.9s var(--mx-fade) both;
+  animation: enter 0.95s var(--mx-fade) both;
 }
 
 .revealed .in1 {
@@ -184,7 +198,7 @@
 @keyframes enter {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(22px);
   }
   to {
     opacity: 1;
@@ -201,5 +215,9 @@
     opacity: 1;
     transform: none;
     animation: none !important;
+  }
+
+  .stageFrame {
+    will-change: auto;
   }
 }

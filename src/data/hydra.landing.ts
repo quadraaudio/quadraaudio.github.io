@@ -1,5 +1,6 @@
 /**
- * MATRIX — Start 1.0 marketing content (Logic-scale storytelling).
+ * MATRIX — Start 1.0 marketing content (cinematic product story).
+ * Visual language matches MATRIX dark mode (graphite + teal), not Apple black.
  * Media under /public/hydra/. Store SKU slug remains `quadra-matrix`.
  */
 import { MATRIX_PRODUCT_SLUG } from "@/data/products.seed";

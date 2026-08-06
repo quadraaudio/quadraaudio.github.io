@@ -1,15 +1,22 @@
-/* MATRIX — Apple/Logic-scale continuous product story */
+/* MATRIX dark — graphite fascia storytelling */
 
 .main {
-  --mx-bg: #000;
-  --mx-text: #f5f5f7;
-  --mx-mist: #a1a1a6;
-  --mx-accent: #00a3a0;
+  --mx-bg: var(--quadra-ink);
+  --mx-bg-soft: var(--quadra-ink-soft);
+  --mx-panel: #151b24;
+  --mx-text: #f7f9fb;
+  --mx-mist: var(--quadra-mist);
+  --mx-slate: var(--quadra-slate);
+  --mx-accent: var(--quadra-accent);
+  --mx-hot: #5ee0dc;
   --mx-fade: cubic-bezier(0.22, 1, 0.36, 1);
   --mx-gutter: clamp(20px, 5vw, 80px);
   --mx-measure: min(100% - 2 * var(--mx-gutter), 980px);
+  --mx-line: rgba(139, 149, 165, 0.22);
 
-  background: var(--mx-bg);
+  background:
+    radial-gradient(70% 45% at 50% -8%, rgba(0, 163, 160, 0.1), transparent 58%),
+    var(--mx-bg);
   color: var(--mx-text);
 }
 
@@ -54,14 +61,14 @@
   font-weight: 500;
 }
 
-/* —— Capability strip (Logic tile labels, type only) —— */
+/* —— Capability strip —— */
 
 .capabilities {
   position: relative;
   z-index: 3;
   padding: clamp(48px, 8vh, 80px) 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: var(--mx-bg);
+  border-bottom: 1px solid var(--mx-line);
+  background: transparent;
 }
 
 .capTrack {
@@ -79,13 +86,13 @@
   font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--mx-text);
-  opacity: 0.55;
+  opacity: 0.5;
   transition: opacity 0.25s var(--mx-fade), color 0.25s var(--mx-fade);
 }
 
 .capLink:hover {
   opacity: 1;
-  color: var(--mx-accent);
+  color: var(--mx-hot);
 }
 
 /* —— Shared chapter —— */
@@ -93,6 +100,23 @@
 .chapter {
   padding: clamp(80px, 14vh, 160px) 0 clamp(24px, 4vh, 48px);
   scroll-margin-top: var(--matrix-sticky-offset, var(--matrix-chrome-height));
+}
+
+.chapterPin {
+  position: relative;
+  padding: 0;
+  /* Tall scroll runway for pinned scene (desktop) */
+  min-height: auto;
+}
+
+.pinScene {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(100svh - var(--matrix-sticky-offset, var(--matrix-chrome-height)));
+  padding: clamp(48px, 8vh, 96px) 0 clamp(32px, 5vh, 64px);
+  will-change: transform;
 }
 
 .statement {
@@ -110,12 +134,13 @@
 }
 
 .mediaStage {
-  width: min(100% - 24px, 1240px);
-  margin: 0 auto;
-  border-radius: 18px;
+  width: 100%;
+  margin: 0;
   overflow: hidden;
-  background: #0a0c10;
-  box-shadow: 0 50px 120px rgba(0, 0, 0, 0.55);
+  background: var(--mx-panel);
+  /* Full-bleed product plane — no floating card chrome */
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .shot {
@@ -162,7 +187,7 @@
   }
 }
 
-/* —— Stage layout: statement → media → features —— */
+/* —— Stage layout —— */
 
 .layoutStage .statement {
   text-align: left;
@@ -175,9 +200,17 @@
   }
 }
 
-/* —— Split: copy | media as one band —— */
+.layoutStage .mediaStage {
+  width: 100%;
+}
+
+/* —— Split: copy | media —— */
 
 .layoutSplit {
+  padding-inline: 0;
+}
+
+.layoutSplit .pinScene {
   padding-inline: var(--mx-gutter);
 }
 
@@ -210,6 +243,8 @@
   .mediaStage {
     width: 100%;
     margin: 0;
+    border-radius: 12px;
+    overflow: hidden;
   }
 }
 
@@ -234,12 +269,50 @@
   text-align: center;
 }
 
+/* Motion targets — start state for GSAP (desktop pin) */
+.pinCopy,
+.pinMedia,
+.pinFeatures {
+  will-change: transform, opacity;
+}
+
+@media (min-width: 960px) {
+  .pinCopy {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  .pinMedia {
+    opacity: 0;
+    transform: scale(0.92);
+    transform-origin: center center;
+  }
+
+  .pinFeatures {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+@media (max-width: 959px) {
+  .chapterPin {
+    padding: clamp(72px, 12vh, 120px) 0 clamp(24px, 4vh, 48px);
+  }
+
+  .pinScene {
+    min-height: 0;
+    padding: 0;
+  }
+}
+
 /* —— Specs —— */
 
 .specs {
   padding: clamp(96px, 16vh, 168px) var(--mx-gutter);
   text-align: center;
   scroll-margin-top: var(--matrix-sticky-offset, var(--matrix-chrome-height));
+  background:
+    linear-gradient(180deg, transparent, rgba(21, 27, 36, 0.55) 40%, transparent);
 }
 
 .specList {
@@ -254,10 +327,10 @@
   grid-template-columns: minmax(120px, 170px) 1fr;
   gap: 12px 24px;
   padding: 16px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid var(--mx-line);
 
   &:last-child {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid var(--mx-line);
   }
 
   dt {
@@ -289,7 +362,7 @@
   text-align: center;
   background: radial-gradient(
     45% 40% at 50% 0%,
-    rgba(0, 163, 160, 0.18),
+    rgba(0, 163, 160, 0.22),
     transparent 70%
   );
 }
@@ -300,7 +373,7 @@
   font-weight: 700;
   font-size: 1.125rem;
   letter-spacing: 0.28em;
-  color: var(--mx-text);
+  color: var(--mx-hot);
 }
 
 .close .lede {
@@ -319,7 +392,7 @@
   font-size: 1.125rem;
   font-weight: 500;
   color: var(--mx-accent);
-  transition: opacity 0.25s var(--mx-fade);
+  transition: opacity 0.25s var(--mx-fade), color 0.25s var(--mx-fade);
 }
 
 .ctaBuy::after,
@@ -329,5 +402,15 @@
 
 .ctaBuy:hover,
 .ctaTrial:hover {
-  opacity: 0.72;
+  opacity: 0.85;
+  color: var(--mx-hot);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pinCopy,
+  .pinMedia,
+  .pinFeatures {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

@@ -2,17 +2,23 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PatchbayField } from "@/components/three/PatchbayField";
 import { HYDRA } from "@/data/hydra.landing";
 import styles from "./HydraHero.module.scss";
 
+gsap.registerPlugin(ScrollTrigger);
+
 /**
- * Logic-style hero: statement typography over living field,
- * then the product UI as the dominant stage below the first view.
+ * Full-bleed MATRIX hero: living patch field + brand statement,
+ * then product UI plane with scroll-driven scale.
  */
 export function HydraHero() {
   const [revealed, setRevealed] = useState(false);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -26,6 +32,33 @@ export function HydraHero() {
       window.clearTimeout(t);
       window.clearTimeout(failsafe);
     };
+  }, []);
+
+  useEffect(() => {
+    const stage = stageRef.current;
+    const frame = frameRef.current;
+    if (!stage || !frame) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        frame,
+        { scale: 0.88, opacity: 0.55 },
+        {
+          scale: 1,
+          opacity: 1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: stage,
+            start: "top 92%",
+            end: "top 28%",
+            scrub: 0.55,
+          },
+        },
+      );
+    }, stage);
+
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -56,15 +89,18 @@ export function HydraHero() {
         </div>
       </div>
 
-      <div className={`${styles.productStage} ${revealed ? styles.revealed : ""}`}>
-        <div className={`${styles.stageFrame} ${styles.in5}`}>
+      <div
+        ref={stageRef}
+        className={`${styles.productStage} ${revealed ? styles.revealed : ""}`}
+      >
+        <div ref={frameRef} className={`${styles.stageFrame} ${styles.in5}`}>
           <Image
             src={HYDRA.heroMedia.src}
             alt={HYDRA.heroMedia.alt}
             width={1536}
             height={1024}
             priority
-            sizes="(max-width: 900px) 100vw, 1200px"
+            sizes="100vw"
             className={styles.stageImage}
           />
         </div>

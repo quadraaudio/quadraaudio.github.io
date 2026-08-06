@@ -40,7 +40,7 @@ export function HydraMedia({
           alt={media.alt}
           width={1536}
           height={1024}
-          sizes="(max-width: 980px) 100vw, 1120px"
+          sizes="100vw"
           className={styles.image}
           priority={priority}
         />
