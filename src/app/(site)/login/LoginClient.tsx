@@ -6,13 +6,22 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { TermsAcceptModal } from "@/components/legal/TermsAcceptModal";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { beginGoogleRedirectLogin } from "@/lib/googleOAuthRedirect";
+import { requestGoogleAccessToken } from "@/lib/googleToken";
 import { hasAcceptedCurrentTerms } from "@/lib/termsAcceptance";
 import styles from "./login.module.scss";
+
+function prefersRedirectLogin(returnTo: string) {
+  // MATRIX app WebViews often block GIS popups — use full-page PKCE there.
+  if (returnTo.includes("/activate")) return true;
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent || "";
+  return /QuadraMatrix|WV\)|WebView/i.test(ua);
+}
 
 export default function LoginClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, login } = useAuth();
   const returnTo = useMemo(() => {
     const raw = searchParams.get("returnTo") || "/account";
     return raw.startsWith("/") ? raw : "/account";
@@ -41,10 +50,53 @@ export default function LoginClient() {
     setBusy(true);
     setError(null);
     try {
-      // Full-page redirect (PKCE) — not a popup. Required for MATRIX app browsers.
-      await beginGoogleRedirectLogin(returnTo);
+      // Prefer GIS token popup on the website (works with existing Console
+      // JavaScript origins). PKCE redirect is for MATRIX / WebView only —
+      // that path needs Authorized redirect URIs in Google Cloud Console.
+      if (prefersRedirectLogin(returnTo)) {
+        await beginGoogleRedirectLogin(returnTo);
+        return;
+      }
+
+      const token = await requestGoogleAccessToken({ interactive: true });
+      const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+        headers: { Authorization: `Bearer ${token.accessToken}` },
+      });
+      if (!res.ok) throw new Error("Could not read Google profile");
+      const profile = (await res.json()) as {
+        sub?: string;
+        email?: string;
+        name?: string;
+        picture?: string;
+      };
+      if (!profile.sub || !profile.email) {
+        throw new Error("Google profile incomplete");
+      }
+      login({
+        id: profile.sub,
+        email: profile.email,
+        name: profile.name || null,
+        picture: profile.picture || null,
+        accessToken: token.accessToken,
+        expiresAt: token.expiresAt,
+      });
+      router.replace(returnTo);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Sign-in failed");
+      const message = err instanceof Error ? err.message : "Sign-in failed";
+      // If the GIS popup is blocked, fall back to full-page redirect.
+      if (/popup|blocked|timed out|Failed to load Google/i.test(message)) {
+        try {
+          await beginGoogleRedirectLogin(returnTo);
+          return;
+        } catch (redirectErr) {
+          setError(
+            redirectErr instanceof Error ? redirectErr.message : message,
+          );
+          setBusy(false);
+          return;
+        }
+      }
+      setError(message);
       setBusy(false);
     }
   }
