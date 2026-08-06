@@ -1,8 +1,8 @@
 .cue {
-  position: absolute;
+  position: fixed;
   left: 50%;
-  bottom: clamp(18px, 3.5vh, 32px);
-  z-index: 6;
+  bottom: max(20px, env(safe-area-inset-bottom, 0px) + 16px);
+  z-index: 40;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -10,7 +10,7 @@
   transform: translateX(-50%);
   pointer-events: none;
   opacity: 1;
-  transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .hidden {
@@ -18,11 +18,11 @@
 }
 
 .label {
-  padding: 0.35rem 0.75rem;
+  padding: 0.4rem 0.85rem;
   border-radius: 999px;
-  background: rgba(14, 18, 24, 0.72);
-  border: 1px solid rgba(94, 224, 220, 0.35);
-  backdrop-filter: blur(8px);
+  background: rgba(14, 18, 24, 0.78);
+  border: 1px solid rgba(94, 224, 220, 0.4);
+  backdrop-filter: blur(10px);
   font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 600;
@@ -57,5 +57,9 @@
   .chevron {
     animation: none;
     opacity: 0.9;
+  }
+
+  .cue {
+    transition: none;
   }
 }

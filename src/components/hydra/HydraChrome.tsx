@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { HYDRA, HYDRA_NAV } from "@/data/hydra.landing";
-import { scrollToElement, scrollToTop } from "@/lib/smoothScroll";
+import { getLenis, scrollToMatrixSection } from "@/lib/smoothScroll";
 import styles from "./HydraChrome.module.scss";
 
 function chromeHeightPx() {
@@ -16,15 +17,14 @@ function chromeHeightPx() {
   );
 }
 
-/** MATRIX chrome is fixed, so section jumps always clear that bar. */
+/** MATRIX chrome is fixed; section jumps use ScrollTrigger pin starts. */
 function scrollToSection(id: string, immediate = false) {
-  if (id === "overview") {
-    scrollToTop(immediate);
-    return true;
-  }
-  // Prefer fixed chrome height so we don't lag one frame behind swap state.
-  const offset = chromeHeightPx();
-  return scrollToElement(id, { offset, immediate });
+  return scrollToMatrixSection(id, {
+    offset: chromeHeightPx(),
+    immediate,
+    // Specs has no pin — pinProgress ignored; chapters land mid-reveal.
+    pinProgress: id === "specs" ? 0 : 0.16,
+  });
 }
 
 type Props = {
@@ -37,29 +37,48 @@ export function HydraChrome({ visible }: Props) {
 
   useEffect(() => {
     const ids = HYDRA_NAV.map((n) => n.href.slice(1));
-    const nodes = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => Boolean(el));
 
-    if (!nodes.length) return;
+    const readY = () => getLenis()?.scroll ?? window.scrollY ?? 0;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntry = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visibleEntry?.target?.id) {
-          setActive(`#${visibleEntry.target.id}`);
+    const updateActive = () => {
+      const y = readY();
+      let current = "#overview";
+
+      for (const id of ids) {
+        if (id === "overview") continue;
+        const st = ScrollTrigger.getById(`matrix-chapter-${id}`);
+        if (st && y >= st.start - 8) {
+          current = `#${id}`;
+          continue;
         }
-      },
-      {
-        rootMargin: "-20% 0px -55% 0px",
-        threshold: [0.15, 0.4, 0.65],
-      },
-    );
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const top = el.getBoundingClientRect().top + (window.scrollY || 0);
+        if (y >= top - chromeHeightPx() - 24) {
+          current = `#${id}`;
+        }
+      }
 
-    nodes.forEach((node) => observer.observe(node));
-    return () => observer.disconnect();
+      setActive(current);
+    };
+
+    // Defer until chapter pins register.
+    const boot = window.setTimeout(updateActive, 120);
+    window.addEventListener("scroll", updateActive, { passive: true });
+
+    let unsub: (() => void) | undefined;
+    const lenis = getLenis();
+    if (lenis) {
+      const onScroll = () => updateActive();
+      lenis.on("scroll", onScroll);
+      unsub = () => lenis.off("scroll", onScroll);
+    }
+
+    return () => {
+      window.clearTimeout(boot);
+      window.removeEventListener("scroll", updateActive);
+      unsub?.();
+    };
   }, []);
 
   useEffect(() => {

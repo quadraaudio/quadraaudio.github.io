@@ -60,7 +60,7 @@ function ImmersiveChapter({ chapter }: { chapter: HydraChapter }) {
       id={chapter.id}
       className={`${styles.chapter} ${styles.chapterPin} ${styles.immersive}`}
     >
-      <MatrixChapterPin>
+      <MatrixChapterPin triggerId={`matrix-chapter-${chapter.id}`}>
         <div data-mx-scene className={styles.pinScene}>
           <div data-mx-visual className={styles.visualBleed} aria-hidden>
             <MatrixChapterVisual variant={variant} label={chapter.media.alt} />

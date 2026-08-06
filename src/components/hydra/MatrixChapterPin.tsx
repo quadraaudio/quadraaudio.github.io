@@ -9,14 +9,21 @@ gsap.registerPlugin(ScrollTrigger);
 type Props = {
   children: ReactNode;
   className?: string;
+  /** Stable ScrollTrigger id for chrome / capability deep-links. */
+  triggerId?: string;
 };
 
 /**
  * Pins the chapter viewport and scrubs storytelling.
  * Writes progress 0→1 onto the root (`data-mx-progress`) so the
  * full-bleed visual can stay locked to scroll — not a free-running GIF.
+ * Optional `triggerId` registers the ScrollTrigger for chrome deep-links.
  */
-export function MatrixChapterPin({ children, className = "" }: Props) {
+export function MatrixChapterPin({
+  children,
+  className = "",
+  triggerId,
+}: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -51,6 +58,7 @@ export function MatrixChapterPin({ children, className = "" }: Props) {
       if (desktop) {
         const tl = gsap.timeline({
           scrollTrigger: {
+            id: triggerId,
             trigger: root,
             start: "top top+=48",
             end: "+=165%",
@@ -94,6 +102,7 @@ export function MatrixChapterPin({ children, className = "" }: Props) {
       } else {
         // Mobile: no pin — progress tracks section visibility
         ScrollTrigger.create({
+          id: triggerId,
           trigger: root,
           start: "top 80%",
           end: "bottom 20%",
@@ -117,7 +126,7 @@ export function MatrixChapterPin({ children, className = "" }: Props) {
       window.removeEventListener("resize", onResize);
       ctx.revert();
     };
-  }, []);
+  }, [triggerId]);
 
   return (
     <div ref={rootRef} className={className} data-mx-pin data-mx-progress="0">
