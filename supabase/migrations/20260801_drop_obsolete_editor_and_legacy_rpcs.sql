@@ -8,12 +8,13 @@ DROP TABLE IF EXISTS public.site_pages CASCADE;
 DROP TABLE IF EXISTS public.pages CASCADE;
 DROP TABLE IF EXISTS public.site_editor_settings CASCADE;
 
--- Legacy Supabase Auth helper (store uses Google OAuth, not auth.users signup).
+-- Remove leftover Supabase Auth artifacts. Auth is Google GIS only; do not reintroduce.
 DROP TRIGGER IF EXISTS on_auth_user_auto_confirm ON auth.users;
 DROP FUNCTION IF EXISTS public.auto_confirm_user();
 -- Keep public.rls_auto_enable — owned by event trigger ensure_rls.
 
--- Fulfillment without secret is obsolete; edge functions use fulfill_store_order_auth0.
+-- Fulfillment without secret is obsolete; edge functions use fulfill_store_order_auth0
+-- (name is historical — callers pass Google subject id, not Auth0).
 DROP FUNCTION IF EXISTS public.fulfill_store_order(text, text, text, numeric, text, text, text, text, jsonb);
 
 -- Deduplicate coupon read policies.

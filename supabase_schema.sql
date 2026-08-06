@@ -1,6 +1,7 @@
 -- ─────────────────────────────────────────────────────────
--- Quadra Audio — Store schema (v2, Supabase Auth)
--- Applied via MCP migration e2e_store_auth_and_fulfillment
+-- Quadra Audio — Store schema (v2)
+-- Auth is Google Identity Services (GIS) on the site, NOT Supabase Auth.
+-- Supabase here is DB + Edge Functions only.
 -- ─────────────────────────────────────────────────────────
 
 DO $$ BEGIN
