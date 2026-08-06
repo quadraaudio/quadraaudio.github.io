@@ -2,6 +2,8 @@
 
 Quadra Guard for Mac apps (`quadra-matrix`).
 
+Site auth is **Google Identity Services** (`googleAccessToken`). Do not use Supabase Auth.
+
 ## Actions
 
 | action | Who | Input | Result |
