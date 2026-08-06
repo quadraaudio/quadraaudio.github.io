@@ -1,8 +1,7 @@
-/* MATRIX dark hero — full-bleed patch field + product plane */
+/* MATRIX dark hero — one full-bleed composition */
 
 .hero {
   --mx-ink: var(--quadra-ink);
-  --mx-ink-soft: var(--quadra-ink-soft);
   --mx-text: #f7f9fb;
   --mx-mist: var(--quadra-mist);
   --mx-accent: var(--quadra-accent);
@@ -15,7 +14,6 @@
   overflow: clip;
 }
 
-/* First viewport: brand + statement over living full-bleed field */
 .firstView {
   position: relative;
   display: flex;
@@ -32,30 +30,33 @@
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.72;
+  opacity: 0.78;
 }
 
 .patchLayer {
   position: absolute;
-  inset: -6% -3%;
-  width: 106%;
-  height: 106%;
+  inset: -8% -4%;
+  width: 108%;
+  height: 108%;
+  transform-origin: center center;
+  will-change: transform, opacity;
 }
 
 .shade {
   position: absolute;
   inset: 0;
+  opacity: 0.85;
   background:
     radial-gradient(
       55% 48% at 50% 28%,
-      rgba(14, 18, 24, 0.15) 0%,
-      rgba(14, 18, 24, 0.72) 72%,
+      rgba(14, 18, 24, 0.12) 0%,
+      rgba(14, 18, 24, 0.7) 72%,
       var(--mx-ink) 100%
     ),
     linear-gradient(
       180deg,
-      rgba(14, 18, 24, 0.25) 0%,
-      rgba(14, 18, 24, 0.55) 55%,
+      rgba(14, 18, 24, 0.2) 0%,
+      rgba(14, 18, 24, 0.5) 55%,
       var(--mx-ink) 100%
     );
 }
@@ -109,21 +110,11 @@
   font-size: 1.125rem;
   font-weight: 500;
   letter-spacing: -0.01em;
+  color: var(--mx-accent);
   transition: opacity 0.25s var(--mx-fade), color 0.25s var(--mx-fade);
 }
 
-.ctaBuy {
-  color: var(--mx-accent);
-}
-
-.ctaBuy::after {
-  content: " ›";
-}
-
-.ctaTrial {
-  color: var(--mx-accent);
-}
-
+.ctaBuy::after,
 .ctaTrial::after {
   content: " ›";
 }
@@ -134,39 +125,10 @@
   color: var(--mx-hot);
 }
 
-/* Product plane — edge-to-edge dominant visual */
-.productStage {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  background: transparent;
-}
-
-.stageFrame {
-  width: 100%;
-  margin: 0;
-  overflow: hidden;
-  background: #151b24;
-  border-radius: 0;
-  box-shadow: none;
-  transform-origin: center top;
-  will-change: transform, opacity;
-}
-
-.stageImage {
-  display: block;
-  width: 100%;
-  height: auto;
-  margin: 0;
-}
-
 .in1,
 .in2,
 .in3,
-.in4,
-.in5 {
+.in4 {
   opacity: 0;
   transform: translateY(22px);
 }
@@ -174,8 +136,7 @@
 .revealed .in1,
 .revealed .in2,
 .revealed .in3,
-.revealed .in4,
-.revealed .in5 {
+.revealed .in4 {
   animation: enter 0.95s var(--mx-fade) both;
 }
 
@@ -190,9 +151,6 @@
 }
 .revealed .in4 {
   animation-delay: 0.32s;
-}
-.revealed .in5 {
-  animation-delay: 0.42s;
 }
 
 @keyframes enter {
@@ -210,14 +168,13 @@
   .in1,
   .in2,
   .in3,
-  .in4,
-  .in5 {
+  .in4 {
     opacity: 1;
     transform: none;
     animation: none !important;
   }
 
-  .stageFrame {
+  .patchLayer {
     will-change: auto;
   }
 }

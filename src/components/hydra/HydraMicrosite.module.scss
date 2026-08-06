@@ -95,71 +95,84 @@
   color: var(--mx-hot);
 }
 
-/* —— Shared chapter —— */
+/* —— Immersive pinned chapters —— */
 
 .chapter {
-  padding: clamp(80px, 14vh, 160px) 0 clamp(24px, 4vh, 48px);
+  padding: 0;
   scroll-margin-top: var(--matrix-sticky-offset, var(--matrix-chrome-height));
 }
 
 .chapterPin {
   position: relative;
-  padding: 0;
-  /* Tall scroll runway for pinned scene (desktop) */
-  min-height: auto;
 }
 
-.pinScene {
+.immersive .pinScene {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end;
   min-height: calc(100svh - var(--matrix-sticky-offset, var(--matrix-chrome-height)));
-  padding: clamp(48px, 8vh, 96px) 0 clamp(32px, 5vh, 64px);
-  will-change: transform;
+  padding: 0;
+  overflow: hidden;
+  background: var(--mx-bg);
 }
 
-.statement {
-  width: var(--mx-measure);
-  margin: 0 auto clamp(40px, 7vh, 72px);
-  text-align: center;
+.visualBleed {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
 
-  .lede {
-    margin-inline: auto;
+.overlay {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: clamp(28px, 5vh, 48px);
+  min-height: inherit;
+  padding:
+    calc(var(--matrix-sticky-offset, var(--matrix-chrome-height)) + 32px)
+    var(--mx-gutter)
+    clamp(40px, 7vh, 72px);
+  pointer-events: none;
+
+  a,
+  button {
+    pointer-events: auto;
   }
 }
 
-.mediaBleed {
-  width: 100%;
+.statement {
+  width: min(100%, 720px);
+  margin: 0;
+  text-align: left;
+
+  .lede {
+    margin-inline: 0;
+    max-width: 28em;
+    text-shadow: 0 1px 18px rgba(14, 18, 24, 0.55);
+  }
 }
 
-.mediaStage {
-  width: 100%;
-  margin: 0;
-  overflow: hidden;
-  background: #151b24;
-  border-radius: 0;
-  box-shadow: none;
-}
-
-.shot {
-  display: block;
-  margin: 0;
-  width: 100%;
+.featureWrap {
+  width: min(100%, 980px);
 }
 
 .features {
-  width: var(--mx-measure);
-  margin: clamp(48px, 8vh, 80px) auto 0;
+  width: 100%;
+  margin: 0;
   display: grid;
-  gap: clamp(32px, 5vw, 48px);
+  gap: clamp(24px, 4vw, 40px);
 }
 
 .feature {
   h3 {
     margin: 0 0 10px;
     font-family: var(--font-display);
-    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-size: clamp(1.15rem, 1.8vw, 1.4rem);
     font-weight: 700;
     letter-spacing: -0.025em;
     color: var(--mx-text);
@@ -169,7 +182,7 @@
     margin: 0;
     max-width: 28ch;
     color: var(--mx-mist);
-    font-size: 1.0625rem;
+    font-size: 1.02rem;
     line-height: 1.4;
   }
 }
@@ -180,121 +193,26 @@
   }
 }
 
-/* —— Stage layout —— */
-
-.layoutStage .statement {
-  text-align: left;
-  max-width: min(100% - 2 * var(--mx-gutter), 720px);
-  margin-left: max(var(--mx-gutter), calc((100% - 980px) / 2));
-  margin-right: auto;
-
-  .lede {
-    margin-inline: 0;
-  }
-}
-
-.layoutStage .mediaStage {
-  width: 100%;
-}
-
-/* —— Split: copy | media —— */
-
-.layoutSplit {
-  padding-inline: 0;
-}
-
-.layoutSplit .pinScene {
-  padding-inline: var(--mx-gutter);
-}
-
-.splitGrid {
-  width: min(100%, 1240px);
-  margin: 0 auto;
-  display: grid;
-  gap: clamp(40px, 6vw, 72px);
-  align-items: center;
-}
-
-.splitCopy {
-  .lede {
-    margin-bottom: 0;
-  }
-}
-
-.splitFeatures {
-  margin-top: clamp(36px, 5vh, 56px);
-
-  .features {
-    width: 100%;
-    margin: 0;
-    grid-template-columns: 1fr;
-    gap: 28px;
-  }
-}
-
-.splitMedia {
-  .mediaStage {
-    width: 100%;
-    margin: 0;
-    border-radius: 12px;
-    overflow: hidden;
-  }
-}
-
 @media (min-width: 960px) {
-  .splitGrid {
-    grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.2fr);
-    gap: 56px;
+  .visualBleed {
+    opacity: 0.35;
+    transform: scale(1.12);
   }
 
-  .splitFeatures .features {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* —— Invert: media first —— */
-
-.layoutInvert .mediaBleed {
-  margin-bottom: clamp(40px, 7vh, 72px);
-}
-
-.layoutInvert .statement {
-  text-align: center;
-}
-
-/* Motion targets — start state for GSAP (desktop pin) */
-.pinCopy,
-.pinMedia,
-.pinFeatures {
-  will-change: transform, opacity;
-}
-
-@media (min-width: 960px) {
-  .pinCopy {
+  .statement,
+  .featureWrap {
     opacity: 0;
     transform: translateY(28px);
-  }
-
-  .pinMedia {
-    opacity: 0;
-    transform: scale(0.92);
-    transform-origin: center center;
-  }
-
-  .pinFeatures {
-    opacity: 0;
-    transform: translateY(20px);
   }
 }
 
 @media (max-width: 959px) {
-  .chapterPin {
-    padding: clamp(72px, 12vh, 120px) 0 clamp(24px, 4vh, 48px);
+  .immersive .pinScene {
+    min-height: min(92svh, 820px);
   }
 
-  .pinScene {
-    min-height: 0;
-    padding: 0;
+  .overlay {
+    padding-top: clamp(72px, 12vh, 120px);
   }
 }
 
@@ -400,9 +318,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pinCopy,
-  .pinMedia,
-  .pinFeatures {
+  .visualBleed,
+  .statement,
+  .featureWrap {
     opacity: 1 !important;
     transform: none !important;
   }
