@@ -48,111 +48,38 @@ function FeatureStrip({ chapter }: { chapter: HydraChapter }) {
   );
 }
 
-function MediaStage({
-  chapter,
-  className = "",
-}: {
-  chapter: HydraChapter;
-  className?: string;
-}) {
+/**
+ * One immersive chapter: full-bleed scroll-driven visual behind copy.
+ * No media card / GIF frame — the scene IS the section.
+ */
+function ImmersiveChapter({ chapter }: { chapter: HydraChapter }) {
   const variant = chapter.id as MatrixVisualVariant;
-  return (
-    <div className={`${styles.mediaStage} ${className}`.trim()}>
-      <MatrixChapterVisual
-        variant={variant}
-        label={chapter.media.alt}
-        className={styles.shot}
-      />
-    </div>
-  );
-}
 
-function ChapterStage({ chapter }: { chapter: HydraChapter }) {
   return (
     <section
       id={chapter.id}
-      className={`${styles.chapter} ${styles.chapterPin} ${styles.layoutStage}`}
+      className={`${styles.chapter} ${styles.chapterPin} ${styles.immersive}`}
     >
       <MatrixChapterPin>
         <div data-mx-scene className={styles.pinScene}>
-          <div data-mx-copy className={`${styles.statement} ${styles.pinCopy}`}>
-            <p className={styles.eyebrow}>{chapter.eyebrow}</p>
-            <DisplayTitle title={chapter.title} />
-            <p className={styles.lede}>{chapter.body}</p>
+          <div data-mx-visual className={styles.visualBleed} aria-hidden>
+            <MatrixChapterVisual variant={variant} label={chapter.media.alt} />
           </div>
-          <div data-mx-media className={`${styles.mediaBleed} ${styles.pinMedia}`}>
-            <MediaStage chapter={chapter} />
-          </div>
-          <div data-mx-features className={styles.pinFeatures}>
-            <FeatureStrip chapter={chapter} />
-          </div>
-        </div>
-      </MatrixChapterPin>
-    </section>
-  );
-}
 
-function ChapterSplit({ chapter }: { chapter: HydraChapter }) {
-  return (
-    <section
-      id={chapter.id}
-      className={`${styles.chapter} ${styles.chapterPin} ${styles.layoutSplit}`}
-    >
-      <MatrixChapterPin>
-        <div data-mx-scene className={styles.pinScene}>
-          <div className={styles.splitGrid}>
-            <div data-mx-copy className={`${styles.splitCopy} ${styles.pinCopy}`}>
+          <div className={styles.overlay}>
+            <div data-mx-copy className={styles.statement}>
               <p className={styles.eyebrow}>{chapter.eyebrow}</p>
               <DisplayTitle title={chapter.title} />
               <p className={styles.lede}>{chapter.body}</p>
-              <div data-mx-features className={`${styles.splitFeatures} ${styles.pinFeatures}`}>
-                <FeatureStrip chapter={chapter} />
-              </div>
             </div>
-            <div data-mx-media className={`${styles.splitMedia} ${styles.pinMedia}`}>
-              <MediaStage chapter={chapter} />
+            <div data-mx-features className={styles.featureWrap}>
+              <FeatureStrip chapter={chapter} />
             </div>
           </div>
         </div>
       </MatrixChapterPin>
     </section>
   );
-}
-
-function ChapterInvert({ chapter }: { chapter: HydraChapter }) {
-  return (
-    <section
-      id={chapter.id}
-      className={`${styles.chapter} ${styles.chapterPin} ${styles.layoutInvert}`}
-    >
-      <MatrixChapterPin>
-        <div data-mx-scene className={styles.pinScene}>
-          <div data-mx-media className={`${styles.mediaBleed} ${styles.pinMedia}`}>
-            <MediaStage chapter={chapter} />
-          </div>
-          <div data-mx-copy className={`${styles.statement} ${styles.pinCopy}`}>
-            <p className={styles.eyebrow}>{chapter.eyebrow}</p>
-            <DisplayTitle title={chapter.title} />
-            <p className={styles.lede}>{chapter.body}</p>
-          </div>
-          <div data-mx-features className={styles.pinFeatures}>
-            <FeatureStrip chapter={chapter} />
-          </div>
-        </div>
-      </MatrixChapterPin>
-    </section>
-  );
-}
-
-function ChapterBlock({ chapter }: { chapter: HydraChapter }) {
-  switch (chapter.layout) {
-    case "split":
-      return <ChapterSplit chapter={chapter} />;
-    case "invert":
-      return <ChapterInvert chapter={chapter} />;
-    default:
-      return <ChapterStage chapter={chapter} />;
-  }
 }
 
 export function HydraMicrosite() {
@@ -171,7 +98,7 @@ export function HydraMicrosite() {
       </nav>
 
       {HYDRA_CHAPTERS.map((chapter) => (
-        <ChapterBlock key={chapter.id} chapter={chapter} />
+        <ImmersiveChapter key={chapter.id} chapter={chapter} />
       ))}
 
       <section id="specs" className={styles.specs}>

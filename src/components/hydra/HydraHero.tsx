@@ -5,20 +5,20 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PatchbayField } from "@/components/three/PatchbayField";
-import { MatrixChapterVisual } from "@/components/three/MatrixChapterVisual";
 import { HYDRA } from "@/data/hydra.landing";
 import styles from "./HydraHero.module.scss";
 
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Full-bleed MATRIX hero: living patch field + brand statement,
- * then animated product plane (no stock photography).
+ * Single hero composition: brand + statement over a living full-bleed field.
+ * No second boxed animation — scroll carries into chapters.
  */
 export function HydraHero() {
   const [revealed, setRevealed] = useState(false);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const frameRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const fieldRef = useRef<HTMLDivElement>(null);
+  const shadeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -35,40 +35,49 @@ export function HydraHero() {
   }, []);
 
   useEffect(() => {
-    const stage = stageRef.current;
-    const frame = frameRef.current;
-    if (!stage || !frame) return;
+    const hero = heroRef.current;
+    const field = fieldRef.current;
+    const shade = shadeRef.current;
+    if (!hero || !field) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        frame,
-        { scale: 0.88, opacity: 0.55 },
-        {
-          scale: 1,
+      gsap.to(field, {
+        scale: 1.12,
+        opacity: 0.35,
+        ease: "none",
+        scrollTrigger: {
+          trigger: hero,
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.5,
+        },
+      });
+      if (shade) {
+        gsap.to(shade, {
           opacity: 1,
           ease: "none",
           scrollTrigger: {
-            trigger: stage,
-            start: "top 92%",
-            end: "top 28%",
-            scrub: 0.55,
+            trigger: hero,
+            start: "center top",
+            end: "bottom top",
+            scrub: 0.4,
           },
-        },
-      );
-    }, stage);
+        });
+      }
+    }, hero);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <section id="overview" className={styles.hero}>
+    <section id="overview" ref={heroRef} className={styles.hero}>
       <div className={styles.firstView}>
         <div className={styles.atmosphere} aria-hidden>
-          <div className={styles.patchLayer}>
+          <div ref={fieldRef} className={styles.patchLayer}>
             <PatchbayField />
           </div>
-          <div className={styles.shade} />
+          <div ref={shadeRef} className={styles.shade} />
         </div>
 
         <div className={`${styles.masthead} ${revealed ? styles.revealed : ""}`}>
@@ -83,19 +92,6 @@ export function HydraHero() {
               {HYDRA.ctaSecondary.label}
             </Link>
           </div>
-        </div>
-      </div>
-
-      <div
-        ref={stageRef}
-        className={`${styles.productStage} ${revealed ? styles.revealed : ""}`}
-      >
-        <div ref={frameRef} className={`${styles.stageFrame} ${styles.in5}`}>
-          <MatrixChapterVisual
-            variant="matrix"
-            label={HYDRA.heroMedia.alt}
-            className={styles.stageImage}
-          />
         </div>
       </div>
     </section>
