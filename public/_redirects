@@ -1,4 +1,8 @@
+# Legacy Hydra paths → MATRIX
 /hydra /products/matrix/ 301
 /hydra/ /products/matrix/ 301
 /products/hydra /products/matrix/ 301
 /products/hydra/ /products/matrix/ 301
+
+# Canonical host for OAuth (PKCE redirect_uri must match Google Console exactly)
+https://www.quadraaudio.com/* https://quadraaudio.com/:splat 301

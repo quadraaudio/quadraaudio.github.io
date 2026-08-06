@@ -33,8 +33,17 @@ async function challengeFromVerifier(verifier: string) {
 }
 
 function callbackUrl() {
-  const origin = window.location.origin;
-  return `${origin}/login/callback/`;
+  // Prefer canonical production origin when baked in at build time, so
+  // www / preview hosts don't invent unauthorized redirect_uris.
+  const configured = (
+    process.env.NEXT_PUBLIC_APP_BASE_URL ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    ""
+  ).replace(/\/$/, "");
+  if (configured) {
+    return `${configured}/login/callback/`;
+  }
+  return `${window.location.origin}/login/callback/`;
 }
 
 function savePending(pending: PkcePending) {
