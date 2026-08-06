@@ -137,8 +137,7 @@
   width: 100%;
   margin: 0;
   overflow: hidden;
-  background: var(--mx-panel);
-  /* Full-bleed product plane — no floating card chrome */
+  background: #151b24;
   border-radius: 0;
   box-shadow: none;
 }
@@ -146,13 +145,7 @@
 .shot {
   display: block;
   margin: 0;
-
-  :global(img),
-  :global(video) {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
+  width: 100%;
 }
 
 .features {
