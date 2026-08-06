@@ -25,7 +25,10 @@ declare global {
 
 const GSI_SRC = "https://accounts.google.com/gsi/client";
 const SCOPE = "email profile openid";
-const TOKEN_TIMEOUT_MS = 12_000;
+/** Silent refresh should fail fast so we can open the Google UI. */
+const SILENT_TIMEOUT_MS = 2_500;
+/** Interactive consent / account picker. */
+const INTERACTIVE_TIMEOUT_MS = 120_000;
 
 let gsiLoading: Promise<void> | null = null;
 
@@ -91,7 +94,10 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
 
 /**
  * Request a fresh Google OAuth access token via GIS.
- * Tries silent refresh first; falls back to interactive consent if needed.
+ *
+ * - `interactive: true` (login button) opens the account picker immediately.
+ * - `interactive: false` tries silent only.
+ * - default (token refresh) tries silent briefly, then falls back to UI.
  */
 export async function requestGoogleAccessToken(
   options: { interactive?: boolean } = {}
@@ -106,7 +112,7 @@ export async function requestGoogleAccessToken(
     throw new Error("Google sign-in is still loading. Try again.");
   }
 
-  const attempt = (prompt?: string) =>
+  const attempt = (prompt: string | undefined, timeoutMs: number) =>
     withTimeout(
       new Promise<GoogleAccessTokenResult>((resolve, reject) => {
         const client = oauth2.initTokenClient({
@@ -139,14 +145,19 @@ export async function requestGoogleAccessToken(
           prompt === undefined ? undefined : { prompt }
         );
       }),
-      TOKEN_TIMEOUT_MS,
+      timeoutMs,
       "Google sign-in"
     );
 
+  // Explicit sign-in: never wait on a silent attempt that will hang for new users.
+  if (options.interactive === true) {
+    return attempt("select_account", INTERACTIVE_TIMEOUT_MS);
+  }
+
   try {
-    return await attempt("");
+    return await attempt("", SILENT_TIMEOUT_MS);
   } catch (silentErr) {
     if (options.interactive === false) throw silentErr;
-    return attempt();
+    return attempt("select_account", INTERACTIVE_TIMEOUT_MS);
   }
 }

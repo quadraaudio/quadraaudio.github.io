@@ -10,6 +10,7 @@ import {
   TERMS_VERSION,
 } from "@/data/terms.eula";
 import { acceptCurrentTerms } from "@/lib/termsAcceptance";
+import { getLenis } from "@/lib/smoothScroll";
 import styles from "./TermsAcceptModal.module.scss";
 
 type Props = {
@@ -53,8 +54,11 @@ export function TermsAcceptModal({ open, onAccepted, onDismiss }: Props) {
     if (!open) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    const lenis = getLenis();
+    lenis?.stop();
     return () => {
       document.body.style.overflow = previous;
+      lenis?.start();
     };
   }, [open]);
 
@@ -67,7 +71,11 @@ export function TermsAcceptModal({ open, onAccepted, onDismiss }: Props) {
   }
 
   return (
-    <div className={styles.overlay} role="presentation">
+    <div
+      className={styles.overlay}
+      role="presentation"
+      data-lenis-prevent
+    >
       <div
         className={styles.dialog}
         role="dialog"
@@ -88,6 +96,9 @@ export function TermsAcceptModal({ open, onAccepted, onDismiss }: Props) {
           className={styles.body}
           onScroll={checkScroll}
           tabIndex={0}
+          data-lenis-prevent
+          data-lenis-prevent-wheel
+          data-lenis-prevent-touch
         >
           {TERMS_INTRO.map((paragraph, index) => (
             <p key={`intro-${index}`}>{paragraph}</p>

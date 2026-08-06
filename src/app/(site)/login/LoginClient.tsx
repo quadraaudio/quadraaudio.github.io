@@ -92,7 +92,7 @@ export default function LoginClient() {
           type="button"
           className={`btn btn-primary ${styles.googleBtn}`}
           onClick={() => void continueWithGoogle()}
-          disabled={busy || !termsOk}
+          disabled={busy}
         >
           {busy ? "Connecting to Google…" : "Continue with Google"}
         </button>
