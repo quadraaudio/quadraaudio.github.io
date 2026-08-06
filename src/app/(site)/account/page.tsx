@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 import { getSeedProduct } from "@/data/products.seed";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { useCatalog } from "@/components/providers/CatalogProvider";
@@ -43,6 +42,7 @@ function AccountInner() {
   const [loadingAccount, setLoadingAccount] = useState(false);
   const [seatBusy, setSeatBusy] = useState<string | null>(null);
   const [seatError, setSeatError] = useState<string | null>(null);
+  const [openOrders, setOpenOrders] = useState<Record<string, boolean>>({});
 
   const reloadAccount = async () => {
     if (!user?.id) return;
@@ -50,7 +50,7 @@ function AccountInner() {
     const data = await callEdgeFunction<AccountPayload>(
       "store-account",
       { googleAccessToken: accessToken },
-      accessToken
+      accessToken,
     );
     setOrders(data.orders || []);
     setLicenses(
@@ -59,7 +59,7 @@ function AccountInner() {
         seats_used: Number(license.seats_used) || 0,
         seats_max: Number(license.seats_max) || 2,
         activations: license.activations || [],
-      }))
+      })),
     );
   };
 
@@ -81,7 +81,7 @@ function AccountInner() {
         const data = await callEdgeFunction<AccountPayload>(
           "store-account",
           { googleAccessToken: accessToken },
-          accessToken
+          accessToken,
         );
         if (cancelled) return;
         setOrders(data.orders || []);
@@ -91,12 +91,12 @@ function AccountInner() {
             seats_used: Number(license.seats_used) || 0,
             seats_max: Number(license.seats_max) || 2,
             activations: license.activations || [],
-          }))
+          })),
         );
       } catch (err) {
         if (cancelled) return;
         setLoadError(
-          err instanceof Error ? err.message : "Could not load account data"
+          err instanceof Error ? err.message : "Could not load account data",
         );
       } finally {
         if (!cancelled) setLoadingAccount(false);
@@ -106,7 +106,6 @@ function AccountInner() {
     return () => {
       cancelled = true;
     };
-    // ensureAccessToken is stable; only reload when the signed-in user changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
@@ -115,7 +114,7 @@ function AccountInner() {
     const label = shortHardwareId(hardwareId);
     if (
       !window.confirm(
-        `Release seat ${label}? You can activate another Mac later from MATRIX.`
+        `Release seat ${label}? You can activate another Mac later from MATRIX.`,
       )
     ) {
       return;
@@ -132,23 +131,30 @@ function AccountInner() {
           hardwareId,
           productSlug: license.product_slug,
         },
-        accessToken
+        accessToken,
       );
       await reloadAccount();
     } catch (err) {
       setSeatError(
-        err instanceof Error ? err.message : "Could not release seat"
+        err instanceof Error ? err.message : "Could not release seat",
       );
     } finally {
       setSeatBusy(null);
     }
   };
 
+  const toggleOrder = (orderNumber: string) => {
+    setOpenOrders((prev) => ({
+      ...prev,
+      [orderNumber]: !prev[orderNumber],
+    }));
+  };
+
   if (isLoading) {
     return (
       <main className={styles.page}>
-        <div className="page-shell">
-          <p>Loading account…</p>
+        <div className={`page-shell ${styles.narrow}`}>
+          <p className={styles.muted}>Loading account…</p>
         </div>
       </main>
     );
@@ -157,9 +163,12 @@ function AccountInner() {
   if (!user) {
     return (
       <main className={styles.page}>
-        <div className="page-shell">
+        <div className={`page-shell ${styles.narrow}`}>
           <p className="eyebrow">Account</p>
           <h1 className="display display-lg">Sign in to manage licenses.</h1>
+          <p className="lede">
+            Your Quadra ID holds MATRIX seats, orders, and invoices.
+          </p>
           <a href="/login?returnTo=/account" className="btn btn-primary">
             Sign in with Google
           </a>
@@ -170,108 +179,100 @@ function AccountInner() {
 
   return (
     <main className={styles.page}>
-      <div className="page-shell">
+      <div className={`page-shell ${styles.narrow}`}>
         <p className="eyebrow">Account</p>
         <h1 className="display display-lg">
-          Hello{user.name ? `, ${user.name}` : ""}.
+          Hello{user.name ? `, ${user.name.split(/\s+/)[0]}` : ""}.
         </h1>
-        <p className={styles.email}>{user.email}</p>
+        <p className="lede">{user.email}</p>
+
+        <div className={styles.identityRow}>
+          <button type="button" className={styles.textLink} onClick={() => logout()}>
+            Sign out
+          </button>
+        </div>
+
         {needsReauth ? (
-          <div className={styles.banner} role="status">
+          <p className={styles.notice} role="status">
             Your Google session needs a refresh to load licenses.{" "}
             <a href="/login?returnTo=/account">Sign in again</a>
-            {" · "}
-            <button
-              type="button"
-              className={styles.textBtn}
-              onClick={() => logout()}
-            >
-              Sign out
-            </button>
-          </div>
+          </p>
         ) : null}
 
         {purchased ? (
-          <div className={styles.banner} role="status">
+          <p className={styles.notice} role="status">
             Purchase complete
-            {orderRef ? ` — order ${orderRef}` : ""}. Your licenses are listed
-            below.
-          </div>
+            {orderRef ? ` — order ${orderRef}` : ""}. Your licenses are below.
+          </p>
         ) : null}
 
         {loadError ? (
-          <div className={styles.banner} role="status">
-            {loadError}. Try refreshing the page or{" "}
+          <p className={styles.notice} role="status">
+            {loadError}. Try refreshing or{" "}
             <a href="/login?returnTo=/account">sign in again</a>.
-          </div>
+          </p>
         ) : null}
 
         {seatError ? (
-          <div className={styles.banner} role="status">
+          <p className={styles.notice} role="status">
             {seatError}
-          </div>
+          </p>
         ) : null}
 
         <section className={styles.section}>
-          <h2>Licenses</h2>
+          <h2 className={styles.sectionTitle}>Licenses</h2>
           <p className={styles.sectionLede}>
-            Perpetual seats tied to your Quadra ID. Activate from MATRIX on each
-            Mac — up to two machines at a time.
+            Perpetual seats on your Quadra ID. Activate from MATRIX — up to two
+            Macs at a time.
           </p>
+
           {loadingAccount ? (
-            <p className={styles.empty}>Loading…</p>
+            <p className={styles.muted}>Loading…</p>
           ) : loadError ? (
-            <p className={styles.empty}>Could not load licenses right now.</p>
+            <p className={styles.muted}>Could not load licenses right now.</p>
           ) : !licenses.length ? (
-            <p className={styles.empty}>
-              You have not purchased any licenses yet.{" "}
-              <Link href="/store">Browse the store</Link>
+            <p className={styles.muted}>
+              No licenses yet.{" "}
+              <Link href="/store" className={styles.inlineLink}>
+                Browse the store
+              </Link>
             </p>
           ) : (
-            <ul className={styles.cardList}>
+            <ul className={styles.stack}>
               {licenses.map((license) => (
-                <li key={license.id || `${license.product_slug}-${license.issued_at}`}>
-                  <div className={styles.cardHead}>
+                <li
+                  key={license.id || `${license.product_slug}-${license.issued_at}`}
+                  className={styles.block}
+                >
+                  <div className={styles.blockHead}>
                     <div>
-                      <h3>{productName(license.product_slug)}</h3>
+                      <p className={styles.blockTitle}>
+                        {productName(license.product_slug)}
+                      </p>
                       <p className={styles.meta}>
                         {licenseTermLabel(license.expires_at)} · Issued{" "}
                         {formatAccountDate(license.issued_at)}
                         {license.order_number
-                          ? ` · Order ${license.order_number}`
+                          ? ` · ${license.order_number}`
                           : ""}
                       </p>
                     </div>
-                    <span
-                      className={`${styles.badge} ${
-                        license.status === "active" ? styles.badgeOk : ""
-                      }`}
-                    >
-                      {license.status}
-                    </span>
+                    <p className={styles.status}>
+                      {license.status === "active" ? "Active" : license.status}
+                    </p>
                   </div>
 
-                  <dl className={styles.facts}>
-                    <div>
-                      <dt>Seats</dt>
-                      <dd>
-                        {license.seats_used} of {license.seats_max} used
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Product ID</dt>
-                      <dd>
-                        <code>{license.product_slug}</code>
-                      </dd>
-                    </div>
-                  </dl>
+                  <p className={styles.factLine}>
+                    Seats {license.seats_used} of {license.seats_max}
+                    <span aria-hidden> · </span>
+                    {license.product_slug}
+                  </p>
 
-                  <div className={styles.seats}>
-                    <p className={styles.seatsLabel}>Activated Macs</p>
+                  <div className={styles.seatBlock}>
+                    <p className={styles.subLabel}>Activated Macs</p>
                     {!license.activations?.length ? (
-                      <p className={styles.emptyInline}>
-                        No Mac bound yet. Open Authorization in MATRIX to
-                        activate a seat.
+                      <p className={styles.muted}>
+                        None yet. Open Authorization in MATRIX to bind a seat.
                       </p>
                     ) : (
                       <ul className={styles.seatList}>
@@ -280,14 +281,17 @@ function AccountInner() {
                           return (
                             <li key={seat.hardware_id}>
                               <div>
-                                <code>{shortHardwareId(seat.hardware_id)}</code>
-                                <span>
-                                  Bound {formatAccountDateTime(seat.activated_at)}
-                                </span>
+                                <p className={styles.seatId}>
+                                  {shortHardwareId(seat.hardware_id)}
+                                </p>
+                                <p className={styles.meta}>
+                                  Bound{" "}
+                                  {formatAccountDateTime(seat.activated_at)}
+                                </p>
                               </div>
                               <button
                                 type="button"
-                                className={styles.ghostBtn}
+                                className="btn btn-secondary"
                                 disabled={seatBusy === busyKey}
                                 onClick={() =>
                                   void releaseSeat(license, seat.hardware_id)
@@ -295,7 +299,7 @@ function AccountInner() {
                               >
                                 {seatBusy === busyKey
                                   ? "Releasing…"
-                                  : "Release seat"}
+                                  : "Release"}
                               </button>
                             </li>
                           );
@@ -304,12 +308,12 @@ function AccountInner() {
                     )}
                   </div>
 
-                  <div className={styles.cardActions}>
+                  <p className={styles.links}>
                     <Link href="/support/article/getting-started">
                       Activation help
                     </Link>
                     <Link href="/products/matrix">MATRIX overview</Link>
-                  </div>
+                  </p>
                 </li>
               ))}
             </ul>
@@ -317,117 +321,129 @@ function AccountInner() {
         </section>
 
         <section className={styles.section}>
-          <h2>Orders</h2>
+          <h2 className={styles.sectionTitle}>Orders</h2>
           <p className={styles.sectionLede}>
-            Purchase history with line items, totals, and a downloadable receipt.
+            Purchase history. Open a row for line items and invoice download.
           </p>
+
           {loadingAccount ? (
-            <p className={styles.empty}>Loading…</p>
+            <p className={styles.muted}>Loading…</p>
           ) : loadError ? (
-            <p className={styles.empty}>Could not load orders right now.</p>
+            <p className={styles.muted}>Could not load orders right now.</p>
           ) : !orders.length ? (
-            <p className={styles.empty}>No purchases yet.</p>
+            <p className={styles.muted}>No purchases yet.</p>
           ) : (
-            <ul className={styles.cardList}>
+            <ul className={styles.stack}>
               {orders.map((order) => {
                 const currency = order.currency || "USD";
                 const paid = Number(order.total_amount) || 0;
                 const gross = orderGross(order);
                 const discount = orderDiscount(order);
                 const items = order.items || [];
+                const open = Boolean(openOrders[order.order_number]);
+                const panelId = `order-panel-${order.order_number}`;
 
                 return (
-                  <li key={order.order_number}>
-                    <div className={styles.cardHead}>
-                      <div>
-                        <h3>{order.order_number}</h3>
+                  <li key={order.order_number} className={styles.block}>
+                    <button
+                      type="button"
+                      className={styles.orderToggle}
+                      aria-expanded={open}
+                      aria-controls={panelId}
+                      onClick={() => toggleOrder(order.order_number)}
+                    >
+                      <span className={styles.orderSummary}>
+                        <span className={styles.blockTitle}>
+                          {order.order_number}
+                        </span>
+                        <span className={styles.meta}>
+                          {formatAccountDate(order.created_at)} · {order.status}
+                        </span>
+                      </span>
+                      <span className={styles.orderAside}>
+                        <span className={styles.orderTotal}>
+                          {formatPrice(paid, currency)}
+                        </span>
+                        <span className={styles.chevron} aria-hidden>
+                          {open ? "−" : "+"}
+                        </span>
+                      </span>
+                    </button>
+
+                    {open ? (
+                      <div id={panelId} className={styles.orderPanel}>
+                        {items.length ? (
+                          <ul className={styles.lineList}>
+                            {items.map((item, index) => {
+                              const qty = Number(item.quantity) || 1;
+                              const unit = Number(item.unitPrice) || 0;
+                              return (
+                                <li key={`${item.slug}-${index}`}>
+                                  <span>
+                                    {item.name || productName(item.slug)}
+                                    {qty > 1 ? ` × ${qty}` : ""}
+                                  </span>
+                                  <span>
+                                    {formatPrice(
+                                      unit * qty,
+                                      item.currency || currency,
+                                    )}
+                                  </span>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        ) : (
+                          <p className={styles.muted}>
+                            Line items were not stored for this order.
+                          </p>
+                        )}
+
+                        <dl className={styles.totals}>
+                          <div>
+                            <dt>Subtotal</dt>
+                            <dd>{formatPrice(gross, currency)}</dd>
+                          </div>
+                          {discount > 0 ? (
+                            <div>
+                              <dt>
+                                Discount
+                                {order.coupon_code
+                                  ? ` (${order.coupon_code})`
+                                  : ""}
+                              </dt>
+                              <dd>−{formatPrice(discount, currency)}</dd>
+                            </div>
+                          ) : null}
+                          <div>
+                            <dt>Tax</dt>
+                            <dd>{formatPrice(0, currency)}</dd>
+                          </div>
+                          <div className={styles.totalsGrand}>
+                            <dt>Total paid</dt>
+                            <dd>{formatPrice(paid, currency)}</dd>
+                          </div>
+                        </dl>
+
                         <p className={styles.meta}>
-                          {formatAccountDateTime(order.created_at)} ·{" "}
-                          {order.status}
+                          Tax was not itemized for this digital purchase
+                          {order.paypal_order_id
+                            ? ` · PayPal ${order.paypal_order_id}`
+                            : ""}
+                          .
                         </p>
-                      </div>
-                      <strong className={styles.totalPaid}>
-                        {formatPrice(paid, currency)}
-                      </strong>
-                    </div>
 
-                    {items.length ? (
-                      <table className={styles.lines}>
-                        <thead>
-                          <tr>
-                            <th>Item</th>
-                            <th>Qty</th>
-                            <th>Amount</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {items.map((item, index) => {
-                            const qty = Number(item.quantity) || 1;
-                            const unit = Number(item.unitPrice) || 0;
-                            return (
-                              <tr key={`${item.slug}-${index}`}>
-                                <td>{item.name || productName(item.slug)}</td>
-                                <td>{qty}</td>
-                                <td>
-                                  {formatPrice(
-                                    unit * qty,
-                                    item.currency || currency
-                                  )}
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    ) : (
-                      <p className={styles.emptyInline}>
-                        Line items were not stored for this order.
-                      </p>
-                    )}
-
-                    <dl className={styles.totals}>
-                      <div>
-                        <dt>Subtotal</dt>
-                        <dd>{formatPrice(gross, currency)}</dd>
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          onClick={() =>
+                            downloadOrderInvoice(order, user.email)
+                          }
+                        >
+                          Download invoice
+                        </button>
                       </div>
-                      {discount > 0 ? (
-                        <div>
-                          <dt>
-                            Discount
-                            {order.coupon_code ? ` (${order.coupon_code})` : ""}
-                          </dt>
-                          <dd>−{formatPrice(discount, currency)}</dd>
-                        </div>
-                      ) : null}
-                      <div>
-                        <dt>Tax</dt>
-                        <dd>{formatPrice(0, currency)}</dd>
-                      </div>
-                      <div className={styles.totalsGrand}>
-                        <dt>Total paid</dt>
-                        <dd>{formatPrice(paid, currency)}</dd>
-                      </div>
-                    </dl>
-
-                    <p className={styles.taxNote}>
-                      Tax was not itemized separately for this digital purchase
-                      {order.paypal_order_id
-                        ? ` · PayPal ${order.paypal_order_id}`
-                        : ""}
-                      .
-                    </p>
-
-                    <div className={styles.cardActions}>
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        onClick={() =>
-                          downloadOrderInvoice(order, user.email)
-                        }
-                      >
-                        Download invoice
-                      </button>
-                    </div>
+                    ) : null}
                   </li>
                 );
               })}
@@ -444,8 +460,8 @@ export default function AccountPage() {
     <Suspense
       fallback={
         <main className={styles.page}>
-          <div className="page-shell">
-            <p>Loading account…</p>
+          <div className={`page-shell ${styles.narrow}`}>
+            <p className={styles.muted}>Loading account…</p>
           </div>
         </main>
       }

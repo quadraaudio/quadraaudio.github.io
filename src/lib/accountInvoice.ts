@@ -45,8 +45,8 @@ export function buildOrderInvoiceHtml(order: AccountOrder, buyerEmail?: string |
   <meta charset="utf-8" />
   <title>Invoice ${escapeHtml(order.order_number)} — Quadra Audio</title>
   <style>
-    body { font-family: Georgia, "Times New Roman", serif; color: #15202b; margin: 2.5rem; line-height: 1.45; }
-    h1 { font-size: 1.6rem; margin: 0 0 0.25rem; letter-spacing: -0.02em; }
+    body { font-family: Manrope, "Avenir Next", "Segoe UI", sans-serif; color: #15202b; margin: 2.5rem; line-height: 1.45; }
+    h1 { font-size: 1.6rem; margin: 0 0 0.25rem; letter-spacing: -0.02em; font-weight: 700; }
     .muted { color: #5a6570; }
     table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
     th, td { text-align: left; padding: 0.55rem 0.4rem; border-bottom: 1px solid #d7dde5; }
