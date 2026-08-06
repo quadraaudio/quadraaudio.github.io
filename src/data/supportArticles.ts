@@ -11,38 +11,41 @@ export type SupportArticle = {
 export const SUPPORT_ARTICLES: SupportArticle[] = [
   {
     id: "getting-started",
-    title: "Getting Started with Hydra",
+    title: "Getting Started with MATRIX",
     category: "Setup",
-    date: "July 2026",
+    date: "August 2026",
     hubBlurb:
-      "Install Hydra, confirm the HAL bridges are loaded, and make your first Matrix Grid patch.",
+      "Buy or trial → install → authorize → make your first patch on Mac.",
     summary:
-      "Hydra is a virtual audio patchbay for macOS. One app process hosts the UI and the audio engine (HydraDaemon). Eight Hydra Audio Bridges appear as Core Audio devices; you route them in the Matrix Grid along with apps, hardware, VST inserts, and network streams.",
+      "MATRIX is a software patchbay and monitor controller for Mac. Install the app, enable Matrix Bridge virtual soundcards when you need them, authorize with your Quadra ID (or start a 14-day trial), then route audio in the Matrix Grid.",
     steps: [
       {
-        heading: "1. Install and open Hydra",
-        text: "Download Hydra from the Quadra Store, run the installer, and launch Hydra.app. On first launch the engine starts in-process and opens a loopback control channel on the local machine.",
+        heading: "1. Get MATRIX",
+        text: "Buy a perpetual license in the Quadra Store, or plan to start the 14-day full trial from Authorization after install. You will sign in with the same Google Quadra ID on the website.",
         bullets: [
-          "Requires macOS 26 (Tahoe) or later.",
-          "The installer places HAL plug-ins under /Library/Audio/Plug-Ins/HAL and restarts coreaudiod.",
-          "You should see Hydra in the menu bar after launch.",
+          "Store: quadraaudio.com/store/quadra-matrix",
+          "Requires macOS 14 or later (Apple Silicon or Intel).",
         ],
       },
       {
-        heading: "2. Confirm the bridges are present",
-        text: "Open System Settings → Sound (or Audio MIDI Setup). You should see the public Hydra Audio Bridge devices (2‑A, 2‑B, 4, 8, 16, 32, 64, and 128 channels). A hidden hub device named “Hydra Engine” (256 channels) powers the matrix and is not meant for DAW selection.",
+        heading: "2. Install and open MATRIX",
+        text: "Download MATRIX from your account or purchase flow, run the installer, and launch MATRIX.app. The installer places Core Audio drivers and restarts coreaudiod.",
         bullets: [
-          "If bridges are missing, reinstall and ensure the HAL plug-ins are allowed under Privacy & Security.",
-          "After driver changes, a logout/login or reboot can be required for coreaudiod to reload.",
+          "Allow system software / audio drivers under Privacy & Security if macOS asks.",
+          "You should see MATRIX after launch.",
         ],
       },
       {
-        heading: "3. Make your first patch",
-        text: "In Hydra, open the Matrix Grid. Transmitters run on one axis, receivers on the other. Click a cross-point to create a connection; a live indicator confirms audio is flowing. Enable a bridge, select it as the output of an app (or DAW), and patch that bridge into another bridge or device.",
+        heading: "3. Authorize or start the trial",
+        text: "In MATRIX, open Authorization and choose Sign in on the web. Complete login on quadraaudio.com/activate — the site binds this Mac and returns a signed license (or starts the 14-day trial). After that, MATRIX works offline.",
       },
       {
-        heading: "4. Activate or start the trial",
-        text: "Sign in with your Quadra ID to activate a license or begin the 90-day trial. Licensing is hardware-bound (Quadra Guard) and works offline after activation.",
+        heading: "4. Confirm Matrix Bridge devices",
+        text: "In MATRIX, enable the bridge sizes you need. Open Audio MIDI Setup — you should see Matrix Bridge devices (2‑A, 2‑B, 4, 8, 16, 32, 64, 128). Do not select the hidden MATRIX Engine hub as a normal DAW device.",
+      },
+      {
+        heading: "5. Make your first patch",
+        text: "Open the Matrix Grid. Sources are on one axis, destinations on the other. Click a cross-point to connect. Set a DAW or app to a Matrix Bridge output, then patch that bridge to your interface or another bridge. Use the Monitor section for speakers and headphones.",
       },
     ],
   },
@@ -52,13 +55,13 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
     category: "Setup",
     date: "July 2026",
     hubBlurb:
-      "macOS version, Apple Silicon / Intel support, and what Hydra installs on your Mac.",
+      "macOS version, Apple Silicon / Intel support, and what MATRIX installs on your Mac.",
     summary:
-      "Hydra ships as a Universal binary targeting macOS 26.0 or later. It uses user-space Core Audio AudioServerPlugIn HAL drivers — no kernel extensions, SIP stays enabled.",
+      "MATRIX ships as a Universal binary targeting macOS 14 or later. It uses user-space Core Audio AudioServerPlugIn HAL drivers — no kernel extensions, SIP stays enabled.",
     steps: [
       {
         heading: "Operating system",
-        text: "macOS 26 (Tahoe) or later is required. Older macOS releases are not supported by the current build.",
+        text: "macOS 14 or later is required. Older macOS releases are not supported by the current build.",
       },
       {
         heading: "Hardware",
@@ -66,16 +69,16 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
       },
       {
         heading: "What gets installed",
-        text: "Hydra.app embeds the audio engine and the optional hydra-plugin-host worker. Packaging also installs:",
+        text: "MATRIX.app embeds the audio engine and the optional hydra-plugin-host worker. Packaging also installs:",
         bullets: [
-          "HydraVirtualSoundcard.driver — hidden 256-channel hub (“Hydra Engine”).",
-          "Eight HydraAudioBridge*.driver bundles matching the bridge catalog (2A–128).",
+          "MATRIX hub driver (HAL) — hidden 256-channel hub (“MATRIX Engine”).",
+          "Eight MatrixBridge*.driver bundles matching the bridge catalog (2A–128).",
           "Drivers live in /Library/Audio/Plug-Ins/HAL.",
         ],
       },
       {
         heading: "Optional runtimes",
-        text: "NDI audio requires the NDI Apple redistributable at runtime (loaded dynamically; not linked into Hydra). AES67 uses built-in SAP/SDP and PTPv2 helpers on your LAN.",
+        text: "NDI audio requires the NDI Apple redistributable at runtime (loaded dynamically; not linked into MATRIX). AES67 uses built-in SAP/SDP and PTPv2 helpers on your LAN.",
       },
     ],
   },
@@ -85,9 +88,9 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
     category: "Setup",
     date: "July 2026",
     hubBlurb:
-      "How Hydra’s AudioServerPlugIn drivers install, reload, and show up in Audio MIDI Setup.",
+      "How MATRIX’s AudioServerPlugIn drivers install, reload, and show up in Audio MIDI Setup.",
     summary:
-      "Hydra’s bridges are Core Audio HAL AudioServerPlugIn bundles. They use an in-driver ring buffer (output write → input read) so apps see standard multi-channel devices without userspace shared-memory IPC.",
+      "MATRIX’s bridges are Core Audio HAL AudioServerPlugIn bundles. They use an in-driver ring buffer (output write → input read) so apps see standard multi-channel devices without userspace shared-memory IPC.",
     steps: [
       {
         heading: "1. Use the official installer",
@@ -103,7 +106,7 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
       },
       {
         heading: "4. Uninstall",
-        text: "Use the Uninstall app shipped with the DMG when available, or remove the Hydra HAL bundles and Hydra.app, then restart coreaudiod.",
+        text: "Use the Uninstall app shipped with the DMG when available, or remove the MATRIX HAL bundles and MATRIX.app, then restart coreaudiod.",
       },
     ],
   },
@@ -135,7 +138,7 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
       },
       {
         heading: "4. Trial",
-        text: "Matrix includes a fully functional 14-day trial started on the web (one per account email and per Mac). Choose Start trial on the web from Authorization. When the trial ends without a full license, Guard mutes the monitor path and blocks new route enables.",
+        text: "MATRIX includes a fully functional 14-day trial started on the web (one per account email and per Mac). Choose Start trial on the web from Authorization. When the trial ends without a full license, Guard mutes the monitor path and blocks new route enables.",
       },
       {
         heading: "5. Troubleshooting activation",
@@ -145,17 +148,17 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
   },
   {
     id: "audio-bridges",
-    title: "Hydra Audio Bridges",
+    title: "Matrix Bridge devices",
     category: "Virtual Soundcard",
     date: "July 2026",
     hubBlurb:
       "Eight Core Audio bridges from 2 to 128 channels — pick the size that fits each app.",
     summary:
-      "Bridges are the public virtual soundcards apps and DAWs select. Behind them, a hidden 256-channel hub (“Hydra Engine”) runs the matrix. Bridge roles and network TX can be controlled from Hydra’s Bridges UI.",
+      "Bridges are the public virtual soundcards apps and DAWs select. Behind them, a hidden 256-channel hub (“MATRIX Engine”) runs the matrix. Bridge roles and network TX can be controlled from MATRIX’s Bridges UI.",
     steps: [
       {
         heading: "Bridge catalog",
-        text: "Hydra exposes eight bridges:",
+        text: "MATRIX exposes eight bridges:",
         bullets: [
           "2‑A and 2‑B — stereo pairs for podcasts, browsers, or simple I/O.",
           "4 / 8 / 16 — stems, stems+return, or small ensemble routing.",
@@ -164,7 +167,7 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
       },
       {
         heading: "Using a bridge in a DAW",
-        text: "In your DAW’s audio preferences, set input and/or output to the desired Hydra Audio Bridge. Enable that bridge in Hydra if it is toggled off, then patch its channels in the Matrix Grid.",
+        text: "In your DAW’s audio preferences, set input and/or output to the desired Matrix Bridge. Enable that bridge in MATRIX if it is toggled off, then patch its channels in the Matrix Grid.",
       },
       {
         heading: "Bridge roles & network TX",
@@ -172,7 +175,7 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
       },
       {
         heading: "Hub vs bridges",
-        text: "Do not select “Hydra Engine” as a normal playback device in most apps — it is the hidden backplane. Always use the numbered bridges for application I/O.",
+        text: "Do not select “MATRIX Engine” as a normal playback device in most apps — it is the hidden backplane. Always use the numbered bridges for application I/O.",
       },
     ],
   },
@@ -184,7 +187,7 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
     hubBlurb:
       "Cross-point patching, gainful connections, scenes, and how the engine mixes audio.",
     summary:
-      "The Matrix Grid is a visual cross-point router. Each connection is a gainful patch from a source channel to a destination channel. The audio engine processes the matrix every IOProc cycle on the Hydra Engine hub.",
+      "The Matrix Grid is a visual cross-point router. Each connection is a gainful patch from a source channel to a destination channel. The audio engine processes the matrix every IOProc cycle on the MATRIX Engine hub.",
     steps: [
       {
         heading: "1. Read the grid",
@@ -196,7 +199,7 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
       },
       {
         heading: "3. Feedback protection",
-        text: "Hydra includes patch validation / feedback-protection helpers. Keep feedback protection enabled in Config unless you intentionally need a monitored loop and understand the risk of feedback.",
+        text: "MATRIX includes patch validation / feedback-protection helpers. Keep feedback protection enabled in Config unless you intentionally need a monitored loop and understand the risk of feedback.",
       },
       {
         heading: "4. Labels & scenes",
@@ -216,15 +219,15 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
     hubBlurb:
       "Tap Zoom, Chrome, Spotify, Discord, and other apps without changing their output device.",
     summary:
-      "Process taps use the macOS Core Audio Process Tap API to copy an app’s audio into Hydra while the app keeps playing to its normal output. Each tap presents stereo (2-channel) sources to the matrix.",
+      "Process taps use the macOS Core Audio Process Tap API to copy an app’s audio into MATRIX while the app keeps playing to its normal output. Each tap presents stereo (2-channel) sources to the matrix.",
     steps: [
       {
         heading: "1. Grant permission",
-        text: "macOS will prompt for audio capture / process tap permission when you first enable an app. Allow Hydra in System Settings if the tap stays silent.",
+        text: "macOS will prompt for audio capture / process tap permission when you first enable an app. Allow MATRIX in System Settings if the tap stays silent.",
       },
       {
         heading: "2. Enable capture",
-        text: "In the Apps sidebar, toggle capture for the target process. Hydra lists running apps that can be tapped; channels appear as sources in the Matrix Grid.",
+        text: "In the Apps sidebar, toggle capture for the target process. MATRIX lists running apps that can be tapped; channels appear as sources in the Matrix Grid.",
       },
       {
         heading: "3. Route the tap",
@@ -244,11 +247,11 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
     hubBlurb:
       "Add USB/Thunderbolt interfaces to the grid with automatic drift-corrected sample-rate conversion.",
     summary:
-      "Physical devices attach via Core Audio IOProcs into ChannelRing buffers. Consumer-side polyphase / linear ASRC keeps independent hardware clocks aligned with the Hydra Engine clock.",
+      "Physical devices attach via Core Audio IOProcs into ChannelRing buffers. Consumer-side polyphase / linear ASRC keeps independent hardware clocks aligned with the MATRIX Engine clock.",
     steps: [
       {
         heading: "1. Enable a device",
-        text: "Open the Devices tab and set the device to be used by Hydra. Its channels appear as sources and/or destinations depending on direction.",
+        text: "Open the Devices tab and set the device to be used by MATRIX. Its channels appear as sources and/or destinations depending on direction.",
       },
       {
         heading: "2. ASRC behavior",
@@ -270,12 +273,12 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
     category: "Plugins",
     date: "July 2026",
     hubBlurb:
-      "Host VST3 plugins out-of-process so a crash cannot take down Hydra or your DAW session path.",
+      "Host VST3 plugins out-of-process so a crash cannot take down MATRIX or your DAW session path.",
     summary:
-      "StripManager hosts insert chains as EngineTaps. Plugins can run in-process or via SharedPluginHost, which spawns hydra-plugin-host and exchanges audio over a lock-free POSIX shared-memory ABI (v2). If the worker stalls, Hydra bypasses rather than blocking the audio thread.",
+      "StripManager hosts insert chains as EngineTaps. Plugins can run in-process or via SharedPluginHost, which spawns hydra-plugin-host and exchanges audio over a lock-free POSIX shared-memory ABI (v2). If the worker stalls, MATRIX bypasses rather than blocking the audio thread.",
     steps: [
       {
-        heading: "1. Point Hydra at your VST folder",
+        heading: "1. Point MATRIX at your VST folder",
         text: "In Settings / Config, set vstFolderPath to your VST3 directory, then run Scan VST. Favorites and availability flags help filter large libraries.",
       },
       {
@@ -288,11 +291,11 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
       },
       {
         heading: "4. Crash isolation",
-        text: "Out-of-process hosting isolates plugin faults in hydra-plugin-host. The worker can restart; the Hydra engine and DAW keep running. Prefer OOP for unstable or untrusted plugins.",
+        text: "Out-of-process hosting isolates plugin faults in hydra-plugin-host. The worker can restart; the MATRIX engine and DAW keep running. Prefer OOP for unstable or untrusted plugins.",
       },
       {
         heading: "5. Scan worker",
-        text: "Hydra can run an isolated --scan-bundle worker so a crashing plug-in scan does not bring down the main UI process.",
+        text: "MATRIX can run an isolated --scan-bundle worker so a crashing plug-in scan does not bring down the main UI process.",
       },
     ],
   },
@@ -304,7 +307,7 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
     hubBlurb:
       "Subscribe to AES67 (PTP/SAP/SDP) and NDI sources, and transmit bridges back to the LAN.",
     summary:
-      "Hydra’s Network tab surfaces AES67 and NDI discovery. AES67 RX uses SAP (UDP 9875) and SDP parsing with PTPv2 clock helpers. NDI is loaded at runtime via a dlopen shim — install the NDI Apple redistributable first.",
+      "MATRIX’s Network tab surfaces AES67 and NDI discovery. AES67 RX uses SAP (UDP 9875) and SDP parsing with PTPv2 clock helpers. NDI is loaded at runtime via a dlopen shim — install the NDI Apple redistributable first.",
     steps: [
       {
         heading: "1. AES67 receive",
@@ -316,7 +319,7 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
       },
       {
         heading: "3. NDI receive & send",
-        text: "Install NDI tools/runtime, then use Network → NDI to subscribe to sources. Enable NDI TX on a bridge/interface when you want Hydra to publish audio to NDI consumers.",
+        text: "Install NDI tools/runtime, then use Network → NDI to subscribe to sources. Enable NDI TX on a bridge/interface when you want MATRIX to publish audio to NDI consumers.",
       },
       {
         heading: "4. Interfaces & flows",
@@ -384,7 +387,7 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
     hubBlurb:
       "Capture matrix destinations to disk with configurable format and folder.",
     summary:
-      "RecordingManager can start/stop recordings fed from matrix destinations (pool TX taps). Configure recording format and folder path in Hydra Config.",
+      "RecordingManager can start/stop recordings fed from matrix destinations (pool TX taps). Configure recording format and folder path in MATRIX Config.",
     steps: [
       {
         heading: "1. Choose folder & format",
@@ -408,7 +411,7 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
     hubBlurb:
       "Tune bufferSizeFrames, reduce xruns, and keep high channel-count sessions stable.",
     summary:
-      "Hydra’s audio callback runs on the hub IOProc. Config exposes bufferSizeFrames. Device rings default to 8192 frames of buffering headroom; max IO frames are capped for safety. Heavy VST chains and dense matrices raise CPU.",
+      "MATRIX’s audio callback runs on the hub IOProc. Config exposes bufferSizeFrames. Device rings default to 8192 frames of buffering headroom; max IO frames are capped for safety. Heavy VST chains and dense matrices raise CPU.",
     steps: [
       {
         heading: "1. Raise the buffer when overloaded",
@@ -436,7 +439,7 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
     hubBlurb:
       "Enable the OSC server for Stream Deck, TouchOSC, Companion, and custom controllers.",
     summary:
-      "Hydra can run an OscServer when oscEnabled is set in Config. Point controllers at your Mac’s IP and the configured oscPort. OSC parsing lives in HydraCore alongside the WebSocket control plane.",
+      "MATRIX can run an OSC server when OSC is enabled in Settings. Point controllers at your Mac’s IP and the configured OSC port. OSC and the WebSocket control plane run inside the MATRIX engine.",
     steps: [
       {
         heading: "1. Enable OSC",
@@ -444,7 +447,7 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
       },
       {
         heading: "2. Map your controller",
-        text: "Use Bitfocus Companion, TouchOSC, or similar to send OSC messages that match Hydra’s expected address space for the actions you need.",
+        text: "Use Bitfocus Companion, TouchOSC, or similar to send OSC messages that match MATRIX’s expected address space for the actions you need.",
       },
       {
         heading: "3. Prefer local network",
@@ -454,7 +457,7 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
   },
   {
     id: "modules",
-    title: "Hydra Modules (.dylib)",
+    title: "MATRIX Modules (.dylib)",
     category: "Advanced",
     date: "July 2026",
     hubBlurb:
@@ -464,7 +467,7 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
     steps: [
       {
         heading: "Install a module",
-        text: "Place a compatible .dylib in Hydra’s modules folder and restart or refresh Modules in the UI.",
+        text: "Place a compatible .dylib in MATRIX’s modules folder and restart or refresh Modules in the UI.",
       },
       {
         heading: "Subscribe sources",
@@ -487,12 +490,12 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
       "Most issues fall into driver load, permission, license guard, routing mistakes, or optional runtime (NDI) problems. Work top-down: devices → engine → patches → license → network.",
     steps: [
       {
-        heading: "No Hydra bridges in apps",
+        heading: "No Matrix Bridge devices in apps",
         text: "Reinstall HAL drivers, restart coreaudiod/reboot, check Privacy & Security for blocked system software, confirm bundles under /Library/Audio/Plug-Ins/HAL.",
       },
       {
         heading: "Bridges exist but silence",
-        text: "Enable the bridge in Hydra, verify Matrix connections, check Control Room MUTE/DIM, confirm the DAW is using the same bridge you patched, and ensure the license/trial is valid (guard zeroes output when invalid).",
+        text: "Enable the bridge in MATRIX, verify Matrix connections, check Control Room MUTE/DIM, confirm the DAW is using the same bridge you patched, and ensure the license/trial is valid (guard zeroes output when invalid).",
       },
       {
         heading: "App tap is silent",
@@ -508,23 +511,23 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
       },
       {
         heading: "Still stuck?",
-        text: "Note Hydra version (About), macOS version, bridge/device setup, and exact repro steps, then contact Engineering Support.",
+        text: "Note MATRIX version (About), macOS version, bridge/device setup, and exact repro steps, then contact Engineering Support.",
       },
     ],
   },
   {
     id: "architecture-overview",
-    title: "How Hydra Works (Architecture)",
+    title: "How MATRIX Works (Architecture)",
     category: "Advanced",
     date: "July 2026",
     hubBlurb:
       "App + in-process daemon, WebSocket control plane, hub IOProc, and optional plugin host.",
     summary:
-      "For power users and integrators: Hydra.app starts DaemonRuntime in-process. UI talks to the engine over ws://127.0.0.1:59731. Audio mixes on the hidden hub; bridges are the public HAL faces.",
+      "For power users and integrators: MATRIX.app starts DaemonRuntime in-process. UI talks to the engine over ws://127.0.0.1:59731. Audio mixes on the hidden hub; bridges are the public HAL faces.",
     steps: [
       {
         heading: "Processes",
-        text: "Hydra.app hosts SwiftUI + HydraDaemon. hydra-plugin-host is spawned on demand for out-of-process VST chains. HAL drivers load inside coreaudiod separately.",
+        text: "MATRIX.app hosts SwiftUI + the MATRIX audio engine. hydra-plugin-host is spawned on demand for out-of-process VST chains. HAL drivers load inside coreaudiod separately.",
       },
       {
         heading: "Control plane",
@@ -536,7 +539,7 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
       },
       {
         heading: "Version",
-        text: "Check About / Hydra.version in the app for the exact build string when filing tickets.",
+        text: "Check About / MATRIX version in the app for the exact build string when filing tickets.",
       },
     ],
   },

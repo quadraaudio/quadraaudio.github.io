@@ -28,11 +28,11 @@ const plexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Quadra — Professional Audio Software",
+    default: "Quadra — Professional audio software for Mac",
     template: "%s — Quadra",
   },
   description:
-    "Quadra builds professional audio software for studios, producers, and engineers.",
+    "Quadra builds professional audio software for Mac. Starting with MATRIX — a software patchbay and monitor controller.",
   icons: {
     icon: [
       { url: "/favicon.ico?v=20260803b", sizes: "any" },

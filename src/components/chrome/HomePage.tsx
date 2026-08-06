@@ -1,50 +1,24 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { TypedHeader } from "@/components/motion/TypedHeader";
 import { Reveal } from "@/components/motion/Reveal";
 import { HeroParticles } from "@/components/three/HeroParticles";
 import { SpectrumCascade } from "@/components/three/SpectrumCascade";
 import { ScrollCue } from "@/components/chrome/ScrollCue";
-import { useCatalog } from "@/components/providers/CatalogProvider";
 import { formatPrice } from "@/lib/products";
+import { useCatalog } from "@/components/providers/CatalogProvider";
+import {
+  HOME_COPY,
+  MATRIX_GLOSS,
+  QUADRA_CTAS,
+} from "@/data/brand.messaging";
+import { MATRIX_PRODUCT_SLUG } from "@/data/products.seed";
 import styles from "./HomePage.module.scss";
 
-const FEATURES = [
-  {
-    title: "Built for real sessions",
-    body: "Low-latency processors designed for tracking, mixing, and delivery — not demos.",
-  },
-  {
-    title: "Licensed once",
-    body: "Buy tools you own. Activate with your Quadra account and keep working offline after activation.",
-  },
-  {
-    title: "Studio-grade polish",
-    body: "Interfaces and sound designed with the same care as the signal path.",
-  },
-];
-
-const AUDIENCES = [
-  {
-    title: "Mixing engineers",
-    body: "Recall-safe tools that stay out of the way until you need character.",
-  },
-  {
-    title: "Producers",
-    body: "Fast presets and musical defaults for writing sessions that turn into masters.",
-  },
-  {
-    title: "Studios",
-    body: "Consistent installs across rooms with account-backed licensing.",
-  },
-];
-
 export function HomePage() {
-  const { products, loading } = useCatalog();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [audience, setAudience] = useState(0);
+  const { getBySlug } = useCatalog();
+  const matrix = getBySlug(MATRIX_PRODUCT_SLUG);
 
   return (
     <main className={styles.pageEnter}>
@@ -54,97 +28,21 @@ export function HomePage() {
           <HeroParticles />
         </div>
         <div className={`page-shell ${styles.heroContent}`}>
+          <p className={styles.brandSignal}>{HOME_COPY.brandSignal}</p>
           <h1 className={`display display-xl ${styles.headline}`}>
-            <TypedHeader text="Professional audio software for the modern studio." />
+            <TypedHeader text={HOME_COPY.headline} />
           </h1>
-          <p className={`lede ${styles.sub}`}>
-            Processors and tools for engineers, producers, and studios who need
-            reliable sound — not noise.
-          </p>
+          <p className={`lede ${styles.sub}`}>{HOME_COPY.lede}</p>
           <div className={styles.ctaRow}>
-            <Link href="/store" className="btn btn-primary">
-              Shop software
+            <Link href={QUADRA_CTAS.exploreMatrix.href} className="btn btn-primary">
+              {QUADRA_CTAS.exploreMatrix.label}
             </Link>
-            <Link href="/products" className="btn btn-secondary">
-              Explore products
+            <Link href={QUADRA_CTAS.buyMatrix.href} className="btn btn-secondary">
+              {QUADRA_CTAS.buyMatrix.label}
             </Link>
           </div>
         </div>
         <ScrollCue label="Scroll" />
-      </section>
-
-      <section className={styles.videoSection}>
-        <div className="page-shell">
-          <Reveal>
-            <button
-              type="button"
-              className={styles.videoCard}
-              onClick={() => setModalOpen(true)}
-            >
-              <span className={styles.videoLabel}>Watch overview</span>
-              <span className={styles.play}>Play</span>
-            </button>
-          </Reveal>
-        </div>
-      </section>
-
-      {modalOpen && (
-        <div className={styles.modal} role="dialog" aria-modal="true">
-          <button
-            type="button"
-            className={styles.modalBackdrop}
-            aria-label="Close"
-            onClick={() => setModalOpen(false)}
-          />
-          <div className={styles.modalPanel}>
-            <button
-              type="button"
-              className={styles.modalClose}
-              onClick={() => setModalOpen(false)}
-            >
-              Close
-            </button>
-            <div className={styles.modalBody}>
-              <p className="display display-md">Quadra overview</p>
-              <p className="lede">
-                Placeholder demo reel. Replace with product footage when ready.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <section className={styles.products}>
-        <div className="page-shell">
-          <Reveal>
-            <p className="eyebrow">Products</p>
-            <h2 className="display display-lg">Tools that earn a permanent slot.</h2>
-          </Reveal>
-          <div className={styles.productGrid}>
-            {loading ? (
-              <p className="lede" role="status">
-                Loading catalog…
-              </p>
-            ) : (
-              products.map((product) => (
-              <Reveal key={product.slug}>
-                <Link href={`/store/${product.slug}`} className={styles.productCard}>
-                  <div
-                    className={styles.productArt}
-                    style={{ background: product.cardGradient }}
-                  />
-                  <div className={styles.productCopy}>
-                    <p className={styles.badge}>{product.badge}</p>
-                    <h3>{product.name}</h3>
-                    <p>{product.tagline}</p>
-                    <span>{formatPrice(product.price, product.currency)}</span>
-                  </div>
-                </Link>
-              </Reveal>
-              ))
-            )}
-          </div>
-        </div>
       </section>
 
       <section className={styles.hydraTeaser}>
@@ -156,14 +54,22 @@ export function HomePage() {
           </div>
           <div className={`page-shell ${styles.hydraTeaserCopy}`}>
             <Reveal>
-              <p className={styles.hydraTeaserBrand}>MATRIX</p>
-              <h2 className="display display-lg">
-                The routing matrix for the modern Mac studio.
-              </h2>
-              <p className={styles.hydraTeaserLede}>
-                Virtual bridges, a gainful patchbay, and monitor control — built for Mac.
+              <p className={styles.hydraTeaserBrand}>
+                {HOME_COPY.matrixBlock.eyebrow}
               </p>
-              <span className={styles.hydraTeaserCta}>Explore MATRIX</span>
+              <p className={styles.hydraTeaserProduct}>
+                {HOME_COPY.matrixBlock.brand}
+              </p>
+              <h2 className="display display-lg">{HOME_COPY.matrixBlock.title}</h2>
+              <p className={styles.hydraTeaserLede}>
+                {HOME_COPY.matrixBlock.body}
+              </p>
+              <p className={styles.hydraTeaserDetail}>
+                {HOME_COPY.matrixBlock.detail}
+              </p>
+              <span className={styles.hydraTeaserCta}>
+                {QUADRA_CTAS.exploreMatrix.label}
+              </span>
             </Reveal>
           </div>
         </Link>
@@ -173,10 +79,10 @@ export function HomePage() {
         <div className="page-shell">
           <Reveal>
             <p className="eyebrow">Why Quadra</p>
-            <h2 className="display display-lg">Built for professionals.</h2>
+            <h2 className="display display-lg">Clear path from try to own.</h2>
           </Reveal>
           <div className={styles.featureList}>
-            {FEATURES.map((feature, index) => (
+            {HOME_COPY.why.map((feature, index) => (
               <Reveal key={feature.title}>
                 <article className={styles.featureItem}>
                   <span className={styles.featureIndex}>0{index + 1}</span>
@@ -194,31 +100,29 @@ export function HomePage() {
       <section className={styles.audience}>
         <div className="page-shell">
           <Reveal>
-            <p className="eyebrow">Use cases</p>
-            <h2 className="display display-lg">One toolkit. Many rooms.</h2>
+            <p className="eyebrow">Built for sessions</p>
+            <h2 className="display display-lg">What MATRIX helps you do.</h2>
           </Reveal>
-          <div className={styles.audiencePanel}>
-            <div className={styles.audienceTabs}>
-              {AUDIENCES.map((item, index) => (
-                <button
-                  key={item.title}
-                  type="button"
-                  className={index === audience ? styles.activeTab : ""}
-                  onClick={() => setAudience(index)}
-                >
-                  {item.title}
-                </button>
-              ))}
-            </div>
-            <Reveal key={audience}>
-              <div className={styles.audienceCopy}>
-                <h3>{AUDIENCES[audience].title}</h3>
-                <p>{AUDIENCES[audience].body}</p>
-                <Link href="/store" className="btn btn-secondary">
-                  Browse the store
-                </Link>
-              </div>
-            </Reveal>
+          <div className={styles.sessionGrid}>
+            {HOME_COPY.sessions.map((item) => (
+              <Reveal key={item.title}>
+                <article className={styles.sessionCard}>
+                  <h3>{item.title}</h3>
+                  <p>{item.body}</p>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+          <div className={styles.sessionCtas}>
+            <Link href={QUADRA_CTAS.exploreMatrix.href} className="btn btn-secondary">
+              {QUADRA_CTAS.exploreMatrix.label}
+            </Link>
+            <Link href={QUADRA_CTAS.buyMatrix.href} className="btn btn-primary">
+              {QUADRA_CTAS.buyMatrix.label}
+              {matrix
+                ? ` — ${formatPrice(matrix.price, matrix.currency)}`
+                : ""}
+            </Link>
           </div>
         </div>
       </section>
@@ -229,14 +133,12 @@ export function HomePage() {
             <SpectrumCascade />
           </div>
           <Reveal>
-            <p className={styles.storeBrand}>Quadra Store</p>
-            <h2 className="display display-lg">Own your tools.</h2>
-            <p className={styles.storeLede}>
-              Perpetual licenses, account-backed checkout, and PayPal support from
-              day one.
-            </p>
-            <Link href="/store" className="btn btn-inverse">
-              Open store
+            <p className={styles.storeBrand}>{HOME_COPY.storeClose.eyebrow}</p>
+            <h2 className="display display-lg">{HOME_COPY.storeClose.title}</h2>
+            <p className={styles.storeLede}>{HOME_COPY.storeClose.lede}</p>
+            <p className={styles.storeNote}>{MATRIX_GLOSS.who}</p>
+            <Link href={QUADRA_CTAS.buyMatrix.href} className="btn btn-inverse">
+              {QUADRA_CTAS.buyMatrix.label}
             </Link>
           </Reveal>
         </div>

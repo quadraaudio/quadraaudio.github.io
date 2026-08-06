@@ -25,9 +25,9 @@ export const PRODUCTS_SEED: Product[] = [
   {
     slug: "quadra-matrix",
     name: "MATRIX",
-    tagline: "Patch matrix + monitor for Mac.",
+    tagline: "Software patchbay + monitor control for Mac.",
     description:
-      "Start edition: Matrix Bridge HAL devices (2A…128), NxN patch field (grid and list), control-room monitor, scenes, and Quadra Guard activation via Quadra ID.",
+      "MATRIX connects apps, interfaces, and speakers on your Mac through one visual patch field. Enable Matrix Bridge virtual soundcards only when you need them, monitor like a console, and activate with your Quadra ID — 14-day full trial, then a perpetual license for two Macs.",
     price: 179.0,
     currency: "USD",
     category: "software",
@@ -35,19 +35,31 @@ export const PRODUCTS_SEED: Product[] = [
     availabilityStatus: "available",
     features: [
       {
-        title: "Patch field",
-        description: "Grid and list routing with gainful cross-points, paint mode, and scenes.",
+        title: "Visual patch field",
+        description:
+          "Route any source to any destination with gain on every connection. Save scenes for tracking, mix, or playback.",
       },
       {
-        title: "Matrix Bridge",
-        description: "Activate 2A…128 channel virtual devices in Audio MIDI Setup from the app.",
+        title: "Matrix Bridge devices",
+        description:
+          "Virtual Core Audio soundcards (2A…128 channels) that appear in Audio MIDI Setup only when you enable them.",
+      },
+      {
+        title: "Control-room monitor",
+        description:
+          "Dim, mono, mute, talkback, and cue on your real speakers and headphones — separate from the patch.",
       },
       {
         title: "Quadra Guard",
-        description: "14-day web trial, then activate this Mac with your Quadra ID (2 seats).",
+        description:
+          "14-day web trial, then activate this Mac with your Quadra ID. Two seats. Works offline after authorization.",
       },
     ],
-    systemRequirements: ["macOS 14+", "Apple Silicon or Intel", "Admin install for HAL"],
+    systemRequirements: [
+      "macOS 14 or later",
+      "Apple Silicon or Intel",
+      "Admin rights to install the audio driver",
+    ],
     cardGradient: "linear-gradient(145deg, #0e1218 0%, #1c4f4d 55%, #00a3a0 120%)",
     sortOrder: 10,
   },

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Support — Quadra",
   description:
-    "MATRIX support: activation, Matrix Grid, audio bridges, AES67/NDI, Control Room, VST hosting, and troubleshooting.",
+    "MATRIX support: install, authorize, patch routing, Matrix Bridge devices, monitor control, and troubleshooting.",
 };
 
 export default function SupportLayout({
