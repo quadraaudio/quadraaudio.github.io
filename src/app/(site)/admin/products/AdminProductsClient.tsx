@@ -173,7 +173,8 @@ export default function AdminProductsPage() {
             <h1 className="display display-lg">Products</h1>
             <p className={styles.meta}>
               Signed in as {user.email}. Changes write to the live Supabase
-              catalog.
+              catalog.{" "}
+              <Link href="/admin/releases">Manage releases</Link>
             </p>
           </div>
           <button

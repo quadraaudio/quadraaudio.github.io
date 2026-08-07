@@ -21,6 +21,13 @@ import {
   type AccountOrder,
   type AccountPayload,
 } from "@/lib/accountTypes";
+import { QUADRA_CTAS } from "@/data/brand.messaging";
+import {
+  fetchPublishedReleases,
+  formatReleaseDate,
+  pickLatestStable,
+  type ProductRelease,
+} from "@/lib/releases";
 import styles from "./account.module.scss";
 
 function AccountInner() {
@@ -43,6 +50,10 @@ function AccountInner() {
   const [seatBusy, setSeatBusy] = useState<string | null>(null);
   const [seatError, setSeatError] = useState<string | null>(null);
   const [openOrders, setOpenOrders] = useState<Record<string, boolean>>({});
+  const [latestRelease, setLatestRelease] = useState<ProductRelease | null>(
+    null,
+  );
+  const [loadingRelease, setLoadingRelease] = useState(true);
 
   const reloadAccount = async () => {
     if (!user?.id) return;
@@ -62,6 +73,26 @@ function AccountInner() {
       })),
     );
   };
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoadingRelease(true);
+    fetchPublishedReleases()
+      .then((rows) => {
+        if (cancelled) return;
+        setLatestRelease(pickLatestStable(rows) || null);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setLatestRelease(null);
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingRelease(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (!user?.id) {
@@ -200,10 +231,33 @@ function AccountInner() {
         ) : null}
 
         {purchased ? (
-          <p className={styles.notice} role="status">
-            Purchase complete
-            {orderRef ? ` — order ${orderRef}` : ""}. Your licenses are below.
-          </p>
+          <div className={styles.notice} role="status">
+            <p>
+              Purchase complete
+              {orderRef ? ` — order ${orderRef}` : ""}. Download the installer,
+              then bind a seat from Authorization in MATRIX.
+            </p>
+            {latestRelease ? (
+              <div className={styles.downloadActions}>
+                <a
+                  href={latestRelease.downloadUrl}
+                  className="btn btn-primary"
+                  download={latestRelease.downloadFilename}
+                >
+                  Download MATRIX
+                </a>
+                <Link href={QUADRA_CTAS.releases.href} className={styles.inlineLink}>
+                  Release notes
+                </Link>
+              </div>
+            ) : (
+              <p>
+                <Link href={QUADRA_CTAS.releases.href} className={styles.inlineLink}>
+                  Open downloads
+                </Link>
+              </p>
+            )}
+          </div>
         ) : null}
 
         {loadError ? (
@@ -218,6 +272,51 @@ function AccountInner() {
             {seatError}
           </p>
         ) : null}
+
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Download</h2>
+          <p className={styles.sectionLede}>
+            Install MATRIX on your Mac, then bind a seat from Authorization in
+            the app.
+          </p>
+          {loadingRelease ? (
+            <p className={styles.muted}>Loading installer…</p>
+          ) : latestRelease ? (
+            <div className={styles.downloadBlock}>
+              <div>
+                <p className={styles.blockTitle}>
+                  {productName(latestRelease.productSlug)} {latestRelease.version}
+                </p>
+                <p className={styles.meta}>
+                  {formatReleaseDate(latestRelease.publishedAt)} ·{" "}
+                  {latestRelease.downloadKind}
+                </p>
+              </div>
+              <div className={styles.downloadActions}>
+                <a
+                  href={latestRelease.downloadUrl}
+                  className="btn btn-primary"
+                  download={latestRelease.downloadFilename}
+                >
+                  Download
+                </a>
+                <Link
+                  href={QUADRA_CTAS.releases.href}
+                  className={styles.inlineLink}
+                >
+                  Release notes
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <p className={styles.muted}>
+              Installer links will appear here when a build is published.{" "}
+              <Link href={QUADRA_CTAS.releases.href} className={styles.inlineLink}>
+                Check releases
+              </Link>
+            </p>
+          )}
+        </section>
 
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Licenses</h2>
@@ -309,6 +408,16 @@ function AccountInner() {
                   </div>
 
                   <p className={styles.links}>
+                    {latestRelease ? (
+                      <a
+                        href={latestRelease.downloadUrl}
+                        download={latestRelease.downloadFilename}
+                      >
+                        Download app
+                      </a>
+                    ) : (
+                      <Link href={QUADRA_CTAS.releases.href}>Downloads</Link>
+                    )}
                     <Link href="/support/article/getting-started">
                       Activation help
                     </Link>

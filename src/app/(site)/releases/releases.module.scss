@@ -1,0 +1,217 @@
+.page {
+  padding-block: var(--space-4xl) var(--space-5xl);
+}
+
+.narrow {
+  max-width: 40rem;
+}
+
+.page :global(.lede) {
+  margin-top: var(--space-md);
+}
+
+.muted {
+  margin: var(--space-2xl) 0 0;
+  color: var(--theme-text-muted);
+  line-height: 1.5;
+}
+
+.notice {
+  margin: var(--space-xl) 0 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--radius-md);
+  background: var(--theme-bg-muted);
+  color: var(--theme-text);
+  line-height: 1.5;
+
+  a {
+    color: var(--theme-accent-hover);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+.latest {
+  margin-top: var(--space-2xl);
+  padding: var(--space-lg);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--quadra-accent-soft) 55%, transparent) 0%,
+      var(--theme-bg-elevated) 42%,
+      var(--theme-bg-elevated) 100%
+    );
+}
+
+.latestHead {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-md);
+  align-items: flex-start;
+}
+
+.versionLabel {
+  margin: 0;
+  color: var(--theme-text-faint);
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.latestTitle {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 2.5vw, 1.85rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--theme-text);
+}
+
+.latestMeta {
+  margin: 0.4rem 0 0;
+  color: var(--theme-text-muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.summary {
+  margin: var(--space-md) 0 0;
+  color: var(--theme-text-muted);
+  line-height: 1.55;
+}
+
+.fileHint {
+  margin: var(--space-sm) 0 0;
+  color: var(--theme-text-faint);
+  font-size: 0.88rem;
+}
+
+.fileHint code {
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  color: var(--theme-text-muted);
+}
+
+.nextSteps {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--theme-border);
+}
+
+.subLabel {
+  margin: 0 0 var(--space-sm);
+  color: var(--theme-text-faint);
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.nextSteps ol {
+  margin: 0;
+  padding-left: 1.15rem;
+  color: var(--theme-text-muted);
+  line-height: 1.55;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.nextSteps a {
+  color: var(--theme-accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.section {
+  margin-top: var(--space-3xl);
+  padding-top: var(--space-2xl);
+  border-top: 1px solid var(--theme-border);
+}
+
+.sectionTitle {
+  margin: 0 0 var(--space-sm);
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--theme-text);
+}
+
+.sectionLede {
+  margin: var(--space-md) 0 0;
+  color: var(--theme-text-muted);
+  line-height: 1.55;
+
+  a {
+    color: var(--theme-accent-hover);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+.reqList {
+  margin: 0;
+  padding-left: 1.15rem;
+  color: var(--theme-text-muted);
+  line-height: 1.55;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.history {
+  list-style: none;
+  margin: var(--space-xl) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-md);
+}
+
+.historyItem {
+  padding: var(--space-lg);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--radius-md);
+  background: var(--theme-bg-elevated);
+}
+
+.historyHead {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-md);
+  align-items: flex-start;
+}
+
+.historyTitle {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.highlights {
+  margin: var(--space-md) 0 0;
+  padding-left: 1.15rem;
+  color: var(--theme-text-muted);
+  line-height: 1.5;
+  display: grid;
+  gap: 0.35rem;
+}
+
+@media (max-width: 640px) {
+  .latestHead,
+  .historyHead {
+    flex-direction: column;
+  }
+
+  .latestHead :global(.btn),
+  .historyHead :global(.btn) {
+    width: 100%;
+    justify-content: center;
+  }
+}

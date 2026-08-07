@@ -2,7 +2,13 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { QUADRA_CTAS } from "@/data/brand.messaging";
+import {
+  fetchPublishedReleases,
+  pickLatestStable,
+  type ProductRelease,
+} from "@/lib/releases";
 import styles from "./success.module.scss";
 
 function SuccessInner() {
@@ -11,6 +17,23 @@ function SuccessInner() {
     params.get("status") === "pending_fulfillment" ? "pending_fulfillment" : "ok";
   const order = params.get("order");
   const paypal = params.get("paypal");
+  const [latest, setLatest] = useState<ProductRelease | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    fetchPublishedReleases()
+      .then((rows) => {
+        if (!alive) return;
+        setLatest(pickLatestStable(rows) || null);
+      })
+      .catch(() => {
+        if (!alive) return;
+        setLatest(null);
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   if (status === "pending_fulfillment") {
     return (
@@ -56,15 +79,28 @@ function SuccessInner() {
         <h1 className="display display-lg">You&apos;re all set.</h1>
         <p className="lede">
           {order
-            ? `Order ${order} is confirmed. Your licenses are available in your account.`
-            : "Your order is confirmed. Your licenses are available in your account."}
+            ? `Order ${order} is confirmed. Download MATRIX, then open your account to manage seats.`
+            : "Your order is confirmed. Download MATRIX, then open your account to manage seats."}
         </p>
         <div className={styles.actions}>
-          <Link href="/account" className="btn btn-primary">
+          {latest ? (
+            <a
+              href={latest.downloadUrl}
+              className="btn btn-primary"
+              download={latest.downloadFilename}
+            >
+              Download MATRIX
+            </a>
+          ) : (
+            <Link href={QUADRA_CTAS.releases.href} className="btn btn-primary">
+              Downloads
+            </Link>
+          )}
+          <Link href="/account" className="btn btn-secondary">
             Go to account
           </Link>
-          <Link href="/store" className="btn btn-secondary">
-            Continue shopping
+          <Link href={QUADRA_CTAS.releases.href} className="btn btn-secondary">
+            Release notes
           </Link>
         </div>
       </div>
