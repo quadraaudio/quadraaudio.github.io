@@ -16,7 +16,6 @@ export function GlobalFooter() {
           <div>
             <p className={styles.label}>Product</p>
             <Link href={QUADRA_CTAS.exploreMatrix.href}>MATRIX</Link>
-            <Link href={QUADRA_CTAS.buyMatrix.href}>Buy MATRIX</Link>
             <Link href="/products">Products</Link>
             <Link href="/store">Store</Link>
             <Link href="/about">About</Link>
