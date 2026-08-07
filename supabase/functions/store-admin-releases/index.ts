@@ -17,6 +17,7 @@ interface ReleasePayload {
   id?: string;
   product_slug?: string;
   version?: string;
+  build?: number | null;
   channel?: "stable" | "beta";
   title?: string;
   summary?: string | null;
@@ -52,6 +53,17 @@ async function googleEmail(token: string): Promise<string | null> {
   if (!res.ok) return null;
   const data = (await res.json()) as { email?: string };
   return data.email?.trim().toLowerCase() || null;
+}
+
+function deriveBuild(version: string): number {
+  const parts = version
+    .split(/[^\d]+/)
+    .filter(Boolean)
+    .map((p) => Number.parseInt(p, 10) || 0);
+  const major = parts[0] ?? 0;
+  const minor = parts[1] ?? 0;
+  const patch = parts[2] ?? 0;
+  return Math.max(1, major * 10000 + minor * 100 + patch);
 }
 
 Deno.serve(async (req) => {
@@ -121,9 +133,16 @@ Deno.serve(async (req) => {
         );
       }
 
+      const version = r.version.trim().replace(/^v/i, "");
+      const build =
+        typeof r.build === "number" && r.build > 0
+          ? Math.floor(r.build)
+          : deriveBuild(version);
+
       const row = {
         product_slug: r.product_slug.trim(),
-        version: r.version.trim().replace(/^v/i, ""),
+        version,
+        build,
         channel: r.channel === "beta" ? "beta" : "stable",
         title: r.title.trim(),
         summary: r.summary?.trim() || null,

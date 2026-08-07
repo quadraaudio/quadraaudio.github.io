@@ -69,7 +69,7 @@ export default function ReleasesPage() {
             <div className={styles.latestHead}>
               <div>
                 <p className={styles.versionLabel}>
-                  Latest · v{latest.version}
+                  Latest · v{latest.version} · build {latest.build}
                   {latest.channel === "stable" ? " · Stable" : " · Beta"}
                 </p>
                 <h2 id="latest-heading" className={styles.latestTitle}>
@@ -99,7 +99,7 @@ export default function ReleasesPage() {
             <div className={styles.nextSteps}>
               <p className={styles.subLabel}>After download</p>
               <ol>
-                <li>Open the DMG and run the installer.</li>
+                <li>Open the ZIP, move MATRIX.app to Applications, and launch.</li>
                 <li>
                   Launch MATRIX and open Authorization to sign in or start a
                   trial.
@@ -150,7 +150,7 @@ export default function ReleasesPage() {
                         {release.title || `v${release.version}`}
                       </p>
                       <p className={styles.latestMeta}>
-                        v{release.version} ·{" "}
+                        v{release.version} · build {release.build} ·{" "}
                         {formatReleaseDate(release.publishedAt)} ·{" "}
                         {release.channel}
                       </p>

@@ -17,6 +17,7 @@ type Draft = {
   id?: string;
   product_slug: string;
   version: string;
+  build: string;
   channel: "stable" | "beta";
   title: string;
   summary: string;
@@ -36,16 +37,17 @@ function emptyDraft(): Draft {
   return {
     product_slug: MATRIX_PRODUCT_SLUG,
     version: "",
+    build: "",
     channel: "stable",
     title: "",
     summary: "",
     highlightsText: "",
-    requirementsText: "macOS 14 or later\nApple Silicon or Intel",
+    requirementsText: "",
     published_at: `${today}T12:00:00.000Z`,
     published: true,
     download_url: "",
     download_filename: "",
-    download_kind: "Universal DMG",
+    download_kind: "Universal ZIP",
     download_size_bytes: "",
     sha256: "",
   };
@@ -56,6 +58,7 @@ function toDraft(release: ProductRelease): Draft {
     id: release.id,
     product_slug: release.productSlug,
     version: release.version,
+    build: String(release.build),
     channel: release.channel,
     title: release.title,
     summary: release.summary,
@@ -129,6 +132,7 @@ export default function AdminReleasesClient() {
             id: editing.id,
             product_slug: editing.product_slug,
             version: editing.version,
+            build: editing.build ? Number(editing.build) : null,
             channel: editing.channel,
             title: editing.title,
             summary: editing.summary || null,
@@ -215,8 +219,10 @@ export default function AdminReleasesClient() {
             <p className="eyebrow">Store admin</p>
             <h1 className="display display-lg">Releases</h1>
             <p className={styles.meta}>
-              Signed in as {user.email}. Published rows appear on{" "}
-              <Link href="/releases">/releases</Link> and in Account.
+              Signed in as {user.email}. Published stable rows feed{" "}
+              <Link href="/releases/latest.json">/releases/latest.json</Link>{" "}
+              for MATRIX and appear on <Link href="/releases">/releases</Link>.
+              Build must match <code>MATRIX_BUILD</code> in Packaging/version.env.
             </p>
           </div>
           <div className={styles.rowActions}>
@@ -247,7 +253,7 @@ export default function AdminReleasesClient() {
             <li key={release.id} className={styles.row}>
               <div>
                 <strong>
-                  {release.title} · v{release.version}
+                  {release.title} · v{release.version} · build {release.build}
                 </strong>
                 <span className={styles.slug}>{release.productSlug}</span>
                 <span>
@@ -305,6 +311,18 @@ export default function AdminReleasesClient() {
                     setEditing({ ...editing, version: e.target.value })
                   }
                   placeholder="1.0.0"
+                  required
+                />
+              </label>
+              <label>
+                Build (MATRIX_BUILD)
+                <input
+                  value={editing.build}
+                  onChange={(e) =>
+                    setEditing({ ...editing, build: e.target.value })
+                  }
+                  placeholder="Must match Packaging/version.env"
+                  inputMode="numeric"
                   required
                 />
               </label>
@@ -381,7 +399,7 @@ export default function AdminReleasesClient() {
                   onChange={(e) =>
                     setEditing({ ...editing, download_filename: e.target.value })
                   }
-                  placeholder="MATRIX-1.0.0.dmg"
+                  placeholder="MATRIX-1.0.0.zip"
                 />
               </label>
               <label>
