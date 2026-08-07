@@ -8,8 +8,5 @@
 /download /releases/ 302
 /download/ /releases/ 302
 
-# MATRIX app update feed (live from Supabase; 404 until a stable release is published)
-/releases/latest.json https://accvrbqjndibljfpsspc.supabase.co/functions/v1/releases-latest 200
-
 # Canonical host for OAuth (PKCE redirect_uri must match Google Console exactly)
 https://www.quadraaudio.com/* https://quadraaudio.com/:splat 301
