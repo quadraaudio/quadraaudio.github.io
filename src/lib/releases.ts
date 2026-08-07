@@ -1,6 +1,7 @@
 /**
  * Product releases — types + live fetch from Supabase (no local seed).
  * Publish builds via /admin/releases (store-admin-releases edge function).
+ * MATRIX reads https://quadraaudio.com/releases/latest.json for updates.
  */
 import { MATRIX_PRODUCT_SLUG } from "@/data/products.seed";
 
@@ -10,6 +11,8 @@ export type ProductRelease = {
   id: string;
   productSlug: string;
   version: string;
+  /** Monotonic build id — must match Packaging/version.env MATRIX_BUILD. */
+  build: number;
   channel: ReleaseChannel;
   title: string;
   summary: string;
@@ -28,6 +31,7 @@ export type DbProductRelease = {
   id: string;
   product_slug: string;
   version: string;
+  build?: number | null;
   channel: string;
   title: string;
   summary: string | null;
@@ -42,11 +46,27 @@ export type DbProductRelease = {
   sha256: string | null;
 };
 
-const SUPABASE_URL =
+/** Public feed payload consumed by MATRIX (`/releases/latest.json`). */
+export type MatrixReleaseFeed = {
+  product: string;
+  version: string;
+  build: number;
+  channel: ReleaseChannel;
+  title: string;
+  notes: string;
+  url: string;
+  filename: string;
+  kind: string;
+  size: number | null;
+  sha256: string | null;
+  published_at: string;
+};
+
+export const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ||
   "https://accvrbqjndibljfpsspc.supabase.co";
 
-const SUPABASE_ANON =
+export const SUPABASE_ANON =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.startsWith("eyJ")
     ? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -64,6 +84,7 @@ export function mapDbRelease(row: DbProductRelease): ProductRelease {
     id: row.id,
     productSlug: row.product_slug,
     version: row.version,
+    build: Number(row.build) > 0 ? Number(row.build) : 1,
     channel,
     title: row.title,
     summary: row.summary || "",
@@ -74,8 +95,8 @@ export function mapDbRelease(row: DbProductRelease): ProductRelease {
     downloadUrl: row.download_url,
     downloadFilename:
       row.download_filename ||
-      `${row.product_slug}-${row.version}.dmg`,
-    downloadKind: row.download_kind || "Universal DMG",
+      `${row.product_slug}-${row.version}.zip`,
+    downloadKind: row.download_kind || "Universal ZIP",
     downloadSizeBytes:
       row.download_size_bytes != null
         ? Number(row.download_size_bytes)
@@ -84,14 +105,31 @@ export function mapDbRelease(row: DbProductRelease): ProductRelease {
   };
 }
 
-/** Public published releases, newest first. */
+export function toMatrixReleaseFeed(release: ProductRelease): MatrixReleaseFeed {
+  return {
+    product: release.productSlug,
+    version: release.version,
+    build: release.build,
+    channel: release.channel,
+    title: release.title,
+    notes: release.summary,
+    url: release.downloadUrl,
+    filename: release.downloadFilename,
+    kind: release.downloadKind,
+    size: release.downloadSizeBytes,
+    sha256: release.sha256,
+    published_at: release.publishedAt,
+  };
+}
+
+/** Public published releases, newest first (by build, then published_at). */
 export async function fetchPublishedReleases(
   productSlug?: string,
 ): Promise<ProductRelease[]> {
   const url = new URL(`${SUPABASE_URL}/rest/v1/product_releases`);
   url.searchParams.set("select", "*");
   url.searchParams.set("published", "eq.true");
-  url.searchParams.set("order", "published_at.desc");
+  url.searchParams.set("order", "build.desc,published_at.desc");
   if (productSlug) {
     url.searchParams.set("product_slug", `eq.${productSlug}`);
   }
