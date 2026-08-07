@@ -29,8 +29,9 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
       },
       {
         heading: "2. Install and open MATRIX",
-        text: "Download MATRIX from your account or purchase flow, run the installer, and launch MATRIX.app. The installer places Core Audio drivers and restarts coreaudiod.",
+        text: "Download MATRIX from Releases (footer or Account → Download), run the installer, and launch MATRIX.app. The installer places Core Audio drivers and restarts coreaudiod.",
         bullets: [
+          "Downloads: quadraaudio.com/releases",
           "Allow system software / audio drivers under Privacy & Security if macOS asks.",
           "You should see MATRIX after launch.",
         ],

@@ -25,6 +25,7 @@ export function GlobalFooter() {
             <p className={styles.label}>Resources</p>
             <Link href="/support">Support</Link>
             <Link href="/support/article/getting-started">Getting Started</Link>
+            <Link href={QUADRA_CTAS.releases.href}>{QUADRA_CTAS.releases.label}</Link>
             <Link href="/support/article/troubleshooting">Troubleshooting</Link>
             <Link href="/contact">Contact</Link>
             <Link href="/account">Account</Link>

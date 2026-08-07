@@ -65,6 +65,11 @@ export const QUADRA_CTAS = {
     href: "/account",
     label: "Account",
   },
+  /** Installer builds — linked from footer + account, not main nav. */
+  releases: {
+    href: "/releases",
+    label: "Downloads",
+  },
 } as const;
 
 export const HOME_COPY = {
